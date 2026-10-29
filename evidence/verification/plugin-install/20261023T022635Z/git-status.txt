@@ -1,0 +1,12 @@
+ M .workflow/ci.yml
+ M .workflow/release.yml
+ M AGENTS.md
+ M CHANGELOG.md
+ M README.md
+ M README.zh-CN.md
+ M docs/dependency-map.md
+ M docs/dependency-map.zh-CN.md
+ M package.json
+ M scripts/pack-silicon.mjs
+?? evidence/verification/plugin-install/
+?? scripts/verify-package-files.mjs

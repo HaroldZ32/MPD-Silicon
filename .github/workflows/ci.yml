@@ -1,0 +1,62 @@
+name: CI — static gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: Static gates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup bun 1.4.3
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - name: Setup node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Typecheck
+        run: node scripts/typecheck.mjs --require
+      - name: Tests
+        run: bun test packages/
+      - name: Corpus
+        run: node scripts/verify-corpus.mjs
+      - name: Rows disjoint
+        run: node scripts/verify-rows-disjoint.mjs
+      - name: LSP assets
+        run: node scripts/build-lsp.mjs --check
+      - name: Packer self-test
+        run: node scripts/pack-silicon.mjs --self-test
+      - name: Workflow gate
+        run: node scripts/verify-github-workflows.mjs
+      - name: Pack check
+        run: node scripts/pack-silicon.mjs --check
+      - name: Pack
+        run: node scripts/pack-silicon.mjs
+      - name: Package guards self-test
+        run: node scripts/verify-package-files.mjs --self-test
+      - name: Package verify
+        run: node scripts/verify-package-files.mjs
+      - name: Upload staged package
+        uses: actions/upload-artifact@v4
+        with:
+          name: silicon-package
+          path: dist/silicon-package
+          retention-days: 7

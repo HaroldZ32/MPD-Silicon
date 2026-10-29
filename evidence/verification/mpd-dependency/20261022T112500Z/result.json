@@ -1,0 +1,175 @@
+{
+  "schema": "mpd-silicon/mpd-dependency-evidence/v1",
+  "recorded_at": "2026-10-22T03:12:23Z",
+  "directory_label": "20261022T112500Z (Asia/Shanghai wall clock; the directory keeps the local label)",
+  "feature": "Hard @mpd-dsh/mpd dependency, no fallback guard, externalized dists, size reduction, Gitee Go CI and the mpd-style git model",
+  "bundle": { "name": "@mpd-dsh/silicon", "version": "0.4.0" },
+  "environment": {
+    "dsh": "0.2.1-rc.2",
+    "mpd": "0.15.1 (npm; exact pin)",
+    "node": "v24.22.0 (local); Gitee Go pipeline pins 21.5.0",
+    "bun": "1.4.3",
+    "remote": "gitee.com/nop_chip/my-power-dsh-silicon (only remote; no GitHub workflows)"
+  },
+  "dependency": {
+    "package": "@mpd-dsh/mpd",
+    "pin": "0.15.1",
+    "local_adapter_removed": "packages/mpd-dsh-adapter-plugin (19 files, 646,769 B) deleted",
+    "imports": "values from @mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/dist/index.js; types from .../src/index.ts; dev-only ambient shim packages/mpd-verif-plugin/src/mpd-dsh-dist.d.ts",
+    "service": "mpdDsh, owned by mpd's mpd-dsh-adapter row; never registered here",
+    "consumers": "verif and bootstrap declare inject ['mpdDsh'] and read ctx.mpdDsh; no fallback adapter anywhere",
+    "guard": {
+      "package": "packages/mpd-silicon-guard-plugin (@mpd-dsh/silicon-guard)",
+      "row": "silicon-require-mpd",
+      "behavior": "inject-free; polls ctx.get('mpdDsh', true) every 100 ms up to 15000 ms; on timeout throws from a timer so the CLI fail-loud exits 1",
+      "message": "silicon requires @mpd-dsh/mpd: the mpdDsh service is absent; install @mpd-dsh/mpd@0.15.1 and enable the mpd-dsh-adapter row"
+    },
+    "rows": ["silicon-require-mpd", "silicon-bootstrap", "silicon-verif", "silicon-mcp-lsp"]
+  },
+  "code": {
+    "build": "bun build --external @mpd-dsh/mpd/*; the consumer dists keep the external specifier and contain zero `SERVICE_NAME = \"mpdDsh\"` definitions",
+    "packer": "PLUGIN_PKGS = verif/bootstrap/guard; staged manifest carries dependencies; scripts/verify-rows-disjoint.mjs is no longer shipped; externalDependencyViolations fails on a resurrected adapter row, inline SERVICE_NAME or missing import",
+    "tests": "212 tests / 21 files (211 pass / 1 declared skip); verif 162/16, bootstrap 30/2 (29 pass + 1 skip), guard 11/2, LSP 9/1"
+  },
+  "size": {
+    "packed_before": 919281,
+    "packed_after": 690185,
+    "packed_delta": -229096,
+    "packed_percent": "-24.9%",
+    "dist_before": 384819,
+    "dist_after": 170766,
+    "dist_percent": "-55.6%",
+    "verif_dist": 157612,
+    "bootstrap_dist": 11734,
+    "guard_dist": 1420,
+    "removed_adapter_dist": 77563,
+    "removed_adapter_package": 646769,
+    "packed_scripts": "empty (the previously shipped dev script, about 23 KB, is gone)",
+    "bun_lock": 57208,
+    "note": "intermediate packs measured 682,451 B (pre-docs) and 690,030 B (before the final CI/guard-size claims and the patch 'ten' fix); the final shipped bundle is 690,185 B, the value recorded in every doc"
+  },
+  "real_session": {
+    "live_calls": {
+      "artifact": "live-tools.jsonl",
+      "calls": 2,
+      "results": 2,
+      "profile": "qa-headless (dsh-base + dsh-headless + mpd 0.15.1 + silicon 0.4.0, repo symlink)",
+      "observed": "mpd_verif_toolchain show completed (both config paths, unresolved backends, configured paths); mpd_verif_librelane status completed (mode binary [config], version LibreLane 3.0.16, extract n/a)",
+      "stderr": "only mpd's preset-mpd pending (agentPresets) warning; no fatal"
+    },
+    "boots": {
+      "coexist": "exit 124 (alive to the 30 s timeout); log contains `[mpd-silicon-bootstrap] skill corpus served ... bundle 0.4.0`; no fatal",
+      "no_mmpd": "exit 1; both consumer rows `pending (waiting for service: mpdDsh)`; exact guard `dsh: fatal uncaught exception: Error: silicon requires @mpd-dsh/mpd: the mpdDsh service is absent; ...`",
+      "harness": "scripts/ci-boot.mjs --require (temp DSH_HOME/HOME/workspace, profile package.json + bun install + real dsh 0.2.1-rc.2); self-test 9/9",
+      "installer_bound": "dsh plugin add is unverified here (pnpm against a read-only $HOME); the profile package.json + bun path is the proven install path"
+    },
+    "ci_boot_logs": ["boot-coexist.log", "boot-no-mpd.log", "boot-output.log", "boot-result.json"]
+  },
+  "corpus_gate_repair": {
+    "defect": "scripts/verify-corpus.mjs called createProvider(root, ctx, invalidate) with 3 args while the provider now requires a 4th adapter; it threw TypeError, was caught, and the loadability check degraded to SKIP with exit 0",
+    "fix": "pass a 4th `{ onEvent: () => () => {} }` stub; checkLoadability has no skip path (missing source, missing bun or a probe throw are FAILs); self-test controls: healthy PASS, omitted-adapter FAIL, throwing onEvent FAIL, onEvent-less stub PASS",
+    "after": "main gate: PASS provider \"silicon-bundle\" loads all 3 skills (rtl-codestyle, rtl-ip-flow, rtl-verif); 10 checks passed / 3 skipped; self-test 10 negative / 4 healthy",
+    "note": "the corpus gate now hard-requires bun on PATH (missing bun is a FAIL); CI installs bun before the gate"
+  },
+  "gitee_ci": {
+    "platform": "Gitee Go; no .github directory",
+    "workflows": {
+      "ci": ".workflow/ci.yml — push+PR to master/dev; node 21.5.0; npm mirror; bun 1.4.3; frozen install; typecheck --require; bun test packages/; corpus; rows; LSP; packer self-test; Gitee workflow gate; packer --check; pack; artifact SILICON_PACKAGE (./dist/silicon-package); no publish",
+      "release": ".workflow/release.yml — push.tags.prefix [v]; GITEE_TAG == package.json version assertion before gates; same gates+pack; publish@general_artifacts (silicon-package); publish@release_artifacts (version '${GITEE_TAG}', autoIncrement false); no npm publish",
+      "boot": ".workflow/boot-e2e.yml — push to dev with paths packages/**, scripts/**, package.json, bun.lock, packages/mpd-bundle/cordis.patch.yml; installs bun + dsh 0.2.1-rc.2; ci-boot --require; artifact CI_BOOT_LOGS; manual UI fallback"
+    },
+    "workflow_gate": "node scripts/verify-gitee-workflows.mjs: 3 PASS; --self-test 11/11; PyYAML parses all 3",
+    "flow": "CONTRIBUTING.md + CONTRIBUTING.zh-CN.md; .gitee/PULL_REQUEST_TEMPLATE.md + .gitee/ISSUE_TEMPLATE.md; master release-only / dev integration / feature|fix / release-vX.Y.Z; one git writer; --no-ff; annotated tags",
+    "bounds": "Gitee Go live triggers, paths.include/tags.prefix evaluation, GITEE_TAG interpolation and artifact/release publishing were not exercised against a live runner; the YAML is structurally validated. npm 11 warned that postinstall scripts were skipped for dsh/bun; both binaries work and both boots pass, but native pty paths are untested."
+  },
+  "gates": [
+    { "command": "node scripts/typecheck.mjs --self-test", "exit": 0, "observed": "wrong-type control caught (TS2322); healthy control clean" },
+    { "command": "node scripts/typecheck.mjs --require", "exit": 0, "observed": "PASS — no diagnostics (local tsgo)" },
+    { "command": "bun test packages/", "exit": 0, "observed": "211 pass, 1 skip, 0 fail, 212 tests / 21 files" },
+    { "command": "node scripts/verify-corpus.mjs", "exit": 0, "observed": "PASS provider loads 3 skills; 10 checks passed / 3 skipped (the loadability check PASSES, not a skip)" },
+    { "command": "node scripts/verify-corpus.mjs --self-test", "exit": 0, "observed": "10 negative controls caught, 4 healthy controls clean" },
+    { "command": "node scripts/verify-rows-disjoint.mjs", "exit": 0, "observed": "4 silicon rows ∩ 35 mpd rows = ∅" },
+    { "command": "node scripts/verify-rows-disjoint.mjs --self-test", "exit": 0 },
+    { "command": "node scripts/build-lsp.mjs --check", "exit": 0, "observed": "dist/cli.js sha256 04b49f8c… (235271 bytes) matches BUILD.lock" },
+    { "command": "node scripts/pack-silicon.mjs --self-test", "exit": 0, "observed": "adapter-wiring/inline/missing-import/resurrected-dir controls PASS" },
+    { "command": "node scripts/pack-silicon.mjs --fix", "exit": 0, "observed": "50 files normalized" },
+    { "command": "node scripts/pack-silicon.mjs --check", "exit": 0 },
+    { "command": "node scripts/pack-silicon.mjs", "exit": 0, "observed": "packed 690,185 B; 4 rows; dependencies {@mpd-dsh/mpd: 0.15.1}; no adapter; empty scripts/" },
+    { "command": "node scripts/verify-gitee-workflows.mjs", "exit": 0, "observed": "3 workflow files PASS" },
+    { "command": "node scripts/verify-gitee-workflows.mjs --self-test", "exit": 0, "observed": "11/11 fixtures behaved" },
+    { "command": "python3 PyYAML parse .workflow/*.yml", "exit": 0, "observed": "PY YAML OK 3" },
+    { "command": "node scripts/ci-boot.mjs --self-test", "exit": 0, "observed": "9/9 controls" },
+    { "command": "node scripts/ci-boot.mjs --require", "exit": 0, "observed": "coexist 124 PASS; no-mpd 1 PASS; silicon 0.4.0" },
+    { "command": "git diff --check", "exit": 0, "observed": "no whitespace errors" }
+  ],
+  "hashes": {
+    "packages/mpd-verif-plugin/dist/index.js": "3c97cc3e9b6327330ce8c56cf5bb32c650a2cf7a545b5b8dfbc8176e3333f28a",
+    "packages/mpd-silicon-bootstrap-plugin/dist/index.js": "978a0325a438c469734e112d0beeb3adf313ed3f6e03b18dd7dddf46d673a78d",
+    "packages/mpd-silicon-guard-plugin/dist/index.js": "aa2f48afdcb49067c5fd90d6a968c321fc37b3d350c65a7a0c9144752717957b",
+    "packages/mpd-mcp-lsp/launch.mjs": "81cc3c4d3dab4510b70467c2e1280e82105ac98eeecbc82c4d84f7f661cfaa63",
+    "packages/mpd-mcp-lsp/dist/cli.js": "04b49f8c192d03b5a9cdf1e1f17861d8f4c6741792a4c455e78d0ca8e0a973a9",
+    "bun.lock": "3baca4a46ad8ed41dd2114ea917de63ed302ebcbab6f17bf015dc060941f708a",
+    "package.json": "87dac6e911b2c0c086b4a4d7d6ccb0c9f090d23762e0c516fe52aab92122ae14",
+    "README.md": "3a27cbc110dfbdd869c1cf852a6e1d61fc81400411f94b3072966247348c093a",
+    "AGENTS.md": "b5027481c8c8bcd9279a3b0cb74da3ad23e85b8b01c85cf7b1f3211cef32908b"
+  },
+  "docs": {
+    "version": "0.4.0",
+    "rows": "4 (guard/bootstrap/verif/mcp); no adapter row",
+    "tools": "10 mpd_verif_*",
+    "tests": "212/21",
+    "size": "919,281 -> 690,185 B (-24.9%); dists 384,819 -> 170,766 B (-55.6%)",
+    "pairs": "11 bilingual pairs, switch links present; the three declared exemptions only",
+    "stale_tokens": "siliconDsh | silicon-dsh-adapter | D1-D6 | self-contained | 376 | 375 | 363 -> no matches in README/AGENTS/docs/package READMEs",
+    "git_model": "AGENTS §4/§5 and both CONTRIBUTING files: master release-only, dev integration, feature|fix, release/vX.Y.Z, one writer, --no-ff, annotated tag",
+    "changelog": "CHANGELOG.md 0.4.0 (breaking/added/changed/removed + sizes + CI + tests), 0.3.0, 0.2.0",
+    "description": "package.json no longer says installable on its own; it names the @mpd-dsh/mpd@0.15.1 requirement",
+    "intentional_negative": "docs/dependency-map.md says the bundle is **not** installable on its own; that is the current contract, not a stale claim"
+  },
+  "git": {
+    "model": "master release-only; dev integration; feature|fix; release/vX.Y.Z; one git writer; --no-ff; annotated vX.Y.Z tag on master",
+    "state_at_recording": "uncommitted working tree: 11 untracked, 19 deleted (the adapter), 39 modified; .codegraph is now ignored by the root .gitignore",
+    "planned_commits": [
+      "1. feat(deps): require @mpd-dsh/mpd and remove the adapter port — on feature/mpd-hard-dependency: code, guard package (src/dist/test/package.json/bilingual READMEs), build/pack, tests, dists, the whole cordis.patch.yml (functional row + header comment), the corpus-gate fix, package.json dependency+description (version stays 0.3.0), bun.lock, LICENSE-NOTICES, scripts/verify-rows-disjoint.mjs (comment-only header)",
+      "2. feat(ci): add Gitee Go pipelines and the boot harness — same branch: .workflow/{ci,release,boot-e2e}.yml, scripts/ci-boot.mjs, scripts/verify-gitee-workflows.mjs, CONTRIBUTING pair, .gitee templates, .gitignore .codegraph rule",
+      "3. docs(release): prepare 0.4.0 — on release/v0.4.0 from dev: README pair, the four package READMEs (packages/mpd-verif-plugin/README{,.zh-CN}.md and packages/mpd-silicon-bootstrap-plugin/README{,.zh-CN}.md), AGENTS, docs/*, CHANGELOG, package.json version (0.4.0)",
+      "4. evidence(review): record the 0.4.0 dependency profile and review — on release/v0.4.0 after PASS: result.json, contract, review record"
+    ],
+    "staging": "explicit paths only; package.json is staged WHOLE TWICE: commit 1 at version 0.3.0 with dependencies+description, commit 3 at version 0.4.0 (only the version line differs) — no hunk/line-level staging is needed; .codegraph is ignored and never staged; the working-tree docs ride across the feature->dev merge and are committed on release",
+    "branches": "dev created at master before the feature branch; feature/mpd-hard-dependency from dev (commits 1-2); merge --no-ff into dev; release/v0.4.0 from dev (commits 3-4); merge --no-ff into master; annotated v0.4.0 on master",
+    "evidence_order": "commit 4 is last by design: the independent review and the full gate log are produced after the code/CI/docs commits; each earlier commit runs and logs its own gates before it is cut (the on-disk logs are the gate evidence; the final record closes the review)",
+    "release": "release/v0.4.0 from dev carries commits 3-4 (docs/version/CHANGELOG and evidence); merge --no-ff into master; annotated v0.4.0 tag on master. The artifact is the packed bundle built in CI; no npm publish (private package).",
+    "execution_order": "R1-R8 reviewed on the release candidate; branches/commits/tag are cut only after a PASS (contract addendum). The final graph and tag hash are reported with the release."
+  },
+  "review": {
+    "contract": "evidence/review/mpd-dependency-contract.md",
+    "first_verdict": "FAIL — F1-F14 (R9 plan scoping; contract/docs size; patch count; guard metric; CONTRIBUTING scope; commit format; evidence ordering)",
+    "second_verdict": "FAIL — F15-F18 (plan omitted the four package READMEs and the patch header; output.log/gate row still 690,030; staging wording; rows header in the docs commit)",
+    "verdict": "PASS",
+    "re_review": "PASS — third check after F15-F18; R1-R8 re-run green; final packed 690,185; no branch/tag before PASS",
+    "review_record": "evidence/review/mpd-dependency-review.md"
+  },
+  "artifacts": [
+    "result.json",
+    "output.log",
+    "hashes.txt",
+    "live-tools.jsonl",
+    "live-tools.err",
+    "boot-output.log",
+    "boot-coexist.log",
+    "boot-no-mpd.log",
+    "boot-result.json"
+  ],
+  "bounds": [
+    "Gitee Go live behavior is unproven: triggers (paths.include/tags.prefix), GITEE_TAG interpolation into the release version, and artifact/release publishing were structurally validated but not run on a Gitee runner.",
+    "dsh plugin add is unverified in this sandbox (pnpm against a read-only $HOME); the proven install path is the profile package.json + bun install. The real dsh binary was booted in temp profiles.",
+    "No HDL language-server live call under 0.4.0; the older adaptation measurement stands. The new live calls are mpd_verif_* only.",
+    "No real EDA/FUSE/AppImage/Verible; the 0.3.0 fake-covered bounds still apply. No full RTL-to-GDS flow.",
+    "The mpd pin is 0.15.1; an upgrade was not executed, only documented.",
+    "The guard deadline is 15 s (timeoutMs configurable); a genuinely slow host could raise it.",
+    "npm 11 warned that postinstall scripts were skipped for dsh/bun; both binaries work and both boots pass, but native pty paths were not exercised.",
+    "The mpd-internal preset-mpd pending (agentPresets) warning in the minimal profiles is unrelated and not a failure.",
+    "The corpus gate now hard-requires bun on PATH (missing bun is a FAIL); CI installs bun before running it.",
+    "The package is private and not published to npm; the release artifact is the packed bundle."
+  ]
+}

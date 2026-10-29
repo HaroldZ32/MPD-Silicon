@@ -1,0 +1,446 @@
+[
+  {
+    "id": "@mpd-dsh/silicon@0.7.0",
+    "name": "@mpd-dsh/silicon",
+    "version": "0.7.0",
+    "size": 331553,
+    "unpackedSize": 1091601,
+    "shasum": "3f48c2332849c4d370d67480690e5fcde43c6e27",
+    "integrity": "sha512-hvAJoG44In5KLcm4BE6rMFFxi8MFHbp6U8F334Fg+r/Hj+hRtGBumv+i5s9owe51c5vS7omBBH9ZyL4X58stEQ==",
+    "filename": "mpd-dsh-silicon-0.7.0.tgz",
+    "files": [
+      {
+        "path": "CHANGELOG.md",
+        "size": 11014,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE-NOTICES.md",
+        "size": 4763,
+        "mode": 420
+      },
+      {
+        "path": "LICENSE.md",
+        "size": 3973,
+        "mode": 420
+      },
+      {
+        "path": "README.md",
+        "size": 26356,
+        "mode": 420
+      },
+      {
+        "path": "README.zh-CN.md",
+        "size": 25533,
+        "mode": 420
+      },
+      {
+        "path": "docs/adder4.md",
+        "size": 3026,
+        "mode": 420
+      },
+      {
+        "path": "docs/cnt8.md",
+        "size": 3401,
+        "mode": 420
+      },
+      {
+        "path": "docs/dependency-map.md",
+        "size": 32170,
+        "mode": 420
+      },
+      {
+        "path": "docs/dependency-map.zh-CN.md",
+        "size": 31615,
+        "mode": 420
+      },
+      {
+        "path": "docs/docgen-guide.md",
+        "size": 16495,
+        "mode": 420
+      },
+      {
+        "path": "docs/docgen-guide.zh-CN.md",
+        "size": 15934,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-docs-port-record.md",
+        "size": 6921,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-docs-port-record.zh-CN.md",
+        "size": 6551,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-gap-assessment.md",
+        "size": 22402,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-gap-assessment.zh-CN.md",
+        "size": 22040,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-ip-flow-guide.md",
+        "size": 6790,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-ip-flow-guide.zh-CN.md",
+        "size": 6411,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-verif-guide.md",
+        "size": 15480,
+        "mode": 420
+      },
+      {
+        "path": "docs/rtl-verif-guide.zh-CN.md",
+        "size": 15523,
+        "mode": 420
+      },
+      {
+        "path": "docs/sync-policy.md",
+        "size": 16523,
+        "mode": 420
+      },
+      {
+        "path": "docs/toolchain.md",
+        "size": 20528,
+        "mode": 420
+      },
+      {
+        "path": "docs/toolchain.zh-CN.md",
+        "size": 19995,
+        "mode": 420
+      },
+      {
+        "path": "package.json",
+        "size": 2708,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-bundle/cordis.patch.yml",
+        "size": 9883,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-docgen-plugin/dist/index.js",
+        "size": 119911,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-docgen-plugin/README.md",
+        "size": 8080,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-docgen-plugin/README.zh-CN.md",
+        "size": 7920,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/dist/BUILD.lock",
+        "size": 713,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/dist/cli.js",
+        "size": 235271,
+        "mode": 493
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/launch.mjs",
+        "size": 8768,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/package.json",
+        "size": 334,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/README.md",
+        "size": 7571,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/README.zh-CN.md",
+        "size": 7248,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/references/systemverilog/README.md",
+        "size": 3093,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/references/verilog/README.md",
+        "size": 2783,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-mcp-lsp/templates/rtl-lsp-client.json",
+        "size": 263,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-bootstrap-plugin/dist/index.js",
+        "size": 11734,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-bootstrap-plugin/README.md",
+        "size": 3442,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-bootstrap-plugin/README.zh-CN.md",
+        "size": 3330,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-guard-plugin/dist/index.js",
+        "size": 1420,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-guard-plugin/README.md",
+        "size": 2814,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-silicon-guard-plugin/README.zh-CN.md",
+        "size": 2788,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-verif-plugin/dist/index.js",
+        "size": 160209,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-verif-plugin/README.md",
+        "size": 14097,
+        "mode": 420
+      },
+      {
+        "path": "packages/mpd-verif-plugin/README.zh-CN.md",
+        "size": 14195,
+        "mode": 420
+      },
+      {
+        "path": "scripts/verify-package-files.mjs",
+        "size": 14727,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/references/comment-conventions.md",
+        "size": 2464,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/references/style-checklist.md",
+        "size": 3373,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/SKILL.md",
+        "size": 5480,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/templates/fsm_3process.vinc",
+        "size": 3469,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/templates/module_skeleton.vinc",
+        "size": 7641,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-codestyle/templates/parameterized_counter.vinc",
+        "size": 1424,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/SKILL.md",
+        "size": 9934,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/defect-report.md",
+        "size": 1338,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/detail-design.md",
+        "size": 3744,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/dfmea.md",
+        "size": 1385,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/req-spec.md",
+        "size": 3076,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/user-manual.en.md",
+        "size": 10547,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/user-manual.md",
+        "size": 9461,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/validation-manual.md",
+        "size": 1225,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/validation-report.md",
+        "size": 1450,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-ip-flow/templates/verification-plan.md",
+        "size": 3308,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/examples/regression/README.md",
+        "size": 934,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/examples/regression/run_regression.sh",
+        "size": 1511,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/fixtures/adder4/Makefile",
+        "size": 1008,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/fixtures/adder4/tb_adder4.py",
+        "size": 2742,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/fixtures/cnt8/Makefile",
+        "size": 998,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/fixtures/cnt8/tb_cnt8.py",
+        "size": 3025,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/README.md",
+        "size": 724,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/SKILL.md",
+        "size": 2433,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/cocotb/bootstrap_venv.sh",
+        "size": 2448,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/cocotb/Makefile",
+        "size": 2472,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/cocotb/tb_template.py",
+        "size": 3712,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_agent.sv",
+        "size": 1759,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_driver.sv",
+        "size": 1438,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_env.sv",
+        "size": 1260,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_monitor.sv",
+        "size": 1386,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_pkg.sv",
+        "size": 1618,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_scoreboard.sv",
+        "size": 1805,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_sequence_item.sv",
+        "size": 1055,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/dut_sequence.sv",
+        "size": 1048,
+        "mode": 420
+      },
+      {
+        "path": "skills/rtl-verif/templates/uvm/README.md",
+        "size": 1881,
+        "mode": 420
+      },
+      {
+        "path": "tests/golden/fixtures/verilog/modules/adder4.v",
+        "size": 3045,
+        "mode": 420
+      },
+      {
+        "path": "tests/golden/fixtures/verilog/modules/cnt8.v",
+        "size": 2565,
+        "mode": 420
+      },
+      {
+        "path": "tests/golden/fixtures/verilog/README.md",
+        "size": 201,
+        "mode": 420
+      },
+      {
+        "path": "tests/golden/fixtures/verilog/tb/tb_adder4.v",
+        "size": 4468,
+        "mode": 420
+      }
+    ],
+    "entryCount": 86,
+    "bundled": []
+  }
+]

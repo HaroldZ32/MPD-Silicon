@@ -1,0 +1,87 @@
+{
+  "name": "@mpd-dsh/silicon",
+  "type": "module",
+  "version": "0.7.0",
+  "description": "RTL verification and IP-flow capability bundle for my-power-dsh (DeepSeek Harness): 10 mpd_verif_* tools (iverilog/verilator/vcs, cocotb, VCS-UVM, LibreLane), 4 mpd_docgen_* tools (spec-stage register Excel workbook + bilingual Word user manual), the RTL skill corpus and the HDL LSP; requires @mpd-dsh/mpd@0.15.1 (mpdDsh) at runtime and refuses to boot without it",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HaroldZ32/MPD-Silicon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HaroldZ32/MPD-Silicon/issues"
+  },
+  "homepage": "https://github.com/HaroldZ32/MPD-Silicon#readme",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "rtl",
+    "verilog",
+    "verification",
+    "cocotb",
+    "docgen"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "packageManager": "bun@1.4.3",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "packages/mpd-silicon-bootstrap-plugin/dist/index.js",
+  "exports": {
+    ".": "./packages/mpd-silicon-bootstrap-plugin/dist/index.js",
+    "./package.json": "./package.json",
+    "./packages/*": "./packages/*",
+    "./skills/*": "./skills/*"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./packages/mpd-bundle/cordis.patch.yml"
+    }
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "bun test packages",
+    "pack": "node scripts/pack-silicon.mjs",
+    "verify:pack": "node scripts/pack-silicon.mjs --self-test",
+    "verify:package": "node scripts/verify-package-files.mjs",
+    "verify:rows": "node scripts/verify-rows-disjoint.mjs",
+    "verify:rows:self": "node scripts/verify-rows-disjoint.mjs --self-test",
+    "fix:modes": "node scripts/pack-silicon.mjs --fix",
+    "typecheck": "node scripts/typecheck.mjs",
+    "typecheck:require": "node scripts/typecheck.mjs --require",
+    "build:lsp": "node scripts/build-lsp.mjs --build",
+    "verify:lsp": "node scripts/build-lsp.mjs --check",
+    "prepack": "node scripts/verify-package-files.mjs"
+  },
+  "files": [
+    "packages/mpd-verif-plugin/dist",
+    "packages/mpd-silicon-bootstrap-plugin/dist",
+    "packages/mpd-silicon-guard-plugin/dist",
+    "packages/mpd-docgen-plugin/dist",
+    "packages/mpd-bundle/cordis.patch.yml",
+    "packages/mpd-mcp-lsp/package.json",
+    "packages/mpd-mcp-lsp/launch.mjs",
+    "packages/mpd-mcp-lsp/dist",
+    "packages/mpd-mcp-lsp/references",
+    "packages/mpd-mcp-lsp/templates",
+    "skills",
+    "tests",
+    "docs",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE",
+    "LICENSE-NOTICES.md",
+    "CHANGELOG.md",
+    "scripts/verify-package-files.mjs"
+  ],
+  "devDependencies": {
+    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
+    "bun-types": "^1.4.0"
+  },
+  "dependencies": {
+    "@mpd-dsh/mpd": "0.15.1"
+  }
+}

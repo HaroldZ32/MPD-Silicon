@@ -1,0 +1,5 @@
+init 2025-06-18
+tools status,diagnostics,goto_definition,find_references,symbols,prepare_rename,rename,install_decision
+status text bytes 2918
+diagnostics text bytes 20
+No diagnostics found

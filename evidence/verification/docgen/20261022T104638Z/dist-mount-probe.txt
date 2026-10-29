@@ -1,0 +1,4 @@
+$ node --input-type=module -e "<import dist, apply against a recording adapter>"
+plugin name: mpd-docgen
+registered tools: 4 mpd_docgen_register_xlsx, mpd_docgen_user_manual_docx, mpd_docgen_run, mpd_docgen_verify
+EXIT=0

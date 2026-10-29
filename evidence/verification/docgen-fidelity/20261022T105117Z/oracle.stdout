@@ -1,0 +1,21 @@
+ORACLE SUMMARY
+xlsx counts ours={'register_rows': 31, 'field_rows': 130, 'reserved_rows': 23, 'fields_total': 130} ecap={'register_rows': 31, 'field_rows': 130, 'reserved_rows': 23, 'fields_total': 130}
+xlsx styles differing=0/1458
+docx tables ours=64 ecap=64; chapter tables 63/63; register pairs 31/31
+docx open warnings ours=[] ecap=[]
+comparisons: 25 agree, 13 differ, 38 total
+  UNEXPECTED docx package parts
+  UNEXPECTED docx register-chapter H2 title
+  UNEXPECTED docx H3 total (whole document)
+  UNEXPECTED docx register-chapter H3 count (incl. overview heading)
+  UNEXPECTED docx register-chapter paragraph count
+  UNEXPECTED docx body scope outside register chapter
+  EXPECTED   docx overview header cells (text/span)
+  EXPECTED   docx overview header cell width type
+  UNEXPECTED docx overview header bold
+  EXPECTED   docx overview body cell width type
+  UNEXPECTED docx overview cell shd representation (auto vs absent)
+  UNEXPECTED docx bit-table cell width (dxa twips)
+  EXPECTED   docx detail-table cell width type
+findings=9 verify_ok=True verify_failed=[] rerun_identical=True controls_fire=True
+VERDICT: PASS (content fidelity): 31/31 registers, 130/130 field rows, 23/23 RESERVED rows; 1458/1458 xlsx cells agree in value, and 1458/1458 agree in style; 31/31 bit tables and 31/31 detail tables agree in content; 63/63 register-chapter tables; 1-id xlsx and 1-id docx negative controls fire; verify ok=True (V1,V2,V3,V4,V5,V6,V7,V8,V9,V12). 9 non-expected structural divergence(s) are recorded as findings; none touches register, field, RESERVED, bit-table or detail-table semantics.

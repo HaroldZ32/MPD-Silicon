@@ -1,0 +1,16 @@
+{
+  "name": "@mpd-dsh/silicon-bootstrap",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Bundle provisioning BY REFERENCE for @mpd-dsh/silicon: serves <bundle>/skills (the RTL corpus) through a ctx.skills provider over the shared mpd-dsh adapter",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "bun test"
+  }
+}

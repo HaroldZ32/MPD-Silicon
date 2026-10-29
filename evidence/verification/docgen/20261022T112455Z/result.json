@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "kind": "repair-evidence",
+  "lane": "Senior Engineer (REPAIR)",
+  "branch": "feature/docgen-binding",
+  "state": "uncommitted working tree (do not commit, per the brief)",
+  "measuredAt": "2026-10-22T11:24:55Z",
+  "host": {
+    "bun": "1.4.3",
+    "dsh": "0.2.1-rc.2",
+    "node": ">=22.18 (repository prerequisite)",
+    "pathPrefix": "PATH=\"$PWD/.toolchain/bin:$PATH\" for every command"
+  },
+  "scope": [
+    "F1 blocker: mpd_docgen_verify V11 must compare register offsets and widths, not only identifiers",
+    "F2 major: README packed-bundle metric (du -sb dist/silicon-package) + docgen dist size + committed JS dist total",
+    "F4 major: docs/dependency-map.md + .zh-CN.md gate-table row 5 current measurement",
+    "F5 minor: skills/rtl-ip-flow/SKILL.md Stage 2 names xlsx + docxZh + docxEn explicitly",
+    "F3 minor: new evidence dir with result.json + output.log"
+  ],
+  "F1": {
+    "files": [
+      "packages/mpd-docgen-plugin/src/tool-verify.ts",
+      "packages/mpd-docgen-plugin/test/docgen-run.test.ts"
+    ],
+    "intent": "SkeletonChapter now carries the chapter offset and reset literals; checkV11 compares the numeric offset (offsetNumber after stripping whitespace, tolerant of 0x / NNNh forms) and the width derived from the reset digit count (8 hex digits -> 32, else 16, via parseResetHex). Field spans (range + name) remain ordered comparisons. Both new comparisons use the package's own registers.ts helpers and fail with the register name plus the differing field.",
+    "unchangedV11Behaviour": [
+      "V11 still only runs when BOTH docx arguments are supplied",
+      "a broken/unreadable docx still fails V11 with its reason and never throws",
+      "V7/V8/V9 keep their own contracts"
+    ],
+    "newFailureDetails": [
+      "register STATUS offset differs: zh 0x0C (12), en 0x10 (16)",
+      "register STATUS width differs: zh 16, en 32"
+    ],
+    "regressionTests": [
+      "mpd_docgen_verify > V11 rejects an EN docx whose offset disagrees with the ZH docx",
+      "mpd_docgen_verify > V11 rejects an EN docx whose reset value flips the register width",
+      "mpd_docgen_verify > V11 passes on the untampered zh/en pair, comparing offsets and widths"
+    ]
+  },
+  "proof": {
+    "method": "DIST-LEVEL: import packages/mpd-docgen-plugin/dist/index.js, apply against a recording adapter, call mpd_docgen_run on the fixtures, then mpd_docgen_verify with xlsx + docxZh + docxEn. Tampered artifacts are crafted from the EN docx only via the package's source zip writer.",
+    "cleanPair": {
+      "ok": true,
+      "failed": [],
+      "v11": "2 registers and 13 fields agree between zh and en (identifiers, offsets, widths, spans)"
+    },
+    "offsetTamper": {
+      "change": "EN chapter line Offset: 0x0C -> 0x10 and the overview offset cell 0x0C -> 0x10 (both, so V7 and V8 stay green)",
+      "ok": false,
+      "failed": ["V11"],
+      "v11": "register STATUS offset differs: zh 0x0C (12), en 0x10 (16)"
+    },
+    "widthTamper": {
+      "change": "EN reset value 0x0030 -> 0x00000030 (4 digits -> 8 digits, width 16 -> 32)",
+      "ok": false,
+      "failed": ["V11"],
+      "v11": "register STATUS width differs: zh 16, en 32"
+    },
+    "sourceTests": "bun test packages/mpd-docgen-plugin/test/docgen-run.test.ts -> exit 0, all 3 new cases pass"
+  },
+  "dist": {
+    "rebuilt": true,
+    "command": "bun run build",
+    "docgen": {
+      "path": "packages/mpd-docgen-plugin/dist/index.js",
+      "bytes": 119911,
+      "sha256": "80326a2ecb7e6818c1b8ca9e4f1e36d55329b320d4dd1889f086812b7408d762"
+    },
+    "committedJsDistTotal": {
+      "bytes": 293274,
+      "sum": "160,209 (verif) + 11,734 (bootstrap) + 1,420 (guard) + 119,911 (docgen)"
+    },
+    "externalization": {
+      "externalImport": true,
+      "inlinesAdapter": false,
+      "detail": "the bundle keeps the package-specifier import of @mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/dist/index.js"
+    },
+    "registeredTools": {
+      "count": 4,
+      "names": [
+        "mpd_docgen_register_xlsx",
+        "mpd_docgen_run",
+        "mpd_docgen_user_manual_docx",
+        "mpd_docgen_verify"
+      ],
+      "allObjectParametersAndRender": true,
+      "inject": ["tools", "mpdDsh"]
+    },
+    "otherRuntimeFiles": [
+      { "path": "packages/mpd-verif-plugin/dist/index.js", "bytes": 160209 },
+      { "path": "packages/mpd-silicon-bootstrap-plugin/dist/index.js", "bytes": 11734 },
+      { "path": "packages/mpd-silicon-guard-plugin/dist/index.js", "bytes": 1420 },
+      { "path": "packages/mpd-mcp-lsp/dist/cli.js", "bytes": 235271 }
+    ]
+  },
+  "packedBundle": {
+    "metric": "du -sb dist/silicon-package (whole-tree apparent size in bytes, directory entries included)",
+    "command": "du -sb dist/silicon-package",
+    "bytes": 843280,
+    "measuredAfterAllEdits": true,
+    "note": "the brief expected approximately 841,695 B; the measured value is 843,280 B and is the one recorded. The previous 708,966 B was a file-sum with the doc edits reverted — a different metric — so the two numbers are not comparable."
+  },
+  "docNumbers": [
+    { "file": "README.md", "line": 121, "old": "322 pass / 1 skip / 0 fail (323 tests, 25 files)", "new": "325 pass / 1 skip / 0 fail (326 tests, 25 files)" },
+    { "file": "README.md", "line": 127, "old": "mpd-docgen-plugin 103 / 4", "new": "mpd-docgen-plugin 106 / 4" },
+    { "file": "README.md", "line": 136, "old": "(323 tests: 322 pass / 1 declared skip, 25 files)", "new": "(326 tests: 325 pass / 1 declared skip, 25 files)" },
+    { "file": "README.md", "line": 170, "old": "118,777 B", "new": "119,911 B" },
+    { "file": "README.md", "line": 171, "old": "292,140 B; packed bundle 708,966 B (no metric stated)", "new": "293,274 B; packed bundle 843,280 B by du -sb dist/silicon-package" },
+    { "file": "README.md", "line": 347, "old": "323 tests / 25 files", "new": "326 tests / 25 files" },
+    { "file": "README.zh-CN.md", "line": 74, "old": "322 pass / 1 skip / 0 fail（323 个测试，25 个文件）", "new": "325 pass / 1 skip / 0 fail（326 个测试，25 个文件）" },
+    { "file": "README.zh-CN.md", "line": 78, "old": "mpd-docgen-plugin 103 / 4", "new": "mpd-docgen-plugin 106 / 4" },
+    { "file": "README.zh-CN.md", "line": 85, "old": "323 个测试：322 pass，25 个文件", "new": "326 个测试：325 pass，25 个文件" },
+    { "file": "README.zh-CN.md", "line": 113, "old": "118,777 B / 292,140 B / 708,966 B", "new": "119,911 B / 293,274 B / 843,280 B（du -sb dist/silicon-package）" },
+    { "file": "README.zh-CN.md", "line": 198, "old": "323 个测试 / 25 个文件", "new": "326 个测试 / 25 个文件" },
+    { "file": "AGENTS.md", "line": 122, "old": "323 tests across 25 files (322 pass / 1 declared skip)", "new": "326 tests across 25 files (325 pass / 1 declared skip)" },
+    { "file": "docs/dependency-map.md", "line": 106, "old": "row 5 ended at 2026-10-22: 220 tests / 21 files", "new": "kept as history, appended 2026-10-22: 326 tests / 25 files (325 pass / 1 skip), docgen 106 / 4" },
+    { "file": "docs/dependency-map.zh-CN.md", "line": 92, "old": "row 5 ended at 2026-10-22: 220 tests / 21 files", "new": "kept as history, appended 2026-10-22: 326 tests / 25 files (325 pass / 1 skip), docgen 106 / 4" }
+  ],
+  "F5": {
+    "file": "skills/rtl-ip-flow/SKILL.md",
+    "stage": "Stage 2 — 规格设计 IP01, GATE 规格评审",
+    "intent": "names the three verify arguments explicitly (xlsx, docxZh, docxEn) and states that V11 only runs with both docx, so xlsx alone is not a pass"
+  },
+  "consequentialChanges": [
+    {
+      "file": "evidence/verification/corpus-baseline.json",
+      "detail": "skills/rtl-ip-flow/SKILL.md sha256 09305838…c52a / 9671 B -> df083b50…46d6 / 9934 B, required by the F5 edit (the corpus gate compares against this committed baseline). Only that one entry changed."
+    }
+  ],
+  "gates": [
+    { "command": "node scripts/typecheck.mjs --require", "exit": 0, "observed": "PASS — no diagnostics (local tsgo)" },
+    { "command": "bun test packages/", "exit": 0, "observed": "326 tests across 25 files — 325 pass / 1 skip / 0 fail; 3335 expect() calls" },
+    { "command": "node scripts/verify-corpus.mjs --self-test", "exit": 0, "observed": "PASS — 10 checks, 3 skipped; self-test PASS (10 negative controls, 4 healthy controls)" },
+    { "command": "node scripts/verify-rows-disjoint.mjs --self-test", "exit": 0 },
+    { "command": "node scripts/build-lsp.mjs --check --self-test", "exit": 0 },
+    { "command": "node scripts/pack-silicon.mjs --self-test", "exit": 0 },
+    { "command": "node scripts/pack-silicon.mjs --fix", "exit": 0, "observed": "367 files, modes normalized" },
+    { "command": "node scripts/pack-silicon.mjs --check", "exit": 0 },
+    { "command": "node scripts/pack-silicon.mjs", "exit": 0, "observed": "package-set guard PASS: exactly 4 listed packages; dependency guard PASS" },
+    { "command": "node scripts/verify-gitee-workflows.mjs", "exit": 0, "observed": "PASS .workflow/ci.yml, .workflow/release.yml" },
+    { "command": "node scripts/ci-boot.mjs --mode both --require", "exit": 0, "observed": "coexist exit=124 PASS (log carries '[mpd-silicon-bootstrap] skill corpus served …'); no-mpd exit=1 PASS (guard throw)" }
+  ],
+  "measurements": {
+    "testSuite": { "tests": 326, "files": 25, "pass": 325, "skip": 1, "fail": 0 },
+    "docgenPackage": { "tests": 106, "files": 4 },
+    "otherSuites": "verif 169 / 16, bootstrap 30 / 2, guard 11 / 2, LSP 10 / 1",
+    "previousSuite": { "tests": 323, "pass": 322, "docgen": "103 / 4" }
+  },
+  "bounds": [
+    "The packed-bundle metric is du -sb (whole-tree apparent size, directory entries included); it is not comparable with the previous file-sum of 708,966 B.",
+    "The V11 width rule is digit-count based by contract: a 16-bit register whose reset is written with 8 hex digits is indistinguishable from a 32-bit one and is treated as 32.",
+    "The tampered artifacts in the dist probe are crafted with the package's SOURCE zip writer; the tool under test is dist/index.js. The source-level bun tests craft them the same way inside the suite.",
+    "docs/toolchain.md and docs/toolchain.zh-CN.md still state 220 tests / 21 files — a pre-existing stale statement outside the brief's F4 scope; left untouched and reported here.",
+    "Nothing was committed (per the brief).",
+    "Measurements are from this host (bun 1.4.3, dsh 0.2.1-rc.2); no other platform was measured."
+  ],
+  "evidencePath": "evidence/verification/docgen/20261022T112455Z/"
+}

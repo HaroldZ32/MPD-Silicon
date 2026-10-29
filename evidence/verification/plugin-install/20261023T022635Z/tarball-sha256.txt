@@ -1,0 +1,12 @@
+
+$ sha256sum /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+4dd00e881ac84390bfc10813ddbca1e1aa410ff99988de52d10d283d99d73335  /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+[exit=0]
+
+$ shasum -a 256 /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+4dd00e881ac84390bfc10813ddbca1e1aa410ff99988de52d10d283d99d73335  /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+[exit=0]
+
+$ shasum /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+3f48c2332849c4d370d67480690e5fcde43c6e27  /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz
+[exit=0]

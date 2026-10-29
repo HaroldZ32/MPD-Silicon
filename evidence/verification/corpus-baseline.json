@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "note": "Committed fidelity baseline for the RTL skill corpus. verify-corpus.mjs and the bootstrap skills test compare the shipped corpus against THIS manifest (relative path + sha256 per file), so the fidelity check stays meaningful after the source checkout is gone. The optional source cross-check (MPD_SOURCE_ROOT / MPD_SOURCE_SKILLS) is extra evidence only and is reported as a visible SKIP when absent.",
+  "generatedFrom": {
+    "project": "my-power-dsh",
+    "rev": "3d99718",
+    "path": "skills/<tree>",
+    "method": "git archive 3d99718 skills/<tree>"
+  },
+  "trees": {
+    "rtl-ip-flow": {
+      "SKILL.md": {
+        "sha256": "df083b5052bd4b254822bb0159c2404380c0b83d3dbc0642317136de357646d6",
+        "bytes": 9934
+      },
+      "templates/defect-report.md": {
+        "sha256": "30e933704a92af4f6159b0d07385083cb12bf25749bfcd1975b0ddce08f867cf",
+        "bytes": 1338
+      },
+      "templates/detail-design.md": {
+        "sha256": "f9cb237c82c4412ebad4f7d59707a4316991d3977d1f75ff7ca68ecc25f7da7e",
+        "bytes": 3744
+      },
+      "templates/dfmea.md": {
+        "sha256": "1b11566bd0ada418e25a09c665ca78854ca02c277116d11485374b1fb81619d0",
+        "bytes": 1385
+      },
+      "templates/req-spec.md": {
+        "sha256": "64dfb62b10f0d7b1c72223f0e01cf695879268d25bbb01291502bdb6a507c9fb",
+        "bytes": 3076
+      },
+      "templates/user-manual.en.md": {
+        "sha256": "0e42957a9a3444d476c8281305a2672c637cf0bdbc5864fb74a531ef3d944550",
+        "bytes": 10547
+      },
+      "templates/user-manual.md": {
+        "sha256": "adffa95e3e97f397415047207428cc1b9b2b1db5c067a62a2163ee058667ee00",
+        "bytes": 9461
+      },
+      "templates/validation-manual.md": {
+        "sha256": "456a995e6254ec0e96968387edd5441beb0ce078674eab92fe10c906e6ee27d8",
+        "bytes": 1225
+      },
+      "templates/validation-report.md": {
+        "sha256": "8583b6e8dca7bfc9bd05da5550bbca8a464ee1fe19067f924b4ca6d761372baa",
+        "bytes": 1450
+      },
+      "templates/verification-plan.md": {
+        "sha256": "75ca8c8267e516c7dc247ae8a3cca99df6da816c08bb7e3c53e2c082048b258b",
+        "bytes": 3308
+      }
+    },
+    "rtl-codestyle": {
+      "SKILL.md": {
+        "sha256": "2b7f820289e8ec0535309234f3711a8f970a5f7d453a6c6a5c06b89563b80ce1",
+        "bytes": 5480
+      },
+      "references/comment-conventions.md": {
+        "sha256": "1516c115e0ffab4075117773ee1d8532fcb691cd5006ed83717193615edd259f",
+        "bytes": 2464
+      },
+      "references/style-checklist.md": {
+        "sha256": "eaed996728465006decf35bce7f41f02ea2f98c98d1bca405572ea61e9081373",
+        "bytes": 3373
+      },
+      "templates/fsm_3process.vinc": {
+        "sha256": "a80500990bb5d813a95014c6379fd8a98aadbec6d133f9f78459a7161b7dbb2f",
+        "bytes": 3469
+      },
+      "templates/module_skeleton.vinc": {
+        "sha256": "74c01ceae58b11475489c025d2ed133a6bd36fea49957e168efce1c6b657eaa8",
+        "bytes": 7641
+      },
+      "templates/parameterized_counter.vinc": {
+        "sha256": "60a7c4768400e45ea8f39266f12cb43986203cce673167de44c5506f42d1ad78",
+        "bytes": 1424
+      }
+    },
+    "rtl-verif": {
+      "README.md": {
+        "sha256": "e8d653a1b64f55a2d77419b88a0264ceda52c32d367cebeb99da1abff5345a03",
+        "bytes": 724
+      },
+      "SKILL.md": {
+        "sha256": "77386609c83d91fdb5862dee1cffefe27663f2ee4270c4f8fd73fbc136a9c806",
+        "bytes": 2433
+      },
+      "examples/regression/README.md": {
+        "sha256": "d2b8b58d8852a4cee31b332569461c028a7f2ff75af7abee8e4e32eda68cf45c",
+        "bytes": 934
+      },
+      "examples/regression/run_regression.sh": {
+        "sha256": "c682c006095c93945b47cd3fe960710b226a6f66a6766f9356ebd9154f3813e3",
+        "bytes": 1511
+      },
+      "fixtures/adder4/Makefile": {
+        "sha256": "275d940bc289c0e702828a0540a8a6266f3f0987a60ee5317307a208db6ae22c",
+        "bytes": 1008
+      },
+      "fixtures/adder4/tb_adder4.py": {
+        "sha256": "88f764748b27e322e894d40c0f3c882ae8267628efefd044676acae47f7002be",
+        "bytes": 2742
+      },
+      "fixtures/cnt8/Makefile": {
+        "sha256": "bf99c191d5ed3d60dde8cf57dd1ace5370580fb9bf84844a5d56d7a86f0be009",
+        "bytes": 998
+      },
+      "fixtures/cnt8/tb_cnt8.py": {
+        "sha256": "01df04a6fad4fa1f7c9f85680abd95324ae79309c9b36fbfff87a2833959f7c6",
+        "bytes": 3025
+      },
+      "templates/cocotb/Makefile": {
+        "sha256": "433db9c473e1d6e0a02d364b39f82ecc46a46c01a32612c818c1b68e7944bd32",
+        "bytes": 2472
+      },
+      "templates/cocotb/bootstrap_venv.sh": {
+        "sha256": "e5a332d0945c7f7ecbd00d4a0b777c408cbd9589c688793bc618d333e854ad26",
+        "bytes": 2448
+      },
+      "templates/cocotb/tb_template.py": {
+        "sha256": "0168597fa3f44486aa91b0488a0220417f61f216bdfb69e154b336d266fe82a4",
+        "bytes": 3712
+      },
+      "templates/uvm/README.md": {
+        "sha256": "0eebb5e49ebef33788148f21ba04852b9812ec7bd72bae8db9be54512bc27d63",
+        "bytes": 1881
+      },
+      "templates/uvm/dut_agent.sv": {
+        "sha256": "1b1c85d186aff07534e36cc2d36cb7bb737775d6c3a9fa83c90a0cf7fc21a0ba",
+        "bytes": 1759
+      },
+      "templates/uvm/dut_driver.sv": {
+        "sha256": "c13a55e9025b7bb0d381090d196317499960dcbd9b05b2b998aec4ddf9a4d925",
+        "bytes": 1438
+      },
+      "templates/uvm/dut_env.sv": {
+        "sha256": "4e1237fe9ff971e740b7d76fd6ba82badb44de04b486d46732a5d90858d697dc",
+        "bytes": 1260
+      },
+      "templates/uvm/dut_monitor.sv": {
+        "sha256": "580f354a233480115f89ca564bab45f8489291f562fb1c60a93c1a748dfba66a",
+        "bytes": 1386
+      },
+      "templates/uvm/dut_pkg.sv": {
+        "sha256": "1895572fffb11d1f42a9e46d0d84aca14c658fe57822e60b03016d00cdcea3f3",
+        "bytes": 1618
+      },
+      "templates/uvm/dut_scoreboard.sv": {
+        "sha256": "957b392502d9a77f8dc30abd63ba167860a318c314eb8ea627352c021748bb64",
+        "bytes": 1805
+      },
+      "templates/uvm/dut_sequence.sv": {
+        "sha256": "1292ee5e08c21ae13bebd620dd9637101ba77ca83b78c85914276e304dbd8ec8",
+        "bytes": 1048
+      },
+      "templates/uvm/dut_sequence_item.sv": {
+        "sha256": "ecbace2f50a66051eef4f31ab3f6acfaf31eb6a9f7ede4d679d9cee62b0ba66b",
+        "bytes": 1055
+      }
+    }
+  }
+}

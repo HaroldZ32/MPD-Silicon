@@ -1,0 +1,15 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1" />
+    <testcase name="test_cnt8_reset" classname="tb_cnt8" file="tb_cnt8.py" lineno="28" time="0.0008618" sim_time_ns="20.0" />
+    <testcase name="test_cnt8_count_enable" classname="tb_cnt8" file="tb_cnt8.py" lineno="36" time="0.0008819" sim_time_ns="40.0">
+      <failure error_type="AssertionError" error_msg="q=0 after 1 cycles, want 1" />
+    </testcase>
+    <testcase name="test_cnt8_load" classname="tb_cnt8" file="tb_cnt8.py" lineno="53" time="0.0007059" sim_time_ns="39.99">
+      <failure error_type="AssertionError" error_msg="q=0 after load, want 0xAB" />
+    </testcase>
+    <testcase name="test_cnt8_wraparound" classname="tb_cnt8" file="tb_cnt8.py" lineno="65" time="0.0007054" sim_time_ns="49.99">
+      <failure error_type="AssertionError" error_msg="q=255 after wrap, want 0" />
+    </testcase>
+  </testsuite>
+</testsuites>

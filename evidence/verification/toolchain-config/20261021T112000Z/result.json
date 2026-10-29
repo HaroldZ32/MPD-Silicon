@@ -1,0 +1,149 @@
+{
+  "schema": "mpd-silicon/toolchain-config-evidence/v1",
+  "recorded_at": "2026-10-21T11:22:58Z",
+  "updated_at": "2026-10-21T11:42:00Z",
+  "feature": "Toolchain configuration file + conversational configuration tool + LibreLane runner",
+  "bundle": { "name": "@mpd-dsh/silicon", "version": "0.3.0" },
+  "environment": {
+    "dsh": "0.2.1-rc.2",
+    "mpd": "0.15.1",
+    "node": "v24.22.0",
+    "bun": "1.4.3",
+    "librelane": "3.0.16 (/home/haroldzhao/.local/bin/librelane, Python entry script)",
+    "fuse": "absent (/dev/fuse missing; AppImage auto-extract path applies)"
+  },
+  "config": {
+    "files": {
+      "user": "${MPD_SILICON_CONFIG} else ${DSH_HOME:-~/.dsh}/silicon.jsonc",
+      "project": "<workspace>/.mpd/silicon.jsonc"
+    },
+    "precedence": "project deep-merged over user (objects recurse, scalars/arrays replace, prototype keys skipped); missing files normal; malformed files reported, never fatal",
+    "schema": {
+      "ossCadSuite": { "home": "string?", "bin": "string?" },
+      "verible": { "home": "string?", "bin": "string?" },
+      "librelane": {
+        "appimage": "string?",
+        "mode": "auto | binary | appimage | devshell",
+        "appimageExtract": "boolean? (auto = /dev/fuse not accessible)",
+        "bin": "string?",
+        "home": "string?"
+      }
+    },
+    "write_semantics": "comment-preserving surgical edit (ported from @mpd-dsh/mpd mpd-config-plugin, SUL-1.0); atomic sibling temp + rename, mode 0644; refuse ambiguous/malformed documents; set/unset target the layer defining the key, else user; init writes a commented template and refuses an existing file unless force; scope user|workspace",
+    "comment_preservation": {
+      "before": "before.jsonc",
+      "before_sha256": "079c35b3377df60ae48aa06f01a8cc9804653c74a04f04c6b3fd89f55aa50111",
+      "after": "after-2.jsonc",
+      "after_sha256": "5a7a4a5245c622ca82857206e9ebfea1627504a690640d1fe1ac24118d7ef179",
+      "observed": "the two original comments survived the set; the set was idempotent on a second run ('unchanged'); the file shows ossCadSuite.bin and librelane.bin with both comments intact"
+    }
+  },
+  "tools": {
+    "count": 10,
+    "new": [
+      "mpd_verif_toolchain (actions show/set/unset/init/path/detect)",
+      "mpd_verif_librelane (actions status/run)"
+    ],
+    "backend_resolution": "env MPD_DSH_VERIF_* (still wins) -> config ossCadSuite.bin or home/bin -> PATH; mpd_verif_backends reports source config|env|path; VCS/urg untouched",
+    "lsp": "silicon-mcp-lsp row args [launch.mjs, cli.js, mcp]; launch.mjs reads the same two layers, prepends existing oss-cad-suite/verible bin dirs to PATH, spawns the pinned dist/cli.js with stdio inherit; dist/cli.js and BUILD.lock untouched (sha256 04b49f8c…, 235271 bytes)"
+  },
+  "real_session": {
+    "profile": "qa-headless (dsh-base + dsh-headless + @mpd-dsh/mpd 0.15.1 + @mpd-dsh/silicon), sandboxed HOME/DSH_HOME/workspace",
+    "credential": "read at runtime into the process environment; never written to a file or the evidence",
+    "calls": 4,
+    "results": 4,
+    "sequence": [
+      { "tool": "mpd_verif_toolchain", "input": { "action": "show" }, "status": "completed" },
+      { "tool": "mpd_verif_toolchain", "input": { "action": "set", "key": "librelane.bin", "value": "/home/haroldzhao/.local/bin/librelane", "scope": "workspace" }, "status": "completed", "observed": "written to the project file; a second run reported 'unchanged'" },
+      { "tool": "mpd_verif_toolchain", "input": { "action": "show", "key": "librelane.bin" }, "status": "completed", "observed": "[workspace] source" },
+      { "tool": "mpd_verif_librelane", "input": { "action": "status" }, "status": "completed", "observed": "mode binary [config]; path exists/executable; version LibreLane v3.0.16; extract n/a; command preview" }
+    ],
+    "additional_run": {
+      "tool": "mpd_verif_librelane",
+      "input": { "action": "run", "args": ["--version"] },
+      "status": "completed",
+      "observed": "binary ok (623 ms); log <workspace>/.mpd/librelane/2026-10-21T11-24-25-674Z-version.log; stdout tail LibreLane v3.0.16"
+    },
+    "schema_defect_found_and_fixed": {
+      "first_run_error": "tool \"mpd_verif_librelane\" returned invalid output: \"value.appimageExtract\" must be a boolean; \"value.version\" must be a string",
+      "root_cause": "the output schema declared appimageExtract/version non-null, but binary mode returns appimageExtract null (not applicable) and a skipped/failed version probe can be null; the harness's closed JSON-Schema subset rejects type arrays and anyOf",
+      "fix": "oneOf [<type>, null] for appimageExtract/version/source/exitCode; declared run fields cwd/signal/timedOut/spawnError; required ['ok']; a 9-test schema-level regression suite pins the harness subset and the pre-fix failure",
+      "verification": "the same real harness calls above completed after the fix; the schema suite and the installed harness validator report 0 violations for status/run/missing/refusal"
+    },
+    "f3_edge_reproved": {
+      "input": "project config with ossCadSuite followed by a same-line trailing comment, then set librelane.bin scope workspace",
+      "calls": 3,
+      "results": 3,
+      "observed": "set written; show key [workspace]; status mode binary, version LibreLane v3.0.16",
+      "file_after": "after-f3.jsonc",
+      "layout": "the closing brace keeps its comment (`}, // trailing note stays with ossCadSuite`) and the new librelane member is inserted after it; both comments and the original member intact"
+    }
+  },
+  "lsp_launcher": {
+    "row_args": "[launch.mjs, cli.js, mcp]",
+    "handshake": "through launch.mjs + the real pinned cli.js: protocolVersion 2025-06-18, 8 tools (status, diagnostics, goto_definition, find_references, symbols, prepare_rename, rename, install_decision)",
+    "path_probe": "a fake cli through launch.mjs with a user config verible.bin=<dir> printed PATH with that dir FIRST and argv forwarded; launcher-path-probe.log",
+    "boot": "coexist profile (dsh-base + mpd 0.15.1 + silicon) exit 124 (alive until timeout); fatal signatures 0; bundle 0.3.0"
+  },
+  "gates": [
+    { "command": "node scripts/typecheck.mjs --self-test", "exit": 0, "observed": "wrong-type control caught (TS2322); healthy control clean" },
+    { "command": "node scripts/typecheck.mjs --require", "exit": 0, "observed": "PASS — no diagnostics (local tsgo)" },
+    { "command": "bun test packages/", "exit": 0, "observed": "375 pass, 1 skip, 0 fail, 376 tests / 31 files" },
+    { "command": "node scripts/verify-corpus.mjs", "exit": 0, "observed": "10 pass, 3 skip" },
+    { "command": "node scripts/verify-rows-disjoint.mjs", "exit": 0, "observed": "silicon 4 ids / 1 layer; mpd 35 ids / 2 layers; intersection empty" },
+    { "command": "node scripts/verify-rows-disjoint.mjs --self-test", "exit": 0 },
+    { "command": "node scripts/build-lsp.mjs --check", "exit": 0, "observed": "dist/cli.js sha256 04b49f8c… (235271 bytes) matches BUILD.lock" },
+    { "command": "node scripts/pack-silicon.mjs --self-test", "exit": 0 },
+    { "command": "node scripts/pack-silicon.mjs --fix", "exit": 0, "observed": "222 files normalized on the post-repair pass (chmod 644: 2, forced 755: 5, already 644: 215); the earlier pass normalized 211" },
+    { "command": "node scripts/pack-silicon.mjs --check", "exit": 0 }
+  ],
+  "hashes": {
+    "packages/mpd-verif-plugin/dist/index.js": "ba75bc52753fc5dee7aa976d78ee6ff00f8cd4eeb6ec3eee74e4328b07385db3",
+    "packages/mpd-mcp-lsp/launch.mjs": "81cc3c4d3dab4510b70467c2e1280e82105ac98eeecbc82c4d84f7f661cfaa63",
+    "packages/mpd-mcp-lsp/dist/cli.js": "04b49f8c192d03b5a9cdf1e1f17861d8f4c6741792a4c455e78d0ca8e0a973a9",
+    "evidence/before-f3.jsonc": "87d2a922e084b423d4e25d89bb3ac59f043d57a694861d7f05a584e2846d18f8",
+    "evidence/after-f3.jsonc": "8ddd0175f3c9dd8ad35f8c6ec329d163466436feae2102450674cfaeb36bad5b",
+    "package.json": "0fa52262e0d00ba444c24646205400199f317b24a9e3f62d63055c5ebbd6f98d"
+  },
+  "bounds": [
+    "No real LibreLane AppImage and no /dev/fuse on this machine. The appimage and devshell modes are covered by unit tests with faithful fakes (a fake .AppImage that implements --run via sh -c, a fake librelane on PATH), and the auto-extract decision by an injected hasFuse; they are not exercised against a real AppImage.",
+    "The real LibreLane measured is 3.0.16 as a Python entry script. The sandboxed HOME hides the user site-packages, so the evidence runs set PYTHONPATH to the real site-packages for the version/run probes; a normal session with the user's HOME does not need that. This is an isolation artifact, not a tool requirement.",
+    "No verible/slang-server is installed: the launcher PATH priming is proven with a fake bin dir and the launcher test; the real MCP handshake proves traffic, not a language-server start.",
+    "LibreLane run timeout kills the direct child only (no process-group kill for the devshell's inner shell); the cwd guard is lexical (does not resolve symlinks); no full RTL-to-GDS flow was run.",
+    "The first real harness call exposed an output-schema defect, fixed before this record; the record keeps the failing error so the defect and its repair are auditable.",
+    "The surgical editor keeps a trailing comment attached on object-member insert (F3 fix, 4 tests, re-proved through the real harness); the analogous array-element insert is unreachable through the tool's schema (string/boolean/enum leaves) and remains a documented bound.",
+    "The evidence was produced in an isolated DSH_HOME/HOME/workspace with a runtime-read model credential; no credential was written to any file or to this record."
+  ],
+  "review": {
+    "contract": "evidence/review/toolchain-config-contract.md",
+    "first_verdict": "FAIL",
+    "findings": [
+      "F1 high: the packer check raced the evidence writes (0600 result.json/contract); post-write --fix + --check are green (see output.log).",
+      "F2 high: five docs carried the pre-schema-suite counts (363/30); updated to 376 tests / 31 files (375 pass / 1 skip; verif-plugin 162).",
+      "F3 low: a trailing comment on the preceding sibling was reattached on insert; fixed in jsonc-edit.ts (trailingCommentEnd) with 4 regression tests and re-proved through the real harness (after-f3.jsonc).",
+      "N1 nit: the stale generated dist/silicon-package 0.2.0 stage was removed."
+    ],
+    "re_review": "PASS (reviewer second pass; risk Low)",
+    "re_review_findings_repaired": [
+      "E1 nit: result.json now carries updated_at and the final --fix count (222 files).",
+      "C1 nit: the contract's Procedure step 2 and R9 row now state 376/31 (375 pass / 1 skip), consistent with the addendum."
+    ]
+  },
+  "artifacts": [
+    "output.log",
+    "before.jsonc",
+    "after-2.jsonc",
+    "before-f3.jsonc",
+    "after-f3.jsonc",
+    "toolchain-tool-proof-3.jsonl (F3 edge: set + show + status; the trailing comment stayed attached)",
+    "toolchain-tool-proof.jsonl (first harness run: set/show succeed; status rejected by the output schema — retained as the defect record)",
+    "toolchain-tool-proof-2.jsonl (post-fix 4-call conversational flow: all completed)",
+    "librelane-run-proof.jsonl (real run --version through the harness)",
+    "launcher-path-probe.log",
+    "mcp-handshake-through-launcher.log",
+    "boot-coexist.log",
+    "toolchain-tool-proof.err",
+    "toolchain-tool-proof-2.err",
+    "librelane-run-proof.err"
+  ]
+}

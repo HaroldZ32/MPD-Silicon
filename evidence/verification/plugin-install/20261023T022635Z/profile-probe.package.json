@@ -1,0 +1,19 @@
+{
+  "name": "dsh-profile-probe",
+  "private": true,
+  "dependencies": {
+    "@deepseek-harness-tui/dsh-tui": "0.16.1",
+    "@mpd-dsh/mpd": "0.15.1",
+    "@mpd-dsh/silicon": "file:/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-harness-tui/dsh-tui",
+        "@mpd-dsh/mpd",
+        "@mpd-dsh/silicon"
+      ]
+    }
+  }
+}

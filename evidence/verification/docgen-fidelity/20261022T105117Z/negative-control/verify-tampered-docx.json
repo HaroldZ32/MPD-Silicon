@@ -1,0 +1,65 @@
+{
+  "workspaceRoot": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+  "args": {
+    "xlsx": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_regExcel_full.xlsx",
+    "docxZh": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/negative-control/tampered-no-settings.docx"
+  },
+  "result": {
+    "ok": false,
+    "checks": [
+      {
+        "id": "V1",
+        "ok": true,
+        "detail": "sheet \"Sheet1\" with all 9 header texts"
+      },
+      {
+        "id": "V2",
+        "ok": true,
+        "detail": "1 header + 31 Reg + 130 field rows, 9 columns each"
+      },
+      {
+        "id": "V3",
+        "ok": true,
+        "detail": "31 Reg rows bold + FFFFFF00 + Mixed"
+      },
+      {
+        "id": "V4",
+        "ok": true,
+        "detail": "130 field rows descending and covering [31:0], 23 RESERVED rows canonical"
+      },
+      {
+        "id": "V5",
+        "ok": true,
+        "detail": "9 widths, 43.2 header height, thin borders on every cell, size 11 + Calibri/宋体(134)"
+      },
+      {
+        "id": "V6",
+        "ok": false,
+        "detail": "missing parts: word/settings.xml"
+      },
+      {
+        "id": "V7",
+        "ok": true,
+        "detail": "zh-CN: 31 H3 register chapters below the H2, each with offset/reset lines"
+      },
+      {
+        "id": "V8",
+        "ok": true,
+        "detail": "zh-CN: 31 registers × 2 rows (902/278), 23 gray RESERVED bands, header + gridSpan checked"
+      },
+      {
+        "id": "V9",
+        "ok": true,
+        "detail": "zh-CN: 31 registers: 6×16 bit tables (trHeight 420) and 830/1659/5807 detail tables, 130 fields"
+      },
+      {
+        "id": "V12",
+        "ok": true,
+        "detail": "no template placeholder in 2 artifact(s)"
+      }
+    ],
+    "failed": [
+      "V6"
+    ]
+  }
+}

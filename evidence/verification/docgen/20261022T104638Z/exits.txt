@@ -1,0 +1,15 @@
+bun run build|0
+node scripts/typecheck.mjs --require|0
+bun test packages/|0
+node scripts/verify-corpus.mjs --self-test|0
+node scripts/verify-rows-disjoint.mjs --self-test|0
+node scripts/build-lsp.mjs --check --self-test|0
+node scripts/pack-silicon.mjs --self-test|0
+node scripts/pack-silicon.mjs --fix|0
+node scripts/pack-silicon.mjs --check|0
+node scripts/pack-silicon.mjs|0
+node scripts/verify-gitee-workflows.mjs|0
+node scripts/ci-boot.mjs --mode both --require|0
+node scripts/pack-silicon.mjs --fix|0
+node scripts/pack-silicon.mjs --check|0
+node scripts/pack-silicon.mjs --check (final, after doc edit)|0

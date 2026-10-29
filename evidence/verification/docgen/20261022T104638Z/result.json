@@ -1,0 +1,104 @@
+{
+  "lane": "T5-integration",
+  "plan": ".mpd/plans/docgen-binding.md (rev 2)",
+  "timestamp": "2026-10-22T10:46:38Z",
+  "generatedAt": "2026-10-22T10:52:00Z",
+  "environment": {
+    "repo": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+    "bun": "1.4.3 (.toolchain/bin/bun)",
+    "dsh": "0.2.1-rc.2",
+    "mpd": "0.15.1",
+    "node": "from PATH (typecheck/ci-boot wrappers)"
+  },
+  "commands": [
+    { "cmd": "bun run build", "exit": 0, "summary": "4 dists built; [build] ok includes mpd-docgen-plugin -> packages/mpd-docgen-plugin/dist/index.js (118.78 KB, 15 modules)" },
+    { "cmd": "node scripts/typecheck.mjs --require", "exit": 0, "summary": "[typecheck] PASS — no diagnostics (local tsgo)" },
+    { "cmd": "bun test packages/", "exit": 0, "summary": "322 pass, 1 skip, 0 fail; Ran 323 tests across 25 files (3321 expect() calls)" },
+    { "cmd": "node scripts/verify-corpus.mjs --self-test", "exit": 0, "summary": "PASS — 10 check(s) passed, 3 skipped; files: 36; self-test PASS (10 negative controls caught)" },
+    { "cmd": "node scripts/verify-rows-disjoint.mjs --self-test", "exit": 0, "summary": "self-test PASSED (6 parser + 2 gate + 6 discovery fixtures); real run: silicon total 5 row ids — insert 5, id-target 0; mpd total 35; PASS silicon ∩ mpd = ∅" },
+    { "cmd": "node scripts/build-lsp.mjs --check --self-test", "exit": 0, "summary": "check PASS: dist/cli.js sha256 04b49f8c… (235271 bytes) matches BUILD.lock, both HDL entries, 2 refs + 4 fixtures" },
+    { "cmd": "node scripts/pack-silicon.mjs --self-test", "exit": 0, "summary": "self-test PASSED: package-set guards falsifiable (unlisted package, inlined adapter, source leak, missing dist, mode normalization controls)" },
+    { "cmd": "node scripts/pack-silicon.mjs --fix", "exit": 0, "summary": "fix: 335 files (chmod 644: 0, forced 755: 7, already 644: 328); check PASS" },
+    { "cmd": "node scripts/pack-silicon.mjs --check", "exit": 0, "summary": "check PASS: every committed file is readable by a non-root consumer" },
+    { "cmd": "node scripts/pack-silicon.mjs", "exit": 0, "summary": "package set guard PASS: exactly 4 listed package(s) incl. mpd-docgen-plugin; dependency guard PASS (docgen imports @mpd-dsh/mpd externally); staged -> dist/silicon-package" },
+    { "cmd": "node scripts/verify-gitee-workflows.mjs", "exit": 0, "summary": "PASS .workflow/boot-e2e.yml, PASS .workflow/ci.yml, PASS .workflow/release.yml (3 workflow files)" },
+    { "cmd": "node scripts/ci-boot.mjs --mode both --require", "exit": 0, "summary": "coexist exit=124 PASS (serve line present); no-mpd exit=1 PASS (guard line present, silicon-docgen listed pending on mpdDsh)" },
+    { "cmd": "node scripts/pack-silicon.mjs --fix", "exit": 0, "summary": "FINAL mode repair after the evidence files were written (they landed 600/664): fix: 348 files (chmod 644: 13, forced 755: 7, already 644: 328); check PASS" },
+    { "cmd": "node scripts/pack-silicon.mjs --check", "exit": 0, "summary": "FINAL check PASS: every committed file is readable by a non-root consumer (this is the tree the captain commits)" }
+  ],
+  "files": {
+    "packages/mpd-docgen-plugin/dist/index.js": {
+      "bytes": 118777,
+      "sha256": "2c417a991c09dd7cf16a5d529aa71a7888b6b09dd23c0cd15ffaba7d0a4555cd",
+      "mode": "644",
+      "external_dependency": "@mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/ present (2 occurrences); no inlined SERVICE_NAME = \"mpdDsh\" (0); runtime imports only node:crypto, node:fs, node:path, node:zlib"
+    },
+    "changed": [
+      {
+        "path": "packages/mpd-bundle/cordis.patch.yml",
+        "intent": "ADDITIVE row insert `- id: silicon-docgen` -> '@mpd-dsh/silicon/packages/mpd-docgen-plugin/dist/index.js', with comment; zero id-targets. Group header dist count three -> four."
+      },
+      {
+        "path": "scripts/build.mjs",
+        "intent": "PLUGINS += mpd-docgen-plugin (fourth built dist)."
+      },
+      {
+        "path": "scripts/pack-silicon.mjs",
+        "intent": "PLUGIN_PKGS += mpd-docgen-plugin (copied) and CONSUMER_PKGS += mpd-docgen-plugin (must keep @mpd-dsh/mpd external). ALLOWED_SOURCE_PACKAGE_DIRS left derived."
+      },
+      {
+        "path": "packages/mpd-docgen-plugin/src/types.ts",
+        "intent": "DocgenErrorCode: add DOCGEN_E_INTERNAL (used by 4 tool files, previously missing from the union); remove DOCGEN_E_OVERVIEW_MISMATCH (grep proves no reference beyond its declaration: pre-change grep matched only types.ts:136; after removal grep -rn across packages/, docs/, skills/ matches nothing)."
+      },
+      {
+        "path": "packages/mpd-docgen-plugin/src/registers.ts",
+        "intent": "Refresh stale comment citation user-manual.md:145-173 -> user-manual.md:156-180 (the current 25-code access block; first line `rw  read/write` at 156, last `wo1 Write Only, Once` at 180). No behaviour change."
+      },
+      {
+        "path": "docs/rtl-ip-flow-guide.md",
+        "intent": "Stage-2 paragraph: add the register Excel + bilingual Word manual emission via mpd_docgen_* with a link to docgen-guide.md. 'All eight document templates' -> 'All nine'; add templates/user-manual.en.md bullet."
+      },
+      {
+        "path": "docs/rtl-ip-flow-guide.zh-CN.md",
+        "intent": "Same two changes in Chinese (九份; user-manual.en.md bullet; stage-2 line linking docgen-guide.zh-CN.md)."
+      },
+      {
+        "path": "docs/dependency-map.md",
+        "intent": "A3 verification and ledger row 2: silicon 4 -> 5 row ids (ledger row carries the measured 5-id output). A7 '4 additive rows' -> 5. S5 status -> 'landed; row `silicon-docgen` enabled'."
+      },
+      {
+        "path": "docs/dependency-map.zh-CN.md",
+        "intent": "Same four updates in Chinese."
+      },
+      {
+        "path": "AGENTS.md",
+        "intent": "§1 inventory: mpd-docgen + 4 mpd_docgen_* tools (mpd_verif_* stays 10). §3 layout: packages/mpd-docgen-plugin/. §4 test row: measured 323 tests / 25 files (322 pass, 1 skip); row-id paragraph 4 -> 5 silicon ids. §9: new docgen-bounds bullet (zero third-party deps, direct OOXML, no TOC/cover/header-footer, register chapter last, hard zh/en refusal, no PDF) and 'reconstructs all 35 files' -> 36."
+      },
+      {
+        "path": "evidence/verification/docgen/20261022T104638Z/",
+        "intent": "New evidence dir: output.log (all 12 commands, exit markers), result.json (this file), ci-boot-console.log, ci-boot-logs/*, dist-facts.txt, grep-error-codes.txt, source-snippets.txt, dist-mount-probe.txt, changed-files.txt."
+      }
+    ]
+  },
+  "ciBoot": {
+    "command": "node scripts/ci-boot.mjs --mode both --require",
+    "exit": 0,
+    "coexist": { "exitCode": 124, "ok": true, "evidence": "ci-boot-logs/coexist.log: '[mpd-silicon-bootstrap] skill corpus served … provider silicon-bundle, bundle 0.5.0'; one expected pending mpd preset" },
+    "noMpd": { "exitCode": 1, "ok": true, "evidence": "ci-boot-logs/no-mpd.log: 'silicon-docgen (@mpd-dsh/silicon/packages/mpd-docgen-plugin/dist/index.js): pending (waiting for service: mpdDsh)' then 'dsh: fatal uncaught exception: Error: silicon requires @mpd-dsh/mpd …'" }
+  },
+  "mountProbe": {
+    "what": "imported the built dist and applied it against a recording adapter",
+    "result": "plugin name mpd-docgen; registered 4 tools: mpd_docgen_register_xlsx, mpd_docgen_user_manual_docx, mpd_docgen_run, mpd_docgen_verify",
+    "evidence": "dist-mount-probe.txt"
+  },
+  "payloadCheck": {
+    "stagedPatch": "dist/silicon-package/cordis.patch.yml carries 5 `- id: silicon-` rows and the silicon-docgen row at line 86",
+    "stagedDist": "dist/silicon-package/packages/mpd-docgen-plugin/dist/index.js present, 118777 bytes"
+  },
+  "verdict": "PASS",
+  "limits": [
+    "No full interactive dsh session was driven to call an mpd_docgen_* tool end to end; tool registration is proven by applying the built dist against a recording adapter (dist-mount-probe.txt), and the row's resolution by the ci-boot no-mpd log naming its dist path.",
+    "The eCap structural-fidelity oracle was not re-run in this lane (the package's 103 tests cover the asserted structure); this lane's evidence is wiring + build + docs.",
+    "verify-corpus's live-source cross-check is a visible SKIP (3 trees absent from the source checkout), as expected after the RTL strip."
+  ]
+}

@@ -1,0 +1,11 @@
+ .workflow/ci.yml             |   2 +
+ .workflow/release.yml        |   2 +
+ AGENTS.md                    |  30 +++++++++--
+ CHANGELOG.md                 |  36 ++++++++++++-
+ README.md                    | 120 ++++++++++++++++++++++++++++++++++++-------
+ README.zh-CN.md              |  89 +++++++++++++++++++++++++++++---
+ docs/dependency-map.md       |  13 ++++-
+ docs/dependency-map.zh-CN.md |  14 +++--
+ package.json                 |  49 ++++++++++++++++--
+ scripts/pack-silicon.mjs     |  32 +++++++++++-
+ 10 files changed, 347 insertions(+), 40 deletions(-)

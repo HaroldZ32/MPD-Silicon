@@ -1,0 +1,182 @@
+{
+  "tool": "plugin-install-proof",
+  "generatedAt": "2026-10-23T02:37:30.853Z",
+  "evidenceDir": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/plugin-install/20261023T022635Z",
+  "repo": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+  "branch": "feature/dsh-plugin-packaging",
+  "baseCommit": "bbda0c88d17aad60ab194909f2b5f85c41aabc47",
+  "siliconVersion": "0.7.0",
+  "versions": {
+    "dsh": "0.2.1-rc.2",
+    "node": "v24.22.0",
+    "pnpm": "9.15.9",
+    "npm": "11.19.1",
+    "bun": "1.4.3"
+  },
+  "tree": {
+    "head": "bbda0c88d17aad60ab194909f2b5f85c41aabc47",
+    "branch": "feature/dsh-plugin-packaging",
+    "diffStat": ".workflow/ci.yml             |   2 +\n .workflow/release.yml        |   2 +\n AGENTS.md                    |  30 +++++++++--\n CHANGELOG.md                 |  36 ++++++++++++-\n README.md                    | 120 ++++++++++++++++++++++++++++++++++++-------\n README.zh-CN.md              |  89 +++++++++++++++++++++++++++++---\n docs/dependency-map.md       |  13 ++++-\n docs/dependency-map.zh-CN.md |  14 +++--\n package.json                 |  49 ++++++++++++++++--\n scripts/pack-silicon.mjs     |  32 +++++++++++-\n 10 files changed, 347 insertions(+), 40 deletions(-)",
+    "statusPorcelain": [
+      "M .workflow/ci.yml",
+      " M .workflow/release.yml",
+      " M AGENTS.md",
+      " M CHANGELOG.md",
+      " M README.md",
+      " M README.zh-CN.md",
+      " M docs/dependency-map.md",
+      " M docs/dependency-map.zh-CN.md",
+      " M package.json",
+      " M scripts/pack-silicon.mjs",
+      "?? evidence/verification/plugin-install/",
+      "?? scripts/verify-package-files.mjs"
+    ]
+  },
+  "tarball": {
+    "filename": "mpd-dsh-silicon-0.7.0.tgz",
+    "bytes": 331553,
+    "sha256": "4dd00e881ac84390bfc10813ddbca1e1aa410ff99988de52d10d283d99d73335",
+    "npmShasum": "3f48c2332849c4d370d67480690e5fcde43c6e27",
+    "integrity": "sha512-hvAJoG44In5KLcm4BE6rMFFxi8MFHbp6U8F334Fg+r/Hj+hRtGBumv+i5s9owe51c5vS7omBBH9ZyL4X58stEQ==",
+    "fileCount": 86,
+    "unpackedBytes": 1091601,
+    "prepackGuard": "verify-package-files: PASS (every required file and tree present and covered, 2 patch insert row(s), allowlist excludes src/test/evidence/state)",
+    "npmPackExitCode": 0,
+    "kept": false,
+    "reproducibleWith": "npm pack --pack-destination <tmp> from the tree recorded above (HEAD + git diff --stat); the tarball is deleted with the isolated sandbox",
+    "filesList": "tarball-files.txt",
+    "rawStream": "npm-pack.raw.log",
+    "containsMpdLspManifest": true,
+    "containsGuardScript": true,
+    "containsDocs": true,
+    "containsTestsFixtures": true,
+    "excludedSourceSurface": []
+  },
+  "packageFilesAllowlist": [
+    "packages/mpd-verif-plugin/dist",
+    "packages/mpd-silicon-bootstrap-plugin/dist",
+    "packages/mpd-silicon-guard-plugin/dist",
+    "packages/mpd-docgen-plugin/dist",
+    "packages/mpd-bundle/cordis.patch.yml",
+    "packages/mpd-mcp-lsp/package.json",
+    "packages/mpd-mcp-lsp/launch.mjs",
+    "packages/mpd-mcp-lsp/dist",
+    "packages/mpd-mcp-lsp/references",
+    "packages/mpd-mcp-lsp/templates",
+    "skills",
+    "tests",
+    "docs",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE.md",
+    "LICENSE-NOTICES.md",
+    "CHANGELOG.md",
+    "scripts/verify-package-files.mjs"
+  ],
+  "isolation": {
+    "HOME": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/home",
+    "DSH_HOME": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/dsh",
+    "XDG": "config/cache/data/state under .mpd/proof-final/home",
+    "npmCache": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/npm-cache",
+    "pnpmStore": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pnpm-store",
+    "workspaceCwd": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/work",
+    "note": "every dsh spawn ran with cwd=.mpd/proof-final/work; the real ~/.dsh was never touched; the sandbox is deleted after the run"
+  },
+  "registryClaim": {
+    "command": "npm view @mpd-dsh/silicon@0.7.0 version --registry=https://registry.npmmirror.com",
+    "exitCode": 1,
+    "errorCode": "E404",
+    "note": "the request resolved against registry.npmjs.org and returned 404; this substantiates the docs' 'not measured — not published' note",
+    "log": "npm-view.log"
+  },
+  "install": {
+    "command": "dsh plugin --profile probe add -w @mpd-dsh/mpd@0.15.1 <abs tarball> @deepseek-harness-tui/dsh-tui@0.16.1 --registry=https://registry.npmmirror.com",
+    "exitCode": 0,
+    "assertionsExitCode": 0,
+    "profileManifest": "profile-probe.package.json",
+    "log": "output.log"
+  },
+  "composition": {
+    "command": "dsh --profile probe --dump-config",
+    "exitCode": 0,
+    "siliconRowCount": 5,
+    "dump": "dump-config.yaml",
+    "note": "composition only — not a health signal for plugin code"
+  },
+  "boot": {
+    "command": "timeout 40s dsh --profile probe --no-open --port 0 (cwd .mpd/proof-final/work)",
+    "exitCode": 124,
+    "expected": 124,
+    "serveLine": "[mpd-silicon-bootstrap] skill corpus served",
+    "serveLineOccurrences": 1,
+    "fatalLines": 0,
+    "log": "boot-coexist.log"
+  },
+  "negativeNoMpd": {
+    "installExitCode": 0,
+    "bootExitCode": 1,
+    "expectedBootExitCode": 1,
+    "guardLine": "silicon requires @mpd-dsh/mpd: the mpdDsh service is absent",
+    "guardLinePresent": true,
+    "serveLineOccurrences": 0,
+    "profileManifest": "profile-probe-nompd.package.json",
+    "log": "boot-nompd.log"
+  },
+  "removeControl": {
+    "command": "dsh plugin --profile probe remove @mpd-dsh/silicon",
+    "exitCode": 0,
+    "assertionsExitCode": 0,
+    "dependencyGone": true,
+    "bundleEntryGone": true,
+    "mpdStillPresent": true,
+    "profileManifest": "profile-probe-after-remove.package.json"
+  },
+  "addWithoutWorkspaceRoot": {
+    "command": "dsh plugin --profile nowtest add file:<fake-bundle> (no -w)",
+    "exitCode": 1,
+    "expected": "non-zero",
+    "errPnpmAddingToRoot": true,
+    "log": "add-without-w.log"
+  },
+  "selfTests": {
+    "guard": 0,
+    "guardSelfTest": 0,
+    "corpusSelfTest": 0,
+    "rowsSelfTest": 0,
+    "lspCheckSelfTest": 0,
+    "logs": {
+      "guard": "guard-pass.log",
+      "guardSelfTest": "guard-self-test.log",
+      "corpusSelfTest": "corpus-self-test.log",
+      "rowsSelfTest": "rows-self-test.log",
+      "lspCheckSelfTest": "lsp-self-test.log"
+    }
+  },
+  "gateExits": {
+    "bun run build": 0,
+    "node scripts/typecheck.mjs --require": 0,
+    "bun test packages/": 0,
+    "node scripts/verify-corpus.mjs --self-test": 0,
+    "node scripts/verify-rows-disjoint.mjs --self-test": 0,
+    "node scripts/build-lsp.mjs --check --self-test": 0,
+    "node scripts/build-lsp.mjs --check": 0,
+    "node scripts/pack-silicon.mjs --self-test": 0,
+    "node scripts/pack-silicon.mjs --fix": 0,
+    "node scripts/pack-silicon.mjs --check": 0,
+    "node scripts/pack-silicon.mjs": 0,
+    "node scripts/verify-gitee-workflows.mjs": 0,
+    "node scripts/verify-package-files.mjs": 0,
+    "node scripts/verify-package-files.mjs --self-test": 0,
+    "node scripts/ci-boot.mjs --mode both --require": 0
+  },
+  "gatesLog": "gates.log",
+  "deviations": [
+    "`npm pack --json` runs the prepack hook first, so the guard's PASS line precedes the JSON array on stdout; npm-pack.json is the JSON-only tail and npm-pack.raw.log keeps the exact stream.",
+    "`dsh plugin remove` forwards to `pnpm remove`, which rejects `--registry` (`ERROR Unknown option: 'registry'`); the recorded remove runs without it, exactly as the docs show.",
+    "the positive profile also installs @deepseek-harness-tui/dsh-tui 0.16.1 so the profile has an app entry; it declares dsh.bundle.patch and is therefore also appended to dsh.profile.bundles.",
+    "pnpm reported unmet peer dependencies inside dsh-tui's own dependency tree; install and boot both succeed, so they are third-party warnings, not @mpd-dsh/silicon failures.",
+    "`npm view` resolved against registry.npmjs.org despite the npmmirror flag and returned 404; the 'not published' claim is recorded as observed, not as a npmmirror measurement.",
+    "the tarball is deleted with the sandbox; npm-pack.json, tarball-files.txt and tarball-sha256.txt keep its facts, and `npm pack` from the recorded tree reproduces it."
+  ],
+  "verdict": "PASS"
+}

@@ -1,0 +1,2432 @@
+{
+  "timestamp": "2026-10-22T11:01:54Z",
+  "evidence_dir": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z",
+  "generator_invoked": {
+    "tool": "mpd_docgen_run (packages/mpd-docgen-plugin/src/tool-run.ts, execute())",
+    "exec_stub": "{agent:{session:{header:{cwd:<repo root>}}}}",
+    "args_run1": {
+      "manual": "/home/haroldzhao/eCap/docs/user-manual.md",
+      "outputDir": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated",
+      "ip": "eCap"
+    },
+    "args_run2": {
+      "manual": "/home/haroldzhao/eCap/docs/user-manual.md",
+      "outputDir": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated-rerun",
+      "ip": "eCap"
+    },
+    "result_run1": {
+      "ok": true,
+      "registers": 31,
+      "fields": 130,
+      "warnings": [
+        "manualEn was not provided: the rtl-ip-flow spec stage requires an English twin (docs/user-manual.en.md); only the zh-CN docx was generated"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "role": "ours_xlsx",
+      "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_regExcel_full.xlsx",
+      "bytes": 13650,
+      "sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba"
+    },
+    {
+      "role": "ecap_xlsx",
+      "path": "/home/haroldzhao/eCap/docs/regExcel_full.xlsx",
+      "bytes": 15909,
+      "sha256": "52afc4e006b4cd391966725ee989914fe933b979d85fba9a3ebbaebbf80f9351"
+    },
+    {
+      "role": "ours_docx",
+      "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_reg_user_manual.zh-CN.docx",
+      "bytes": 38642,
+      "sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef"
+    },
+    {
+      "role": "ecap_docx",
+      "path": "/home/haroldzhao/eCap/docs/eCap_reg_user_manual.docx",
+      "bytes": 39649,
+      "sha256": "ca8316794c9abae2ed91dc05fb3acffe7f4d6396d7ac70ce5f51eeec746b9786"
+    },
+    {
+      "role": "source_manual",
+      "path": "/home/haroldzhao/eCap/docs/user-manual.md",
+      "bytes": 76102,
+      "sha256": "4affaed97d34fd5ae3118bcdc1bee5c083b7db816c0432dadfd8a5b514ff7b69"
+    }
+  ],
+  "generated": [
+    {
+      "name": "eCap_regExcel_full.xlsx",
+      "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_regExcel_full.xlsx",
+      "run1_bytes": 13650,
+      "run1_sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba",
+      "run2_sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba"
+    },
+    {
+      "name": "eCap_reg_user_manual.zh-CN.docx",
+      "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_reg_user_manual.zh-CN.docx",
+      "run1_bytes": 38642,
+      "run1_sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef",
+      "run2_sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef",
+      "lang": "zh-CN"
+    }
+  ],
+  "retention": "generated/ and generated-rerun/ are retained: the largest artifact is 38642 bytes (<100KB each)",
+  "rerun": {
+    "byte_identical": true,
+    "files": [
+      {
+        "name": "eCap_regExcel_full.xlsx",
+        "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_regExcel_full.xlsx",
+        "run1_bytes": 13650,
+        "run1_sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba",
+        "run2_sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba"
+      },
+      {
+        "name": "eCap_reg_user_manual.zh-CN.docx",
+        "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_reg_user_manual.zh-CN.docx",
+        "run1_bytes": 38642,
+        "run1_sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef",
+        "run2_sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef",
+        "lang": "zh-CN"
+      }
+    ],
+    "command": "bun invoke-tools.ts run <dir>/generated-rerun run2"
+  },
+  "oracle": {
+    "implementation": "pure python: openpyxl 3.1.5 + python-docx 1.2.0; imports no plugin code",
+    "xlsx": {
+      "ours": {
+        "sheetnames": [
+          "Sheet1"
+        ],
+        "dimensions": "A1:I162",
+        "max_row": 162,
+        "max_column": 9,
+        "counts": {
+          "register_rows": 31,
+          "field_rows": 130,
+          "reserved_rows": 23,
+          "fields_total": 130
+        },
+        "row_heights": {
+          "1": 43.2
+        },
+        "column_widths": {
+          "A": 21.22,
+          "B": 19.78,
+          "C": 21.0,
+          "D": 18.44,
+          "E": 18.44,
+          "F": 37.11,
+          "G": 18.89,
+          "H": 22.78,
+          "I": 53.33
+        },
+        "merged_cells": [],
+        "freeze_panes": null
+      },
+      "ecap": {
+        "sheetnames": [
+          "Sheet1"
+        ],
+        "dimensions": "A1:I162",
+        "max_row": 162,
+        "max_column": 9,
+        "counts": {
+          "register_rows": 31,
+          "field_rows": 130,
+          "reserved_rows": 23,
+          "fields_total": 130
+        },
+        "row_heights": {
+          "1": 43.2
+        },
+        "column_widths": {
+          "A": 21.22,
+          "B": 19.78,
+          "C": 21.0,
+          "D": 18.44,
+          "E": 18.44,
+          "F": 37.11,
+          "G": 18.89,
+          "H": 22.78,
+          "I": 53.33
+        },
+        "merged_cells": [],
+        "freeze_panes": null
+      },
+      "value_digest_ours": "a5f8a9e0862152d545e1a10debd1dff1b271fdd09b28478c375f91ed82829dc0",
+      "value_digest_ecap": "a5f8a9e0862152d545e1a10debd1dff1b271fdd09b28478c375f91ed82829dc0",
+      "style_comparison": {
+        "agree": true,
+        "cells_compared": 1458,
+        "differing_cells": 0,
+        "examples": []
+      }
+    },
+    "docx": {
+      "ours": {
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/settings.xml",
+          "word/styles.xml"
+        ],
+        "open_warnings": [],
+        "paragraph_count": 404,
+        "table_count": 64,
+        "h3_total": [
+          "3.1 整体框图",
+          "3.2 资源与模式概览",
+          "3.3 捕获模式（CAP）",
+          "3.4 APWM 模式",
+          "3.5 中断控制",
+          "3.6 同步机制",
+          "3.7 EALLOW 保护",
+          "3.8 DMA 触发",
+          "3.9 ADC SOC 触发",
+          "3.10 信号监测单元（MUNIT）",
+          "4.1 场景一：绝对时间戳捕获（单发、上升沿、四事件）",
+          "4.2 场景二：Delta 差值捕获（上升沿触发）",
+          "4.3 场景三：APWM 单通道 PWM 生成",
+          "4.4 场景四：APWM 相位偏移（同步对齐）",
+          "4.5 场景五：中断配置",
+          "4.6 仿真挂起（FREE_SOFT）配置",
+          "4.7 场景七：毛刺滤波与 256 路输入选择",
+          "4.8 场景八：DMA 触发配置",
+          "4.9 场景九：ADC SOC 触发配置",
+          "4.10 场景十：MUNIT 脉宽/周期监测（含影子装载与调试）",
+          "4.11 场景十一：MUNIT 边沿监测",
+          "4.12 场景十二：ePWM 全局 load strobe / trip 耦合",
+          "时间戳计数器（TSCTR）",
+          "计数器相位偏移值寄存器（CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（CAP4）",
+          "捕获控制寄存器 0（ECCTL0）",
+          "捕获控制寄存器 1（ECCTL1）",
+          "捕获控制寄存器 2（ECCTL2）",
+          "中断使能寄存器（ECEINT）",
+          "中断标志寄存器（ECFLG）",
+          "中断清除寄存器（ECCLR）",
+          "中断强置寄存器（ECFRC）",
+          "同步源选择寄存器（ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "chapter_title": "寄存器",
+        "chapter_paragraph_count": 156,
+        "chapter_h3": [
+          "时间戳计数器（TSCTR）",
+          "计数器相位偏移值寄存器（CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（CAP4）",
+          "捕获控制寄存器 0（ECCTL0）",
+          "捕获控制寄存器 1（ECCTL1）",
+          "捕获控制寄存器 2（ECCTL2）",
+          "中断使能寄存器（ECEINT）",
+          "中断标志寄存器（ECFLG）",
+          "中断清除寄存器（ECCLR）",
+          "中断强置寄存器（ECFRC）",
+          "同步源选择寄存器（ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "register_h3_normalized": [
+          "时间戳计数器（TSCTR）",
+          "计数器相位偏移值寄存器（CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（CAP4）",
+          "捕获控制寄存器 0（ECCTL0）",
+          "捕获控制寄存器 1（ECCTL1）",
+          "捕获控制寄存器 2（ECCTL2）",
+          "中断使能寄存器（ECEINT）",
+          "中断标志寄存器（ECFLG）",
+          "中断清除寄存器（ECCLR）",
+          "中断强置寄存器（ECFRC）",
+          "同步源选择寄存器（ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "chapter_table_count": 63,
+        "sectPr": {
+          "pgSz": {
+            "h": "16838",
+            "w": "11906"
+          },
+          "pgMar": {
+            "bottom": "1440",
+            "footer": "992",
+            "gutter": "0",
+            "header": "851",
+            "left": "1800",
+            "right": "1800",
+            "top": "1440"
+          },
+          "cols": {
+            "space": "425"
+          },
+          "docGrid": {
+            "linePitch": "312",
+            "type": "lines"
+          },
+          "headerReferences": 0,
+          "footerReferences": 0
+        },
+        "body_scope": {
+          "body_paragraphs_before_chapter": 249,
+          "body_tables": 1,
+          "body_h3": 22,
+          "body_table_dims": [
+            {
+              "rows": 21,
+              "cols": 4
+            }
+          ]
+        }
+      },
+      "ecap": {
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/numbering.xml",
+          "word/settings.xml",
+          "word/styles.xml",
+          "word/theme/theme1.xml",
+          "word/webSettings.xml"
+        ],
+        "open_warnings": [],
+        "paragraph_count": 175,
+        "table_count": 64,
+        "h3_total": [
+          "描述A",
+          "描述B",
+          "用途A",
+          "用途B",
+          "IP寄存器总览",
+          "时间戳计数器（ECAP_TSCTR）",
+          "计数器相位偏移值寄存器（ECAP_CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（ECAP_CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（ECAP_CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（ECAP_CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（ECAP_CAP4）",
+          "捕获控制寄存器 0（ECAP_ECCTL0）",
+          "捕获控制寄存器 1（ECAP_ECCTL1）",
+          "捕获控制寄存器 2（ECAP_ECCTL2）",
+          "中断使能寄存器（ECAP_ECEINT）",
+          "中断标志寄存器（ECAP_ECFLG）",
+          "中断清除寄存器（ECAP_ECCLR）",
+          "中断强置寄存器（ECAP_ECFRC）",
+          "同步源选择寄存器（ECAP_ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "chapter_title": "IP寄存器",
+        "chapter_paragraph_count": 157,
+        "chapter_h3": [
+          "IP寄存器总览",
+          "时间戳计数器（ECAP_TSCTR）",
+          "计数器相位偏移值寄存器（ECAP_CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（ECAP_CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（ECAP_CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（ECAP_CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（ECAP_CAP4）",
+          "捕获控制寄存器 0（ECAP_ECCTL0）",
+          "捕获控制寄存器 1（ECAP_ECCTL1）",
+          "捕获控制寄存器 2（ECAP_ECCTL2）",
+          "中断使能寄存器（ECAP_ECEINT）",
+          "中断标志寄存器（ECAP_ECFLG）",
+          "中断清除寄存器（ECAP_ECCLR）",
+          "中断强置寄存器（ECAP_ECFRC）",
+          "同步源选择寄存器（ECAP_ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "register_h3_normalized": [
+          "时间戳计数器（TSCTR）",
+          "计数器相位偏移值寄存器（CTRPHS）",
+          "捕获 1 寄存器（APWM 活动周期）（CAP1）",
+          "捕获 2 寄存器（APWM 活动比较）（CAP2）",
+          "捕获 3 寄存器（APRD 影子周期）（CAP3）",
+          "捕获 4 寄存器（ACMP 影子比较）（CAP4）",
+          "捕获控制寄存器 0（ECCTL0）",
+          "捕获控制寄存器 1（ECCTL1）",
+          "捕获控制寄存器 2（ECCTL2）",
+          "中断使能寄存器（ECEINT）",
+          "中断标志寄存器（ECFLG）",
+          "中断清除寄存器（ECCLR）",
+          "中断强置寄存器（ECFRC）",
+          "同步源选择寄存器（ECAPSYNCINSEL）",
+          "监测单元公共控制寄存器（MUNIT_COM_CTL）",
+          "监测单元 1 控制寄存器（MUNIT_1_CTL）",
+          "监测单元 1 影子控制寄存器（MUNIT_1_SHD_CTL）",
+          "监测单元 1 最小值寄存器（MUNIT_1_MIN）",
+          "监测单元 1 最大值寄存器（MUNIT_1_MAX）",
+          "监测单元 1 最小值影子寄存器（MUNIT_1_MIN_SHD）",
+          "监测单元 1 最大值影子寄存器（MUNIT_1_MAX_SHD）",
+          "监测单元 1 调试范围最小值寄存器（MUNIT_1_DBG_MIN）",
+          "监测单元 1 调试范围最大值寄存器（MUNIT_1_DBG_MAX）",
+          "监测单元 2 控制寄存器（MUNIT_2_CTL）",
+          "监测单元 2 影子控制寄存器（MUNIT_2_SHD_CTL）",
+          "监测单元 2 最小值寄存器（MUNIT_2_MIN）",
+          "监测单元 2 最大值寄存器（MUNIT_2_MAX）",
+          "监测单元 2 最小值影子寄存器（MUNIT_2_MIN_SHD）",
+          "监测单元 2 最大值影子寄存器（MUNIT_2_MAX_SHD）",
+          "监测单元 2 调试范围最小值寄存器（MUNIT_2_DBG_MIN）",
+          "监测单元 2 调试范围最大值寄存器（MUNIT_2_DBG_MAX）"
+        ],
+        "chapter_table_count": 63,
+        "sectPr": {
+          "pgSz": {
+            "h": "16838",
+            "w": "11906"
+          },
+          "pgMar": {
+            "bottom": "1440",
+            "footer": "992",
+            "gutter": "0",
+            "header": "851",
+            "left": "1800",
+            "right": "1800",
+            "top": "1440"
+          },
+          "cols": {
+            "space": "425"
+          },
+          "docGrid": {
+            "linePitch": "312",
+            "type": "lines"
+          },
+          "headerReferences": 0,
+          "footerReferences": 0
+        },
+        "body_scope": {
+          "body_paragraphs_before_chapter": 19,
+          "body_tables": 1,
+          "body_h3": 4,
+          "body_table_dims": [
+            {
+              "rows": 2,
+              "cols": 3
+            }
+          ]
+        }
+      },
+      "overview": {
+        "ours": {
+          "rows": 63,
+          "cols": 34,
+          "grid": [
+            499,
+            1162,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207
+          ],
+          "heights": [
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278"
+          ],
+          "header_cells": [
+            [
+              {
+                "text": "Offset",
+                "span": 1,
+                "bold": true
+              },
+              {
+                "text": "Register",
+                "span": 1,
+                "bold": true
+              },
+              {
+                "text": "31..0",
+                "span": 32,
+                "bold": true
+              }
+            ]
+          ],
+          "body_digest": "b6e12e3d2a2694f0f1cf8ae328f0f7a2915de68d3f104d60e274db81b96cf7d6"
+        },
+        "ecap": {
+          "rows": 63,
+          "cols": 34,
+          "grid": [
+            499,
+            1162,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            208,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207,
+            207
+          ],
+          "heights": [
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278",
+            "902",
+            "278"
+          ],
+          "header_cells": [
+            [
+              {
+                "text": "Offset",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "Register",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "31",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "30",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "29",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "28",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "27",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "26",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "25",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "24",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "23",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "22",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "21",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "20",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "19",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "18",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "17",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "16",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "15",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "14",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "13",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "12",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "11",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "10",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "9",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "8",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "7",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "6",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "5",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "4",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "3",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "2",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "1",
+                "span": 1,
+                "bold": null
+              },
+              {
+                "text": "0",
+                "span": 1,
+                "bold": null
+              }
+            ]
+          ],
+          "body_digest": "b6e12e3d2a2694f0f1cf8ae328f0f7a2915de68d3f104d60e274db81b96cf7d6"
+        }
+      },
+      "bit_tables": {
+        "count": 31,
+        "dims": [
+          6,
+          16
+        ],
+        "tblGrid": [
+          520,
+          520,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519,
+          519
+        ],
+        "row_heights_ours": [
+          null,
+          "420",
+          null,
+          null,
+          "420",
+          null
+        ],
+        "row_heights_ecap": [
+          null,
+          "420",
+          null,
+          null,
+          "420",
+          null
+        ],
+        "content_digest_ours": "edeec9df93f4dcb8e2dbc8d5cfdaac1d6f203861a37b18007041f0d59d374143",
+        "content_digest_ecap": "edeec9df93f4dcb8e2dbc8d5cfdaac1d6f203861a37b18007041f0d59d374143"
+      },
+      "detail_tables": {
+        "count": 31,
+        "tblGrid_ours": [
+          830,
+          1659,
+          5807
+        ],
+        "tblGrid_ecap": [
+          830,
+          1659,
+          5807
+        ],
+        "width_type_ours": [
+          "dxa"
+        ],
+        "width_type_ecap": [
+          "pct"
+        ],
+        "content_digest_ours": "0090c12c7bfd3b9ae4a941570a81c7a86d8ba717b940b7c3200a6d0552cf42bf",
+        "content_digest_ecap": "0090c12c7bfd3b9ae4a941570a81c7a86d8ba717b940b7c3200a6d0552cf42bf"
+      }
+    }
+  },
+  "comparisons": [
+    {
+      "item": "xlsx sheet names",
+      "ours": [
+        "Sheet1"
+      ],
+      "ecap": [
+        "Sheet1"
+      ],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx dimensions",
+      "ours": "A1:I162",
+      "ecap": "A1:I162",
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx header row (9 texts)",
+      "ours": [
+        "register name",
+        "field offset",
+        "field name",
+        "access type",
+        "reset value",
+        "description（中文描述，请填此列）",
+        "skip field test",
+        "remarks",
+        "register structure = \"1\"\n0 : whole register\n1 : aggregated register"
+      ],
+      "ecap": [
+        "register name",
+        "field offset",
+        "field name",
+        "access type",
+        "reset value",
+        "description（中文描述，请填此列）",
+        "skip field test",
+        "remarks",
+        "register structure = \"1\"\n0 : whole register\n1 : aggregated register"
+      ],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx row model counts",
+      "ours": {
+        "register_rows": 31,
+        "field_rows": 130,
+        "reserved_rows": 23,
+        "fields_total": 130
+      },
+      "ecap": {
+        "register_rows": 31,
+        "field_rows": 130,
+        "reserved_rows": 23,
+        "fields_total": 130
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx values 162x9 (ECAP_ prefix stripped)",
+      "ours": {
+        "rows": 162,
+        "cells": 1458,
+        "digest": "a5f8a9e0862152d545e1a10debd1dff1b271fdd09b28478c375f91ed82829dc0"
+      },
+      "ecap": {
+        "rows": 162,
+        "cells": 1458,
+        "digest": "a5f8a9e0862152d545e1a10debd1dff1b271fdd09b28478c375f91ed82829dc0"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx per-register offset/reset/field spans",
+      "ours": {
+        "registers": 31,
+        "fields": 130,
+        "digest": "4be3fd06ef4e441bea1cfc71548603578704ecd94030dc96b7898adbb46d19f4"
+      },
+      "ecap": {
+        "registers": 31,
+        "fields": 130,
+        "digest": "4be3fd06ef4e441bea1cfc71548603578704ecd94030dc96b7898adbb46d19f4"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx cell styles 162x9 (bold/font/size/fill/border/align)",
+      "ours": {
+        "digest": "f011dca4c760f00cea9db36451532a893e194538c4ed54ca756156500efe6349",
+        "cells": 1458
+      },
+      "ecap": {
+        "digest": "f011dca4c760f00cea9db36451532a893e194538c4ed54ca756156500efe6349",
+        "cells": 1458
+      },
+      "agree": true,
+      "note": "0 differing cells; examples=[]",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx row heights",
+      "ours": {
+        "1": 43.2
+      },
+      "ecap": {
+        "1": 43.2
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx column widths",
+      "ours": {
+        "A": 21.22,
+        "B": 19.78,
+        "C": 21.0,
+        "D": 18.44,
+        "E": 18.44,
+        "F": 37.11,
+        "G": 18.89,
+        "H": 22.78,
+        "I": 53.33
+      },
+      "ecap": {
+        "A": 21.22,
+        "B": 19.78,
+        "C": 21.0,
+        "D": 18.44,
+        "E": 18.44,
+        "F": 37.11,
+        "G": 18.89,
+        "H": 22.78,
+        "I": 53.33
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx merged cells",
+      "ours": [],
+      "ecap": [],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "xlsx freeze panes",
+      "ours": null,
+      "ecap": null,
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx package parts",
+      "ours": {
+        "count": 9,
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/settings.xml",
+          "word/styles.xml"
+        ]
+      },
+      "ecap": {
+        "count": 12,
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/numbering.xml",
+          "word/settings.xml",
+          "word/styles.xml",
+          "word/theme/theme1.xml",
+          "word/webSettings.xml"
+        ]
+      },
+      "agree": false,
+      "note": "ours ships the 9 required OOXML parts; eCap additionally ships word/numbering.xml, word/theme/theme1.xml, word/webSettings.xml",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx total table count",
+      "ours": 64,
+      "ecap": 64,
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx register-chapter table count",
+      "ours": 63,
+      "ecap": 63,
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx register-chapter table sequence",
+      "ours": {
+        "overview": 1,
+        "bit": 31,
+        "detail": 31
+      },
+      "ecap": {
+        "overview": 1,
+        "bit": 31,
+        "detail": 31
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx register-chapter H2 title",
+      "ours": "寄存器",
+      "ecap": "IP寄存器",
+      "agree": false,
+      "note": "",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx H3 total (whole document)",
+      "ours": 53,
+      "ecap": 36,
+      "agree": false,
+      "note": "scope difference: ours renders the full manual body; eCap is a template clone",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx register H3 titles (ECAP_ prefix stripped)",
+      "ours": {
+        "count": 31,
+        "digest": "e47a1febdeea2eb730e791cdc62431bad51b278eff6395f50b5e0f3a0d4312d5"
+      },
+      "ecap": {
+        "count": 31,
+        "digest": "e47a1febdeea2eb730e791cdc62431bad51b278eff6395f50b5e0f3a0d4312d5"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx register-chapter H3 count (incl. overview heading)",
+      "ours": 31,
+      "ecap": 32,
+      "agree": false,
+      "note": "eCap emits `IP寄存器总览` H3 before the overview table; ours emits the table directly",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx register-chapter paragraph count",
+      "ours": 156,
+      "ecap": 157,
+      "agree": false,
+      "note": "the one-paragraph delta is the same missing overview H3",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx body scope outside register chapter",
+      "ours": {
+        "body_paragraphs_before_chapter": 249,
+        "body_tables": 1,
+        "body_h3": 22,
+        "body_table_dims": [
+          {
+            "rows": 21,
+            "cols": 4
+          }
+        ]
+      },
+      "ecap": {
+        "body_paragraphs_before_chapter": 19,
+        "body_tables": 1,
+        "body_h3": 4,
+        "body_table_dims": [
+          {
+            "rows": 2,
+            "cols": 3
+          }
+        ]
+      },
+      "agree": false,
+      "note": "eCap's docx is a template clone (版本历史 + placeholder sections); ours renders the real manual body",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx overview dims/grid/heights",
+      "ours": {
+        "rows": 63,
+        "cols": 34,
+        "grid": [
+          499,
+          1162,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207
+        ],
+        "heights": [
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278"
+        ]
+      },
+      "ecap": {
+        "rows": 63,
+        "cols": 34,
+        "grid": [
+          499,
+          1162,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          208,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207,
+          207
+        ],
+        "heights": [
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278",
+          "902",
+          "278"
+        ]
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx overview header cells (text/span)",
+      "ours": [
+        [
+          {
+            "text": "Offset",
+            "span": 1
+          },
+          {
+            "text": "Register",
+            "span": 1
+          },
+          {
+            "text": "31..0",
+            "span": 32
+          }
+        ]
+      ],
+      "ecap": [
+        [
+          {
+            "text": "Offset",
+            "span": 1
+          },
+          {
+            "text": "Register",
+            "span": 1
+          },
+          {
+            "text": "31",
+            "span": 1
+          },
+          {
+            "text": "30",
+            "span": 1
+          },
+          {
+            "text": "29",
+            "span": 1
+          },
+          {
+            "text": "28",
+            "span": 1
+          },
+          {
+            "text": "27",
+            "span": 1
+          },
+          {
+            "text": "26",
+            "span": 1
+          },
+          {
+            "text": "25",
+            "span": 1
+          },
+          {
+            "text": "24",
+            "span": 1
+          },
+          {
+            "text": "23",
+            "span": 1
+          },
+          {
+            "text": "22",
+            "span": 1
+          },
+          {
+            "text": "21",
+            "span": 1
+          },
+          {
+            "text": "20",
+            "span": 1
+          },
+          {
+            "text": "19",
+            "span": 1
+          },
+          {
+            "text": "18",
+            "span": 1
+          },
+          {
+            "text": "17",
+            "span": 1
+          },
+          {
+            "text": "16",
+            "span": 1
+          },
+          {
+            "text": "15",
+            "span": 1
+          },
+          {
+            "text": "14",
+            "span": 1
+          },
+          {
+            "text": "13",
+            "span": 1
+          },
+          {
+            "text": "12",
+            "span": 1
+          },
+          {
+            "text": "11",
+            "span": 1
+          },
+          {
+            "text": "10",
+            "span": 1
+          },
+          {
+            "text": "9",
+            "span": 1
+          },
+          {
+            "text": "8",
+            "span": 1
+          },
+          {
+            "text": "7",
+            "span": 1
+          },
+          {
+            "text": "6",
+            "span": 1
+          },
+          {
+            "text": "5",
+            "span": 1
+          },
+          {
+            "text": "4",
+            "span": 1
+          },
+          {
+            "text": "3",
+            "span": 1
+          },
+          {
+            "text": "2",
+            "span": 1
+          },
+          {
+            "text": "1",
+            "span": 1
+          },
+          {
+            "text": "0",
+            "span": 1
+          }
+        ]
+      ],
+      "agree": false,
+      "note": "EXPECTED: ours merges the 32 bit columns into one `31..0` cell (span 32); eCap prints one cell per bit number (31..0)",
+      "classification": "expected"
+    },
+    {
+      "item": "docx overview header cell width type",
+      "ours": {
+        "types": [
+          "dxa"
+        ],
+        "cells": 3,
+        "example": {
+          "type": "dxa",
+          "w": 499
+        }
+      },
+      "ecap": {
+        "types": [
+          "pct"
+        ],
+        "cells": 34,
+        "example": {
+          "type": "pct",
+          "w": 300
+        }
+      },
+      "agree": false,
+      "note": "EXPECTED: our overview cell widths are dxa; eCap's template uses pct",
+      "classification": "expected"
+    },
+    {
+      "item": "docx overview header bold",
+      "ours": [
+        true,
+        true,
+        true
+      ],
+      "ecap": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "agree": false,
+      "note": "ours writes direct bold on the header cells; eCap's header is not bold",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx overview body rows (text/fill/vmerge/span/bold, ECAP_ stripped)",
+      "ours": {
+        "count": 62,
+        "digest": "b6e12e3d2a2694f0f1cf8ae328f0f7a2915de68d3f104d60e274db81b96cf7d6"
+      },
+      "ecap": {
+        "count": 62,
+        "digest": "b6e12e3d2a2694f0f1cf8ae328f0f7a2915de68d3f104d60e274db81b96cf7d6"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx overview body cell width type",
+      "ours": {
+        "types": [
+          "dxa"
+        ],
+        "cells": 986,
+        "example": {
+          "type": "dxa",
+          "w": 499
+        }
+      },
+      "ecap": {
+        "types": [
+          "pct"
+        ],
+        "cells": 986,
+        "example": {
+          "type": "pct",
+          "w": 300
+        }
+      },
+      "agree": false,
+      "note": "EXPECTED: our overview cell widths are dxa; eCap's template uses pct",
+      "classification": "expected"
+    },
+    {
+      "item": "docx overview cell shd representation (auto vs absent)",
+      "ours": {
+        "auto_cells": 0
+      },
+      "ecap": {
+        "auto_cells": 943
+      },
+      "agree": false,
+      "note": "eCap writes <w:shd w:fill=\"auto\"/> on overview cells; ours omits shd. Both render as no shading; XML representation only.",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx bit tables content (31 x 6x16: text/fill/span/merge/bold)",
+      "ours": {
+        "count": 31,
+        "cells": 1308,
+        "digest": "edeec9df93f4dcb8e2dbc8d5cfdaac1d6f203861a37b18007041f0d59d374143"
+      },
+      "ecap": {
+        "count": 31,
+        "cells": 1308,
+        "digest": "edeec9df93f4dcb8e2dbc8d5cfdaac1d6f203861a37b18007041f0d59d374143"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx bit-table cell width (dxa twips)",
+      "ours": {
+        "differing_cells": 620,
+        "examples": [
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 6,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 7,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 8,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 9,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 10,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          }
+        ]
+      },
+      "ecap": {
+        "differing_cells": 0
+      },
+      "agree": false,
+      "note": "ours uses the tblGrid width (519) for every bit cell; eCap's per-cell tcW uses 518 for 20 of 36 cells (1 twip = 1/1440 inch). tblGrid is identical.",
+      "classification": "unexpected"
+    },
+    {
+      "item": "docx bit-table row heights",
+      "ours": [
+        null,
+        "420",
+        null,
+        null,
+        "420",
+        null
+      ],
+      "ecap": [
+        null,
+        "420",
+        null,
+        null,
+        "420",
+        null
+      ],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx detail tables content (31: text/fill/span/merge/bold)",
+      "ours": {
+        "count": 31,
+        "cells": 483,
+        "digest": "0090c12c7bfd3b9ae4a941570a81c7a86d8ba717b940b7c3200a6d0552cf42bf"
+      },
+      "ecap": {
+        "count": 31,
+        "cells": 483,
+        "digest": "0090c12c7bfd3b9ae4a941570a81c7a86d8ba717b940b7c3200a6d0552cf42bf"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx detail-table grid (tblGrid, first register)",
+      "ours": [
+        830,
+        1659,
+        5807
+      ],
+      "ecap": [
+        830,
+        1659,
+        5807
+      ],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx detail-table cell width type",
+      "ours": [
+        "dxa"
+      ],
+      "ecap": [
+        "pct"
+      ],
+      "agree": false,
+      "note": "EXPECTED (same class as the overview widths): ours writes dxa (830/1659/5807 twips); eCap writes pct",
+      "classification": "expected"
+    },
+    {
+      "item": "docx per-register offset/reset lines",
+      "ours": {
+        "count": 31,
+        "digest": "dafb4b72bb696e522402da64f805f46b0af9c8b7cfe4ba4de22b1ba3ad4a2ac5"
+      },
+      "ecap": {
+        "count": 31,
+        "digest": "dafb4b72bb696e522402da64f805f46b0af9c8b7cfe4ba4de22b1ba3ad4a2ac5"
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx sectPr (pgSz/pgMar/cols/docGrid/header+footer refs)",
+      "ours": {
+        "pgSz": {
+          "h": "16838",
+          "w": "11906"
+        },
+        "pgMar": {
+          "bottom": "1440",
+          "footer": "992",
+          "gutter": "0",
+          "header": "851",
+          "left": "1800",
+          "right": "1800",
+          "top": "1440"
+        },
+        "cols": {
+          "space": "425"
+        },
+        "docGrid": {
+          "linePitch": "312",
+          "type": "lines"
+        },
+        "headerReferences": 0,
+        "footerReferences": 0
+      },
+      "ecap": {
+        "pgSz": {
+          "h": "16838",
+          "w": "11906"
+        },
+        "pgMar": {
+          "bottom": "1440",
+          "footer": "992",
+          "gutter": "0",
+          "header": "851",
+          "left": "1800",
+          "right": "1800",
+          "top": "1440"
+        },
+        "cols": {
+          "space": "425"
+        },
+        "docGrid": {
+          "linePitch": "312",
+          "type": "lines"
+        },
+        "headerReferences": 0,
+        "footerReferences": 0
+      },
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "docx python-docx open warnings (ours)",
+      "ours": [],
+      "ecap": [],
+      "agree": true,
+      "note": "",
+      "classification": "match"
+    },
+    {
+      "item": "rerun byte identity (run1 vs run2 sha256)",
+      "ours": {
+        "eCap_regExcel_full.xlsx": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba",
+        "eCap_reg_user_manual.zh-CN.docx": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef"
+      },
+      "ecap": {
+        "eCap_regExcel_full.xlsx": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba",
+        "eCap_reg_user_manual.zh-CN.docx": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef"
+      },
+      "agree": true,
+      "note": "both runs report the same sha256 for both artifacts",
+      "classification": "match"
+    }
+  ],
+  "expected_premises": {
+    "ECAP_ prefix on core register names": {
+      "confirmed": true,
+      "normalization": "strip one leading `ECAP_` from register names only; field names untouched",
+      "example": "eCap xlsx A2 = ECAP_TSCTR, ours = TSCTR"
+    },
+    "no cloned 版本历史 table": {
+      "confirmed": true,
+      "measured": {
+        "ours_total_tables": 64,
+        "ecap_total_tables": 64,
+        "ours_register_chapter_tables": 63,
+        "ecap_register_chapter_tables": 63
+      },
+      "note": "the task's `63 vs 64 register-chapter tables` wording does not match measurement: both register chapters have 63 tables (1 overview + 31 bit + 31 detail) and both documents have 64 tables total. The free slot is outside the chapter: ours is the real manual's 信号 table (21x4); eCap's is the cloned 版本历史 table (2x3)."
+    },
+    "overview header 3 cells vs 32 per-bit numbers": {
+      "confirmed": true,
+      "ours": "Offset | Register | 31..0 (gridSpan 32, 3 tc)",
+      "ecap": "Offset | Register | 31 | 30 | ... | 0 (34 tc)"
+    },
+    "overview cell widths dxa vs pct": {
+      "confirmed": true,
+      "extension": "the same dxa vs pct difference also covers every detail-table cell (and the overview body), not only the overview header"
+    }
+  },
+  "verify": {
+    "ok": true,
+    "checks": [
+      {
+        "id": "V1",
+        "ok": true,
+        "detail": "sheet \"Sheet1\" with all 9 header texts"
+      },
+      {
+        "id": "V2",
+        "ok": true,
+        "detail": "1 header + 31 Reg + 130 field rows, 9 columns each"
+      },
+      {
+        "id": "V3",
+        "ok": true,
+        "detail": "31 Reg rows bold + FFFFFF00 + Mixed"
+      },
+      {
+        "id": "V4",
+        "ok": true,
+        "detail": "130 field rows descending and covering [31:0], 23 RESERVED rows canonical"
+      },
+      {
+        "id": "V5",
+        "ok": true,
+        "detail": "9 widths, 43.2 header height, thin borders on every cell, size 11 + Calibri/宋体(134)"
+      },
+      {
+        "id": "V6",
+        "ok": true,
+        "detail": "zh-CN: 9 required parts, balanced tags, one trailing sectPr"
+      },
+      {
+        "id": "V7",
+        "ok": true,
+        "detail": "zh-CN: 31 H3 register chapters below the H2, each with offset/reset lines"
+      },
+      {
+        "id": "V8",
+        "ok": true,
+        "detail": "zh-CN: 31 registers × 2 rows (902/278), 23 gray RESERVED bands, header + gridSpan checked"
+      },
+      {
+        "id": "V9",
+        "ok": true,
+        "detail": "zh-CN: 31 registers: 6×16 bit tables (trHeight 420) and 830/1659/5807 detail tables, 130 fields"
+      },
+      {
+        "id": "V12",
+        "ok": true,
+        "detail": "no template placeholder in 2 artifact(s)"
+      }
+    ],
+    "failed": [],
+    "v11": "skipped: V11 requires docxEn; this run generated only the zh-CN docx (manualEn intentionally omitted, warning recorded by mpd_docgen_run)",
+    "command": "bun invoke-tools.ts verify <ours.xlsx> <ours.zh-CN.docx>"
+  },
+  "negative_control": {
+    "wrong_count": {
+      "expected_register_count": 30,
+      "measured_register_count": 31,
+      "control_fires": true,
+      "meaning": "the oracle comparison is falsifiable: asserting 30 registers against a file with 31 is reported as a mismatch"
+    },
+    "tampered_xlsx_header": {
+      "artifact": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/negative-control/tampered-header-surgical.xlsx",
+      "mutation": "one byte-string replacement in xl/worksheets/sheet1.xml: 'register name' -> 'wrong register name'",
+      "verify_ok": false,
+      "failed": [
+        "V1"
+      ],
+      "detail": "header row differs: A1 = \"wrong register name\", expected \"register name\"",
+      "control_fires": true
+    },
+    "tampered_docx_missing_part": {
+      "artifact": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/negative-control/tampered-no-settings.docx",
+      "mutation": "removed word/settings.xml from the OOXML package (1 of the 9 required parts)",
+      "verify_ok": false,
+      "failed": [
+        "V6"
+      ],
+      "detail": "missing parts: word/settings.xml",
+      "control_fires": true
+    },
+    "how_a_regressed_format_is_detected": [
+      "xlsx value/style drift: the 162x9 value digest or the 162x9 style digest changes, and the per-register offset/reset/field-span digest changes",
+      "docx register drift: the register-H3 digest, overview-body digest, bit-table digest or detail-table digest changes; table counts and grids are compared numerically",
+      "docx package drift: the parts list and sectPr comparison change; V6 requires the 9 parts",
+      "determinism drift: rerun sha256 values stop matching",
+      "gate drift: mpd_docgen_verify returns ok=false and names the failed V-id",
+      "negative controls prove the gate bites: a one-string header edit fails V1 alone; removing word/settings.xml fails V6 alone"
+    ]
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "info",
+      "item": "docx package parts",
+      "ours": {
+        "count": 9,
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/settings.xml",
+          "word/styles.xml"
+        ]
+      },
+      "ecap": {
+        "count": 12,
+        "parts": [
+          "[Content_Types].xml",
+          "_rels/.rels",
+          "docProps/app.xml",
+          "docProps/core.xml",
+          "word/_rels/document.xml.rels",
+          "word/document.xml",
+          "word/fontTable.xml",
+          "word/numbering.xml",
+          "word/settings.xml",
+          "word/styles.xml",
+          "word/theme/theme1.xml",
+          "word/webSettings.xml"
+        ]
+      },
+      "note": "ours ships the 9 required OOXML parts; eCap additionally ships word/numbering.xml, word/theme/theme1.xml, word/webSettings.xml"
+    },
+    {
+      "id": "F2",
+      "severity": "info",
+      "item": "docx register-chapter H2 title",
+      "ours": "寄存器",
+      "ecap": "IP寄存器",
+      "note": ""
+    },
+    {
+      "id": "F3",
+      "severity": "info",
+      "item": "docx H3 total (whole document)",
+      "ours": 53,
+      "ecap": 36,
+      "note": "scope difference: ours renders the full manual body; eCap is a template clone"
+    },
+    {
+      "id": "F4",
+      "severity": "info",
+      "item": "docx register-chapter H3 count (incl. overview heading)",
+      "ours": 31,
+      "ecap": 32,
+      "note": "eCap emits `IP寄存器总览` H3 before the overview table; ours emits the table directly"
+    },
+    {
+      "id": "F5",
+      "severity": "info",
+      "item": "docx register-chapter paragraph count",
+      "ours": 156,
+      "ecap": 157,
+      "note": "same root cause as the missing overview H3 (156 vs 157 paragraphs)"
+    },
+    {
+      "id": "F6",
+      "severity": "info",
+      "item": "docx body scope outside register chapter",
+      "ours": {
+        "body_paragraphs_before_chapter": 249,
+        "body_tables": 1,
+        "body_h3": 22,
+        "body_table_dims": [
+          {
+            "rows": 21,
+            "cols": 4
+          }
+        ]
+      },
+      "ecap": {
+        "body_paragraphs_before_chapter": 19,
+        "body_tables": 1,
+        "body_h3": 4,
+        "body_table_dims": [
+          {
+            "rows": 2,
+            "cols": 3
+          }
+        ]
+      },
+      "note": "eCap's docx is a template clone (版本历史 + placeholder sections); ours renders the real manual body"
+    },
+    {
+      "id": "F7",
+      "severity": "info",
+      "item": "docx overview header bold",
+      "ours": [
+        true,
+        true,
+        true
+      ],
+      "ecap": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "note": "ours writes direct bold on the header cells; eCap's header is not bold"
+    },
+    {
+      "id": "F8",
+      "severity": "info",
+      "item": "docx overview cell shd representation (auto vs absent)",
+      "ours": {
+        "auto_cells": 0
+      },
+      "ecap": {
+        "auto_cells": 943
+      },
+      "note": "eCap writes <w:shd w:fill=\"auto\"/> on overview cells; ours omits shd. Both render as no shading; XML representation only."
+    },
+    {
+      "id": "F9",
+      "severity": "info",
+      "item": "docx bit-table cell width (dxa twips)",
+      "ours": {
+        "differing_cells": 620,
+        "examples": [
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 6,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 7,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 8,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 9,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          },
+          {
+            "table": 0,
+            "row": 0,
+            "cell": 10,
+            "ours": {
+              "type": "dxa",
+              "w": 519
+            },
+            "ecap": {
+              "type": "dxa",
+              "w": 518
+            }
+          }
+        ]
+      },
+      "ecap": {
+        "differing_cells": 0
+      },
+      "note": "ours uses the tblGrid width (519) for every bit cell; eCap's per-cell tcW uses 518 for 20 of 36 cells (1 twip = 1/1440 inch). tblGrid is identical."
+    }
+  ],
+  "scope": {
+    "written_by_this_lane": [
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/invoke-tools.ts",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/oracle.py",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/build-output-log.sh",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/run1.raw",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/run2.raw",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/verify.raw",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/sha256sum.txt",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/oracle.stdout",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/oracle.json",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/result.json",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/output.log",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated-rerun/",
+      "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/negative-control/"
+    ],
+    "statement": "No source, docs, skills, scripts or package file was edited by this lane; every write is inside the evidence directory. `git status` in output.log also lists modifications from other lanes (the generator implementation, docs, skills) that predate this evidence run."
+  },
+  "reproduce": [
+    "bun <evidence>/invoke-tools.ts run <evidence>/generated-rerun run2",
+    "bun <evidence>/invoke-tools.ts verify <evidence>/generated/eCap_regExcel_full.xlsx <evidence>/generated/eCap_reg_user_manual.zh-CN.docx",
+    "PYTHONPATH=.mpd/tmp/t3/pydeps python3 <evidence>/oracle.py <ours.xlsx> <ecap.xlsx> <ours.docx> <ecap.docx> <run1.raw> <run2.raw> <verify.raw> <negative-control/verify-tampered-xlsx.json> <negative-control/verify-tampered-docx.json> <evidence>",
+    "bash <evidence>/build-output-log.sh"
+  ],
+  "blocking_content_failures": [],
+  "verdict": "PASS (content fidelity): 31/31 registers, 130/130 field rows, 23/23 RESERVED rows; 1458/1458 xlsx cells agree in value, and 1458/1458 agree in style; 31/31 bit tables and 31/31 detail tables agree in content; 63/63 register-chapter tables; 1-id xlsx and 1-id docx negative controls fire; verify ok=True (V1,V2,V3,V4,V5,V6,V7,V8,V9,V12). 9 non-expected structural divergence(s) are recorded as findings; none touches register, field, RESERVED, bit-table or detail-table semantics.",
+  "verdict_rule": "PASS means every content-bearing comparison agrees, the 162x9 xlsx style matrix agrees, rerun sha256 values are identical, mpd_docgen_verify returns ok=true, and both tampered-artifact controls fail their gate. Recorded findings are structural divergences that do not change register/field semantics; each is listed with its exact measured values."
+}

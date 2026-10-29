@@ -1,0 +1,20 @@
+# == @mpd-dsh/silicon
+- id: silicon-dsh-adapter
+  name: '@mpd-dsh/silicon/packages/mpd-dsh-adapter-plugin/dist/index.js'
+- id: silicon-bootstrap
+  name: '@mpd-dsh/silicon/packages/mpd-silicon-bootstrap-plugin/dist/index.js'
+- id: silicon-verif
+  name: '@mpd-dsh/silicon/packages/mpd-verif-plugin/dist/index.js'
+- id: silicon-mcp-lsp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: lsp
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/dist/cli.js")
+      - mcp
+    toolCallTimeoutMs: 60000

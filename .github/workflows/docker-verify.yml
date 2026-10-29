@@ -1,0 +1,80 @@
+name: CI — docker real-machine verification
+
+# Builds the repository's verification image (node 24 + bun 1.4.3 + real
+# iverilog/verilator/yosys) and RUNS it: the container executes the same
+# 11-step gate suite as ci.yml and then simulates/lints/synthesizes the shipped
+# golden RTL. A green run therefore proves the gates on a real EDA toolchain,
+# not only on a stub.
+#
+# Version tags stay owned by release.yml; this workflow only publishes the
+# rolling `edge` and per-commit `sha-<short>` images.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: build image, run gates + real EDA smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build verification image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          load: true
+          tags: mpd-silicon-verify:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run verification image (full gate suite + EDA smoke)
+        run: |
+          set -o pipefail
+          docker run --rm --name mpd-silicon-verify mpd-silicon-verify:ci 2>&1 | tee docker-verify.log
+
+      - name: Upload verification log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-verify-log
+          path: docker-verify.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push edge and sha-<short> tags to GHCR
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(printf '%s' "${GITHUB_SHA}" | cut -c1-7)"
+          IMAGE="ghcr.io/haroldz32/mpd-silicon"
+          docker tag mpd-silicon-verify:ci "${IMAGE}:edge"
+          docker tag mpd-silicon-verify:ci "${IMAGE}:sha-${SHORT_SHA}"
+          docker push "${IMAGE}:edge"
+          docker push "${IMAGE}:sha-${SHORT_SHA}"

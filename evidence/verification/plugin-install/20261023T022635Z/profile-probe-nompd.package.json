@@ -1,0 +1,15 @@
+{
+  "name": "dsh-profile-probe-nompd",
+  "private": true,
+  "dependencies": {
+    "@mpd-dsh/silicon": "file:/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/proof-final/pack/mpd-dsh-silicon-0.7.0.tgz"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@mpd-dsh/silicon"
+      ]
+    }
+  }
+}

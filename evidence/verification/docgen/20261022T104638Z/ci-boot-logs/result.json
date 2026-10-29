@@ -1,0 +1,70 @@
+{
+  "tool": "ci-boot",
+  "generatedAt": "2026-10-22T10:48:24.468Z",
+  "repo": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+  "siliconVersion": "0.5.0",
+  "dsh": "0.2.1-rc.2",
+  "bun": "1.4.3",
+  "registry": "https://registry.npmmirror.com",
+  "modes": [
+    {
+      "mode": "coexist",
+      "profile": "coexist",
+      "sandbox": "/tmp/silicon-ci-boot-coexist-wGLGdI",
+      "bootCommand": "timeout 30s dsh --profile coexist --no-open --port 0",
+      "installOk": true,
+      "mpdRemoved": false,
+      "exitCode": 124,
+      "ok": true,
+      "reasons": [],
+      "manifest": {
+        "name": "dsh-profile-coexist",
+        "private": true,
+        "dependencies": {
+          "@mpd-dsh/silicon": "file:/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+          "@mpd-dsh/mpd": "0.15.1"
+        },
+        "dsh": {
+          "profile": {
+            "bundles": [
+              "@deepseek-ai/dsh-base",
+              "@mpd-dsh/mpd",
+              "@mpd-dsh/silicon"
+            ]
+          }
+        }
+      },
+      "timeoutS": 30,
+      "timedOut": true
+    },
+    {
+      "mode": "no-mpd",
+      "profile": "silicon-only",
+      "sandbox": "/tmp/silicon-ci-boot-no-mpd-FVumnP",
+      "bootCommand": "timeout 30s dsh --profile silicon-only --no-open --port 0",
+      "installOk": true,
+      "mpdRemoved": true,
+      "exitCode": 1,
+      "ok": true,
+      "reasons": [],
+      "manifest": {
+        "name": "dsh-profile-silicon-only",
+        "private": true,
+        "dependencies": {
+          "@mpd-dsh/silicon": "file:/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon"
+        },
+        "dsh": {
+          "profile": {
+            "bundles": [
+              "@deepseek-ai/dsh-base",
+              "@mpd-dsh/silicon"
+            ]
+          }
+        }
+      },
+      "timeoutS": 30,
+      "timedOut": false
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@mpd-dsh/silicon-guard",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Startup guard for @mpd-dsh/silicon: refuses to boot when @mpd-dsh/mpd's mpdDsh service is absent, instead of leaving the RTL rows silently PENDING",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "bun test"
+  }
+}

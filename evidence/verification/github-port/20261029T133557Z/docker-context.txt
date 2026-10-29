@@ -1,0 +1,15 @@
+context_files=193 context_mb=3 sed_match=1
+--- diff shipped Dockerfile vs review Dockerfile (the ONLY deviation) ---
+--- Dockerfile	2026-10-29 21:08:12.444675970 +0800
++++ /tmp/review-build/Dockerfile.review	2026-10-29 21:58:49.141329402 +0800
+@@ -37,7 +37,7 @@
+ 
+ # Dependency layer: the manifest and the lock alone, so a source change does
+ # not re-resolve the tree. --frozen-lockfile makes the image and CI agree.
+-COPY package.json bun.lock ./
++COPY package.json bun.lock bunfig.toml ./
+ RUN bun install --frozen-lockfile
+ 
+ # The tree. .dockerignore keeps the local state dirs, node_modules, the root
+--- context tree digest (excluding Dockerfile.review/bunfig.toml) ---
+6dd91e70edfc94edc9f4706c5ec3c9601b5f87aec51dcb1a7894218c5e527b83  -

@@ -1,0 +1,8 @@
+{
+  "name": "@mpd-dsh/silicon-mcp-lsp",
+  "private": true,
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "HDL (Verilog / SystemVerilog) language-service assets for the silicon bundle: the RTL registry overlay, the client template, the HDL reference docs, and the offline-built MCP CLI the silicon-mcp-lsp row launches"
+}

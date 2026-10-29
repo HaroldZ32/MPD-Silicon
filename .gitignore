@@ -1,0 +1,49 @@
+# What this file is for: @mpd-dsh/silicon is distributed as a clone, so the wrong
+# ignore here ships a broken bundle (a missing dist row cannot load) or leaks local
+# state. The "must be committed" list below is deliberate, not an oversight.
+
+# ── MUST BE COMMITTED (do not add ignore rules for these) ───────────────────
+#   packages/*/dist/index.js   the bundle patch loads dist/index.js directly; a
+#                              clone without it installs rows that cannot resolve
+#   skills/**                  the RTL corpus, served by the bootstrap row
+#   packages/mpd-bundle/cordis.patch.yml   the bundle patch itself
+#   scripts/**                 build, pack and gate scripts
+#   docs/**                    (when present) user documentation
+
+# ── Ignored ────────────────────────────────────────────────────────────────
+node_modules/
+.venv*/
+# MP (the plugin's own local state): team state, memory journals, boulder state.
+.mpd/
+
+# Local code-intelligence index (tool state, not project content).
+.codegraph/
+
+# Packer staging output. NOTE the trailing slash and the leading slash: the pattern
+# must match the top-level dist/ DIRECTORY only, never packages/*/dist (which is
+# committed) — an unanchored `dist/` would silently drop every plugin artifact.
+/dist/
+
+# Local scratch / temporary working directories.
+.tmp-*
+.tmp/
+*.tmp
+
+# Local toolchain and QA sandboxes (mirrors the source project's layout, where
+# these are throwaway install targets rather than shipped content).
+.toolchain/
+.qa-*/
+.qa-tmp/
+
+# Editor / OS noise.
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Node package-manager state that is reproducible from package.json.
+.npm-cache/
+.pnpm-store/
+*.log

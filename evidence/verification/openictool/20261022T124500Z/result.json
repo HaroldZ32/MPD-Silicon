@@ -1,0 +1,145 @@
+{
+  "schema": "mpd-silicon/openictool-test/v1",
+  "recorded_at": "2026-10-22T04:57:10Z",
+  "directory_label": "20261022T124500Z (Asia/Shanghai wall clock; the directory keeps the local label)",
+  "purpose": "End-to-end test of the shipped toolchain config, verif backends, LibreLane devshell and HDL LSP against the real /opt/openictool installation",
+  "environment": {
+    "dsh": "0.2.1-rc.2",
+    "node": "v24.22.0",
+    "gxx": "g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0",
+    "bun": "not on PATH in this probe; the bundle build uses .mpd/tools/bun/bin/bun",
+    "host": "Linux; /dev/fuse absent; no VCS license"
+  },
+  "toolchain": {
+    "root": "/opt/openictool",
+    "oss_cad_suite": {
+      "path": "/opt/openictool/oss-cad-suite",
+      "version": "20261021",
+      "iverilog": "Icarus Verilog version 14.0 (devel) (s20260301-631-gce9868196-dirty)",
+      "verilator": "Verilator 5.053 devel rev v5.052-521-g6388139f7 (mod)",
+      "verilator_coverage": "Verilator 5.053 devel rev v5.052-521-g6388139f7 (mod)",
+      "slang": "12.0.0+545f88b2e (compiler)",
+      "yosys": "0.70+186",
+      "gtkwave": "present"
+    },
+    "verible": {
+      "bin": "/opt/openictool/verible",
+      "lint": "v0.0-4296-g0f262651",
+      "ls": "Verible Verilog Language Server built at v0.0-4296-g0f262651"
+    },
+    "librelane": {
+      "appimage": "/opt/openictool/librelane/librelane-devshell-x86_64.AppImage",
+      "kind": "devshell AppImage",
+      "version": "3.0.16"
+    }
+  },
+  "config": {
+    "project_file": ".mpd/silicon.jsonc (sandbox workspace)",
+    "values": {
+      "ossCadSuite.home": "/opt/openictool/oss-cad-suite",
+      "verible.bin": "/opt/openictool/verible",
+      "librelane.appimage": "/opt/openictool/librelane/librelane-devshell-x86_64.AppImage"
+    },
+    "old_values_removed": ["ossCadSuite.bin=/opt/oss-cad-suite/bin", "librelane.bin=/home/haroldzhao/.local/bin/librelane"],
+    "comments_preserved": "both original comments survived every set/unset; the removed keys leave blank lines (cosmetic)",
+    "show": "iverilog/verilator/verilator_coverage resolved from config with versions; ossCadSuite.home (directory), verible.bin (directory), librelane.appimage (file, executable)",
+    "backends_source": "config",
+    "vcs": "absent"
+  },
+  "compile": [
+    {
+      "backend": "iverilog",
+      "ok": true,
+      "outBinary": ".mpd/verif/build/20261022-125026-326/simv_iverilog",
+      "log": "compile-iverilog.log",
+      "exitCode": 0,
+      "binaryBytes": 1919,
+      "binaryRunExit": 0
+    },
+    {
+      "backend": "verilator",
+      "ok": true,
+      "outBinary": ".mpd/verif/build/20261022-125028-231/Vsim",
+      "log": "compile-verilator.log",
+      "exitCode": 0,
+      "binaryBytes": 242544,
+      "binaryRunExit": 0,
+      "runReport": "Verilator: end at 0s; cpu 0.000 s on 1 threads"
+    }
+  ],
+  "lint": [
+    { "backend": "iverilog", "ok": true, "log": "lint-iverilog-20261022-125042-899.log", "bytes": 1 },
+    { "backend": "verilator", "ok": true, "log": "lint-verilator-20261022-125044-240.log", "bytes": 304, "report": "Verilator 5.053, 3 modules, no errors" }
+  ],
+  "librelane": {
+    "old_command_bug": {
+      "command": "APPIMAGE_EXTRACT_AND_RUN=1 <appimage> --run 'librelane --version'",
+      "exit": 127,
+      "error": "/nix/store/.../bin/devshell: line 88: exec: --run: not found",
+      "cause": "the real devshell wrapper is `devshell [--pure] <cmd> [...]` and execs its argv; there is no --run flag"
+    },
+    "fix": {
+      "devshell_argv": "[appimage, 'librelane', ...args]",
+      "status_probe": "[appimage, 'librelane', '--version']",
+      "files": "packages/mpd-verif-plugin/src/silicon/librelane.ts + 2 tests + dist (4 files, +36/-37)",
+      "dist_bytes": 157654,
+      "tests": "212/21 (211 pass / 1 skip); verif 162/16"
+    },
+    "status": {
+      "mode": "devshell",
+      "version": "3.0.16",
+      "extract": "true (auto: /dev/fuse is not accessible, so APPIMAGE_EXTRACT_AND_RUN=1)",
+      "command": "'<appimage>' 'librelane' '--version'"
+    },
+    "run": {
+      "ok": true,
+      "exitCode": 0,
+      "durationMs": 5429,
+      "log": ".mpd/librelane/2026-10-22T04-51-35-050Z-version.log",
+      "stdoutTail": "LibreLane v3.0.16",
+      "stderrTail": "(empty)"
+    }
+  },
+  "lsp": {
+    "handshake": "2025-06-18; 8 tools (status, diagnostics, goto_definition, find_references, symbols, prepare_rename, rename, install_decision)",
+    "configured_servers": 44,
+    "installed_servers": 1,
+    "verible": "installed; .v/.vh",
+    "slang_server": "missing; .sv/.svh LSP unavailable (the slang compiler 12.0.0 is present, but the slang-server binary is not)",
+    "diagnostics_clean_adder": "No diagnostics found",
+    "diagnostics_bad_file": ["error[verible] at 3:2: syntax error at \"assign\"", "error[verible] at 4:0: syntax error at \"endmodule\""],
+    "verible_lint_bad": "2 syntax errors, exit 1",
+    "daemon_bound": "the first bad-file probe hit DaemonStartupDeferredError: owner_pid_live_unreachable (stale lease); clearing ~/.mpd/lsp-daemon and /tmp/mpd-lsp-* made both the clean and bad probes work. This is a daemon-lifecycle bound, not a verible failure."
+  },
+  "sim": {
+    "mpd_verif_sim": "not run: it is cocotb-only and requires <workspace>/.venv-rtl with cocotb; no cocotb testbench was created. The compiled iverilog/verilator binaries were run directly (both exit 0)."
+  },
+  "present_but_unused_by_the_bundle": ["yosys 0.70", "gtkwave", "slang compiler (only the missing slang-server would serve the .sv LSP)"],
+  "bounds": [
+    "No PDK/design and no full LibreLane RTL-to-GDS flow; only the version probe and a --version run.",
+    "No real FUSE: the AppImage runs with APPIMAGE_EXTRACT_AND_RUN=1; the extraction/run took ~5.4 s.",
+    "No VCS/Verisium; mpd_verif_uvm and the VCS lane were not exercised.",
+    "No cocotb venv/testbench; mpd_verif_sim was not run.",
+    "slang-server is not installed; the .sv/.svh LSP is unavailable. verible covers .v/.vh and reports diagnostics.",
+    "LSP daemon startup can defer on a stale lease; clearing the daemon directory/socket is required. The clean and bad probes then work.",
+    "The test used the project config in the QA sandbox workspace, not the user-level $DSH_HOME/silicon.jsonc."
+  ],
+  "artifacts": [
+    "output.log",
+    "live-tools.jsonl",
+    "live.err",
+    "config-after.jsonc",
+    "compile-iverilog.log",
+    "compile-verilator.log",
+    "lint-iverilog-20261022-125042-899.log",
+    "lint-verilator-20261022-125044-240.log",
+    "librelane-version.log",
+    "lsp-status-clean.txt",
+    "lsp-diagnostics-clean.txt",
+    "lsp-diagnostics-bad.txt",
+    "lsp-probe2.mjs",
+    "lsp-probe-bad.mjs",
+    "lsp-clean.out",
+    "lsp-bad.out"
+  ]
+}
