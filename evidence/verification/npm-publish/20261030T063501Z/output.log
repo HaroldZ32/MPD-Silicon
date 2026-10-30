@@ -1,0 +1,654 @@
+=== $ node scripts/typecheck.mjs --require ===
+[typecheck] PASS — no diagnostics (local tsgo)
+EXIT[node scripts/typecheck.mjs --require]=0
+=== $ bun test packages/ ===
+bun test v1.4.2 (744846f84)
+
+packages/mpd-docgen-plugin/test/docgen-xlsx.test.ts:
+(pass) xlsx workbook V1-V5 > V1: Sheet1 plus the nine header cells are readable from the zip [2.77ms]
+(pass) xlsx workbook V1-V5 > V1: the col-I legend keeps its line breaks and is centred [0.06ms]
+(pass) xlsx workbook V1-V5 > V2: rows = 1 header + R Reg rows + F field rows, 9 columns [0.27ms]
+(pass) xlsx workbook V1-V5 > V3: Reg rows are bold with fill FFFFFF00 and access literal Mixed [0.05ms]
+(pass) xlsx workbook V1-V5 > V3: field rows are not bold and carry no fill [0.24ms]
+(pass) xlsx workbook V1-V5 > V4: field offsets are bracketed, strictly descending and cover 0xFFFFFFFF [0.13ms]
+(pass) xlsx workbook V1-V5 > V4: RESERVED rows have an empty access and the canonical description [0.05ms]
+(pass) xlsx workbook V1-V5 > V4: reset literals are uppercase, sized to the field and derived from the register reset [0.09ms]
+(pass) xlsx workbook V1-V5 > V5: every A..I cell has a thin border, the eCap widths and the 43.2 header height [0.13ms]
+(pass) xlsx workbook V1-V5 > V5: header gray + bold, size 11, 宋体 charset 134 for CJK and Calibri elsewhere [0.16ms]
+(pass) xlsx workbook V1-V5 > V5: descriptions wrap in column F only [0.03ms]
+(pass) xlsx workbook V1-V5 > V10: two builds over the same registers are byte-identical [1.44ms]
+(pass) registerXlsxToolDefinition > name, object-rooted parameters and output schema [0.07ms]
+(pass) registerXlsxToolDefinition > execute writes a real file whose sha256 and byte count match the result [5.18ms]
+(pass) registerXlsxToolDefinition > missing input is a structured DOCGEN_E_INPUT refusal, not a throw [0.50ms]
+(pass) registerXlsxToolDefinition > an unreadable manual is a structured DOCGEN_E_IO refusal [0.40ms]
+
+packages/mpd-docgen-plugin/test/docgen-docx.test.ts:
+(pass) V6 package > the nine required parts are present and the archive passes CRC [0.45ms]
+(pass) V6 package > content types declare every XML part [0.49ms]
+(pass) V6 package > every relationship target exists inside the package [1.69ms]
+(pass) V6 package > document.xml ends with exactly one body-level sectPr (A4 portrait) [1.05ms]
+(pass) V6 package > core.xml carries the manual title and app.xml the producer [1.23ms]
+(pass) V6 package > styles.xml defines the heading/table styles the document references [0.44ms]
+(pass) V6 package > every text run carries rFonts with hint="eastAsia" (Calibri or Courier New + 宋体) [0.62ms]
+(pass) V7 register chapter > the register H2 is the last H2 and one H3 chapter exists per register [1.26ms]
+(pass) V7 register chapter > the English variant uses the English chapter title and H3 form [0.55ms]
+(pass) V7 register chapter > each chapter carries its offset and reset lines in the manual language [0.97ms]
+(pass) V7 register chapter > each chapter follows the fixed element order: H3, offset, reset, bit table, empty p, detail table, empty p [0.61ms]
+(pass) V8 overview table > header is Offset | Register | 31..0 and there are exactly two rows per register [1.17ms]
+(pass) V8 overview table > name rows are 902 twips with gridSpan labels, gray RESERVED bands and btLr single bits [0.61ms]
+(pass) V8 overview table > reset rows are 278 twips with Reset value and one 1/0 cell per bit, RESERVED spans empty [0.68ms]
+(pass) V8 overview table > the TSCTR reset bits are 0x00001020 rendered per bit [0.85ms]
+(pass) V9 bit and detail tables > one 6x16 bit table per register with the eCap grid and trHeight 420 field rows [0.77ms]
+(pass) V9 bit and detail tables > each bit table's field cells specify gridSpan, tcW and the eCap access mapping [0.50ms]
+(pass) V9 bit and detail tables > all eight eCap access pairs are mapped and an unmapped code is verbatim [2.02ms]
+(pass) V9 bit and detail tables > one detail table per register: 830/1659/5807 grid, headers, one row per field, descriptions split per line [0.55ms]
+(pass) V9 bit and detail tables > the English detail headers are Bit field | Name | Description [0.42ms]
+(pass) V10 determinism > two builds of the same model are byte-identical [3.39ms]
+(pass) V10 determinism > the English build is likewise byte-identical [2.27ms]
+(pass) V12 no template placeholders > the fixture manuals produce no placeholder text [0.81ms]
+(pass) V12 no template placeholders > the shipped template shape parses and renders without leaving its placeholders [3.35ms]
+(pass) body blocks and labels > markdown tables become real Word tables with a header row [0.40ms]
+(pass) body blocks and labels > bullet lists, fenced code and inline bold render as runs [1.15ms]
+(pass) body blocks and labels > zh and en label variants are distinct where the plan requires it [0.91ms]
+(pass) tool definition > name, parameters and output contract match the plan [0.07ms]
+(pass) execute > writes a real docx whose counts, byte length and sha256 match the result [5.82ms]
+(pass) execute > a missing or unsupported lang is a structured DOCGEN_E_INPUT refusal [0.27ms]
+(pass) execute > an unreadable manual is a structured DOCGEN_E_IO refusal [0.07ms]
+(pass) execute > a manual without a register chapter is a structured DOCGEN_E_PARSE refusal [0.20ms]
+
+packages/mpd-docgen-plugin/test/docgen-core.test.ts:
+(pass) fixtures > zh fixture: title, two registers, merged RESERVED gap and 32-bit width [0.26ms]
+(pass) fixtures > zh fixture: 16-bit register keeps its manual RESERVED row separate from the [31:16] gap [0.18ms]
+(pass) fixtures > en fixture: same register skeleton, English canonical RESERVED text [0.30ms]
+(pass) fixtures > blocks exclude the H1 and the register chapter but keep fences, lists and tables [0.23ms]
+(pass) fixtures > the shipped template's register chapter shape parses with warnings, never a throw [0.18ms]
+(pass) fixtures > the shipped template's placeholder section is not parsed as a register [0.12ms]
+(pass) heading forms > canonical heading: ### 时间戳计数器(TSCTR) [0.12ms]
+(pass) heading forms > legacy heading: ### 寄存器1（TSCTR）——时间戳计数器 [0.46ms]
+(pass) heading forms > a manual without a register chapter parses to zero registers [0.03ms]
+(pass) canonicalisation > gap fill covers [31:0] and bit-adjacent RESERVED rows merge [0.07ms]
+(pass) canonicalisation > width is 32 for eight reset digits and 16 for four [0.05ms]
+(pass) canonicalisation > reset and offset helpers follow the eCap normalisation [0.03ms]
+(pass) canonicalisation > field formatting helpers match the writers' expectations [0.04ms]
+(pass) canonicalisation > RESERVED description is language-specific [0.03ms]
+(pass) access codes > the strict set is the template's 25 abbreviations [0.03ms]
+(pass) access codes > an unknown access is refused with DOCGEN_E_ACCESS [0.18ms]
+(pass) access codes > a non-RESERVED field with an empty access is refused [0.05ms]
+(pass) validation > missing reset value is DOCGEN_E_PARSE [0.03ms]
+(pass) validation > missing offset is DOCGEN_E_PARSE [0.02ms]
+(pass) validation > overlapping fields are DOCGEN_E_FIELDS [0.04ms]
+(pass) validation > a field above bit 31 is DOCGEN_E_FIELDS [0.03ms]
+(pass) validation > a 4-digit reset may still declare fields above bit 15 (eCap's MUNIT_*_SHD_CTL) [0.05ms]
+(pass) validation > an overview offset disagreement is a WARNING, not an error [0.07ms]
+(pass) validation > an overview register without a chapter is a WARNING, not an error [0.06ms]
+(pass) validation > the template's `0NNNh` overview offset compares equal to `0xNN` [0.05ms]
+(pass) zip > round-trips every entry, including an empty one [0.12ms]
+(pass) zip > is byte-identical across runs and independent of input order [0.12ms]
+(pass) zip > uses the fixed 1980-01-01 DOS timestamp and sorted local entries [0.05ms]
+(pass) zip > detects a corrupted payload instead of returning wrong bytes [0.07ms]
+(pass) zip > refuses duplicate entry names [0.12ms]
+(pass) paths > artifact names and the ip slug [0.08ms]
+(pass) paths > the zh/en fixtures derive different default slugs, so run must pass one ip [0.21ms]
+(pass) paths > relative paths resolve against the workspace root; absolute paths are kept [0.24ms]
+(pass) paths > atomic write lands mode 0644, replaces content and leaves no temp file [0.79ms]
+(pass) plugin registration > apply registers the four mpd_docgen_* tools with object parameters and a render [0.13ms]
+(pass) plugin registration > inject declares the tool seam and the hard mpdDsh dependency
+(pass) plugin registration > the lane modules export the pinned function shapes
+
+packages/mpd-docgen-plugin/test/docgen-run.test.ts:
+(pass) mpd_docgen_run > writes all three artifacts with matching bytes and sha256 [8.71ms]
+(pass) mpd_docgen_run > derives one ip from the zh title when the argument is absent [4.77ms]
+(pass) mpd_docgen_run > V10: two runs over the same manuals are byte-identical [10.19ms]
+(pass) mpd_docgen_run > propagates the parser's overview warning [5.20ms]
+(pass) mpd_docgen_run > reports the missing English twin as a warning, not a failure [3.23ms]
+(pass) mpd_docgen_run > a zh/en offset mismatch is DOCGEN_E_LANG_MISMATCH and writes nothing [0.60ms]
+(pass) mpd_docgen_run > a missing manual is a structured refusal, not a throw [0.27ms]
+(pass) mpd_docgen_verify > passes every requested check on the produced artifacts [11.21ms]
+(pass) mpd_docgen_verify > V11 rejects an EN docx whose offset disagrees with the ZH docx [11.58ms]
+(pass) mpd_docgen_verify > V11 rejects an EN docx whose reset value flips the register width [10.14ms]
+(pass) mpd_docgen_verify > V11 passes on the untampered zh/en pair, comparing offsets and widths [9.64ms]
+(pass) mpd_docgen_verify > only the requested checks are emitted (V11 needs both docx files) [7.24ms]
+(pass) mpd_docgen_verify > a corrupted workbook header fails V1 and names it [5.52ms]
+(pass) mpd_docgen_verify > a docx without its overview table fails V8 only [8.89ms]
+(pass) mpd_docgen_verify > a missing file fails its checks with the reason instead of throwing [0.46ms]
+(pass) mpd_docgen_verify > no artifact argument is a structured DOCGEN_E_INPUT refusal [0.30ms]
+(pass) compareSkeletons > is empty when the skeletons agree [0.08ms]
+(pass) compareSkeletons > compares offsets numerically (0x10 equals 16) [0.03ms]
+(pass) compareSkeletons > is order-sensitive and names the register that moved [0.04ms]
+(pass) compareSkeletons > reports count, width, span and reserved-ness differences [0.04ms]
+(pass) compareSkeletons > reports a reserved-ness change at the same span [0.02ms]
+
+packages/mpd-verif-plugin/test/index.test.ts:
+(pass) exactly the ten-tool surface (the DP-4 eight + toolchain + librelane) is registered [0.89ms]
+(pass) every tool carries parameters + output schema + render + execute [0.07ms]
+ENV-GATED: no HDL backend (iverilog/verilator) — install with apt install iverilog verilator
+(pass) mpd_verif_backends renders and returns structured probes [8.87ms]
+(pass) tool failures cross the seam as structured refusals (never exceptions) [3.42ms]
+(pass) mpd_verif_venv execute: status action returns verdict without exceptions [0.52ms]
+
+packages/mpd-verif-plugin/test/silicon-tool.test.ts:
+(pass) apply registers the silicon-toolchain prompt section through the adapter seam [0.08ms]
+(pass) a composition without the systemPrompt seam still boots (the section is optional) [0.21ms]
+(pass) path: reports both layer paths, DSH_HOME and the workspace without creating anything [0.40ms]
+(pass) init writes a commented template; a second init refuses without force [0.54ms]
+(pass) set (user) then show reports the value, its source layer and the resolved binary [3.39ms]
+(pass) workspace scope resolves a relative path before writing; project layer overrides [0.63ms]
+(pass) set defaults to the defining layer; unset removes it and reports the old value [1.39ms]
+(pass) slangServer.bin: set preserves comments, show.paths probes it, unset removes it [1.34ms]
+(pass) refusals cross the seam as structured errors [0.49ms]
+(pass) detect returns suggestions only and writes nothing [1.51ms]
+(pass) every action renders a text block and every success is lossless JSON [1.43ms]
+
+packages/mpd-verif-plugin/test/silicon-librelane-schema.test.ts:
+(pass) the declared output schema is inside the harness's closed subset [0.44ms]
+(pass) status (binary) validates: appimageExtract null is NOT APPLICABLE, version is a string [2.69ms]
+(pass) status (binary, configured but missing) validates: version null when the probe was skipped [0.48ms]
+(pass) status (devshell) validates: appimageExtract is a real boolean, not null [2.75ms]
+(pass) status unresolved (structured refusal) validates: {ok:false, error:{code,message,hint}} [0.65ms]
+(pass) run success validates: cwd/signal/timedOut/spawnError are now described [2.66ms]
+(pass) run non-zero exit validates: ok false with a numeric exitCode [2.46ms]
+(pass) run killed by a signal validates: exitCode null, signal set [1.71ms]
+(pass) regression control: the PRE-FIX nullability still fails on the real binary-mode value [1.69ms]
+
+packages/mpd-verif-plugin/test/coverage.test.ts:
+(pass) iverilog coverage is refused (VERIF_E_UNSUPPORTED with lane hint) [0.31ms]
+(pass) verilator merge: verilator_coverage --write merged.dat over discovered .dat files [1.31ms]
+(pass) verilator merge ignores a tree with only __verFiles.dat (no malformed-point merge) [0.39ms]
+(pass) verilator merge without datasets refuses with VERIF_E_RUN + actionable hint [0.24ms]
+(pass) verilator report: action=report annotates with --annotate <dir> --annotate-all <dat> [1.68ms]
+(pass) verilator report without a merged dataset refuses with VERIF_E_RUN + action=merge hint [0.23ms]
+(pass) vcs coverage: urg merge argv over discovered cov dirs (fake urg capture) [3.69ms]
+(pass) vcs coverage: missing urg resolves to VERIF_E_NO_BACKEND with hint [0.26ms]
+(pass) vcs coverage: no cov payloads refuses with VERIF_E_RUN [0.26ms]
+
+packages/mpd-verif-plugin/test/sim.test.ts:
+(pass) parseResultsXml: pass xml -> per-case statuses + summary [0.24ms]
+(pass) D2 regress: self-closing <failure .../> (cocotb 2.0.1 xUnit) — 3/4 failures must NOT parse as pass [0.26ms]
+(pass) D2 regress: self-closing <error .../> and body-form failure/error variants [0.04ms]
+(pass) parseResultsXml: failure block -> fail status + failure message [0.02ms]
+(pass) verifSim: vcs backend is refused (VERIF_E_UNSUPPORTED -> use mpd_verif_uvm) [0.19ms]
+(pass) verifSim: missing venv -> VERIF_E_NO_VENV with exact setup command (iron rule) [0.26ms]
+(pass) verifSim: venv without cocotb -> VERIF_E_COCOTB_ABSENT [2.53ms]
+(pass) verifSim happy path: runner.py generated, executed via <venv>/bin/python, results parsed, waves collected [20.36ms]
+(pass) verifSim: failing case -> ok=false with VERIF_E_RUN details [9.15ms]
+(pass) verifSim: vvp/runner non-zero exit WITHOUT results.xml -> VERIF_E_RUN with actionable hint [5.24ms]
+(pass) verifSim: backend binary absent (env pinned to missing path) -> VERIF_E_NO_BACKEND [2.81ms]
+(pass) buildSimMakefile: DP-6 Makefile contract (SIM/COCOTB_TOPLEVEL/FST/defines) [0.17ms]
+(pass) writeIcarusShimDir: a vvp wrapper that exports PYTHONHOME is bypassed via its loader [0.61ms]
+(pass) writeIcarusShimDir: a normal vvp binary gets NO shim (behaviour unchanged) [0.26ms]
+(pass) verifSim: a config-resolved backend dir is prepended after the venv, before the inherited PATH [11.69ms]
+(pass) collectWaves finds fst/vcd recursively and classifies fmt [0.47ms]
+(pass) verifSim leaves ALL state under workspace work dir (never ~/.dsh) [8.85ms]
+
+packages/mpd-verif-plugin/test/silicon-jsonc.test.ts:
+(pass) stripJsonc removes line and block comments and still parses [0.08ms]
+(pass) stripJsonc drops trailing commas before } and ] (including across comments) [0.02ms]
+(pass) comment-looking text inside strings survives untouched [0.03ms]
+(pass) escapes are honoured: an escaped quote does not end the string [0.32ms]
+(pass) an unterminated document reaches JSON.parse and throws (no crash inside the scanner) [0.23ms]
+(pass) deepMerge recurses into objects and replaces scalars and arrays [0.05ms]
+(pass) deepMerge refuses __proto__ / prototype / constructor keys [0.05ms]
+(pass) deepMerge never aliases its inputs [0.02ms]
+(pass) getPath reads own properties only and returns undefined on any miss [0.02ms]
+
+packages/mpd-verif-plugin/test/silicon-config.test.ts:
+(pass) missing layers are normal: both reported absent, effective config is empty [0.22ms]
+(pass) project layer overrides user; per-key source attribution names the winning layer [0.26ms]
+(pass) a malformed layer is REPORTED and does not kill the other layer [0.25ms]
+(pass) prototype keys never reach the merged object or Object.prototype [0.19ms]
+(pass) unknown keys are preserved AND reported; wrong-typed known keys are reported invalid [0.26ms]
+(pass) a wrong-typed group is reported once, not once per child leaf [0.20ms]
+(pass) MPD_SILICON_CONFIG selects an alternate user layer [0.21ms]
+(pass) set writes a user-scope leaf and reports old/new + file; comments survive [0.52ms]
+(pass) set defaults to the layer that already defines the key [1.02ms]
+(pass) schema: slangServer.bin is a path leaf; unknown siblings are refused [0.20ms]
+(pass) set creates a missing layer from the commented template [0.27ms]
+(pass) user scope refuses a relative path; workspace scope resolves it against the workspace [0.34ms]
+(pass) set expands a leading ~ and validates boolean/enum values [0.43ms]
+(pass) set REFUSES a malformed target document instead of clobbering it [0.25ms]
+(pass) unset removes the key from the layer that defines it and is a no-op otherwise [0.35ms]
+(pass) init writes the commented template; refuses an existing file unless forced [0.32ms]
+(pass) the template itself is valid JSONC and starts empty [0.02ms]
+
+packages/mpd-verif-plugin/test/silicon-edit.test.ts:
+(pass) update an existing value: every byte outside the value span is unchanged [0.53ms]
+(pass) insert a missing key keeps comments, key order and the trailing-comma style [0.76ms]
+(pass) insert a path with a missing parent materialises the parent object [0.06ms]
+(pass) insert into an empty object keeps the document line ending [0.03ms]
+(pass) F3: a sibling insert keeps a trailing line comment on the preceding member [0.04ms]
+(pass) F3 control: a sibling insert keeps a trailing block comment on the preceding member [0.05ms]
+(pass) F3: a trailing comment after an existing comma stays on the preceding member [0.04ms]
+(pass) F3: a sibling insert preserves CRLF with a trailing line comment [0.04ms]
+(pass) an identical edit is a byte-level no-op [0.03ms]
+(pass) unset removes the member and exactly one adjacent comma, leaving valid JSONC [0.04ms]
+(pass) DELETE sentinel routes through the delete path [0.02ms]
+(pass) a malformed document is refused (byte-untouched), never best-effort edited [0.09ms]
+(pass) a duplicated INTERMEDIATE key is ambiguous and refused [0.04ms]
+(pass) atomicWriteSiliconFile: content, mode 0644, sibling temp cleaned, parent mkdir -p [0.22ms]
+
+packages/mpd-verif-plugin/test/core.test.ts:
+(pass) resolveBackendBinary: MPD_DSH_* env override wins over PATH [0.05ms]
+(pass) resolveBackendBinary: PATH fallback finds real tooling or null [0.05ms]
+(pass) dateSeedBase is an 8-digit YYYYMMDD int (deterministic per calendar day) [0.06ms]
+(pass) D1 regress: compilePlan creates the build dir BEFORE the tool would spawn (preflight-backed) [6.89ms]
+(pass) D1 regress: verilator compile target also pre-creates the build dir [0.52ms]
+(pass) lintPlan argv contracts per backend (t2 design) [0.61ms]
+(pass) compilePlan argv contracts and vcs simv output [0.32ms]
+(pass) parseDiagnostics: iverilog / verilator / vcs dialects [0.13ms]
+(pass) writeVcsFilelist emits the vcs-native -f file format [0.19ms]
+(pass) refusalOf: VerifError keeps code/message/hint; unknown becomes VERIF_E_RUN [0.08ms]
+
+packages/mpd-verif-plugin/test/wave.test.ts:
+(pass) wave-mcp not wired -> unavailable with the exact install/wire hint (graceful degrade) [0.06ms]
+(pass) no wave file produced -> unavailable with a 'waves on?' message [0.04ms]
+(pass) wired wave-mcp -> calls mcp__wave_mcp__prepare_session with out_dir/wave_path/top [0.51ms]
+(pass) wired vcs lane -> TraceWeave get_sim_paths with verif_root/case_name/sim_log/wave_file [0.15ms]
+(pass) TraceWeave not wired -> unavailable with the no-venv install hint [0.05ms]
+(pass) MCP call throws / returns no value -> failed (still graceful, never an exception) [0.13ms]
+(pass) DP-8: wave session dir defaults to $DSH_HOME/wave-mcp (MPD_DSH_WAVE_MCP_SESSION wins) [0.06ms]
+(pass) partial tool runtime (no get/execute) degrades like absent wiring [0.06ms]
+
+packages/mpd-verif-plugin/test/uvm.test.ts:
+(pass) layoutCheck: full contract passes; missing pieces are listed [1.00ms]
+(pass) verifUvm compile: fake-vcs captures uvm-1.2 makefile contract argv [3.24ms]
+(pass) verifUvm compile failure: capped attempts + unresolved.md on exhaustion (honest handoff) [6.64ms]
+(pass) verifUvm run: per-case work dir + +UVM_TESTNAME/seed/verbosity args (fake simv capture) [3.14ms]
+(pass) verifUvm run: UVM_ERROR in log -> case fail (exit 0 is not enough) [2.48ms]
+(pass) verifUvm: non-vcs environment refuses with VERIF_E_NO_BACKEND + license hints [0.71ms]
+(pass) verifUvm wave: env gate requires VERDI_HOME/NOVAS_HOME (VERIF_E_ENV checklist) [1.20ms]
+(pass) verifUvm layout contract violated -> VERIF_E_TEMPLATE with expected-file list [1.59ms]
+(pass) verifUvm regress: compiles when simv missing, runs every test/*_test.sv with per-case dirs [12.34ms]
+(pass) verifUvm merge-cov: urg merge argv over per-case cov dirs + VERIF_E_RUN when cov missing [3.57ms]
+(pass) verifUvm run: fsdbreport non-GUI verification hook fires on FEBD output (owner DP-11) [3.01ms]
+(pass) verifUvm run with fsdb wave triggers fsdbreport capture (argv asserted) [2.36ms]
+(pass) verifUvm run: fsdbreport missing → hook degrades with install hint [2.49ms]
+(pass) verifUvm clean removes the work dir; ipDir expands <ip> templates [1.29ms]
+
+packages/mpd-verif-plugin/test/silicon-backend.test.ts:
+(pass) env override wins over config AND is returned even when the file is missing [0.35ms]
+(pass) config resolves iverilog and verilator when env is unset [0.33ms]
+(pass) ossCadSuite.home implies <home>/bin as the config candidate [0.35ms]
+(pass) no config: PATH remains the last tier (and a missing binary stays null) [0.33ms]
+(pass) a single-file ossCadSuite.bin only resolves the tool it is named after [0.33ms]
+(pass) VCS resolution is deliberately NOT config-aware [0.30ms]
+(pass) resolveVerilatorCoverage: env -> config -> PATH [0.31ms]
+(pass) probeBackend/probeAll report source=config and the resolved path [3.42ms]
+(pass) mpd_verif_backends threads the loaded config into its probes [2.31ms]
+
+packages/mpd-verif-plugin/test/lossless.test.ts:
+(pass) probeBackend is lossless for a PRESENT backend of every kind (the B3 trigger) [2.44ms]
+(pass) probeBackend is lossless for an ABSENT backend of every kind [0.23ms]
+(pass) mpd_verif_backends tool result is lossless for every backend selector [10.83ms]
+(pass) verifCompile lint/compile results are lossless for all three backends [5.30ms]
+(pass) the lane truth table is preserved: optional keys appear only when real [3.78ms]
+
+packages/mpd-verif-plugin/test/regress.test.ts:
+(pass) cocotb regression: 2 cases, seedBase+idx seeds, results.json + results.md on disk [21.20ms]
+(pass) cocotb regression: missing venv refuses with the iron-rule code [0.34ms]
+(pass) cocotb regression: stopOnError halts after the first failing case [12.89ms]
+(pass) cocotb regression: maxFailures bound also stops the loop [21.24ms]
+(pass) vcs regression delegates to the UVM lane (layout-driven case discovery) [13.40ms]
+(pass) regress: bad backend id refuses with VERIF_E_UNSUPPORTED [0.25ms]
+(pass) R1 ordering: with NO session the iron gate refuses BEFORE any work-dir creation (blocked work root) [0.35ms]
+(pass) R1 ordering: a session-scoped call passes the gate, stops at backend resolution, and creates no work dir [1.97ms]
+(pass) R1 ordering: the vcs lane also refuses before any work-dir creation [0.24ms]
+(pass) R1-F1: verifRegress forwards exec so the per-case sim gates on the SESSION venv, not DSH_WORKSPACE_ROOT [11.47ms]
+
+packages/mpd-verif-plugin/test/silicon-librelane.test.ts:
+(pass) resolution: librelane.bin as a file, then as a directory -> <dir>/librelane [0.37ms]
+(pass) resolution: librelane.home probes <home>/bin/librelane and <home>/.venv/bin/librelane [0.39ms]
+(pass) resolution: auto maps the AppImage filename to devshell/appimage; explicit mode wins [0.28ms]
+(pass) resolution: env fallbacks (binary + AppImage), config precedence, PATH last [0.38ms]
+(pass) extract decision: auto follows /dev/fuse; the config override wins [0.03ms]
+(pass) command building: binary/appimage argv; devshell prepends `librelane` as one argv word [0.06ms]
+(pass) version parsing: the first LibreLane v<version> [0.03ms]
+(pass) status: binary previews [bin, --version] and reports LibreLane v3.0.16 [1.61ms]
+(pass) status: devshell previews [appimage, librelane, --version] and reports the extract setting [1.89ms]
+(pass) status: a configured but missing binary reports exists=false instead of refusing [0.39ms]
+(pass) run: fake binary sees argv/cwd/PATH prefix; log exists; tails; exit 0 [2.71ms]
+(pass) run: a non-zero exit is reported (not thrown) and a log is still written [1.82ms]
+(pass) run: devshell prepends `librelane` and preserves argv boundaries; extract env is set [1.57ms]
+(pass) run: a cwd outside the workspace is a structured refusal [0.32ms]
+(pass) run: empty, missing or non-string args refuse before spawning [0.56ms]
+(pass) missing librelane: status and run refuse with an actionable hint [0.37ms]
+(pass) apply registers the tenth tool and the silicon-toolchain prompt mentions it [0.23ms]
+
+packages/mpd-verif-plugin/test/venv.test.ts:
+(pass) venvStatus: missing venv -> verdict missing with exact setup command [0.15ms]
+(pass) venvStatus: venv present but cocotb absent -> setup-required (iron rule) [2.26ms]
+(pass) venvStatus: cocotb importable inside venv -> ok + version [2.28ms]
+(pass) venvCreate: python3 -m venv + <venv>/bin/pip install cocotb>=2.0 (argv captured, no --user/--system) [14.96ms]
+(pass) requireCocotbVenv throws VERIF_E_NO_VENV with the setup command in the hint [0.25ms]
+
+packages/mpd-silicon-bootstrap-plugin/test/bootstrap.test.ts:
+(pass) frontmatter parsing > parses the top-level scalars, one nested metadata map and the body [0.42ms]
+(pass) frontmatter parsing > parses folded (>) and literal (|) block scalars inside metadata [0.22ms]
+(pass) frontmatter parsing > returns undefined when the document carries no frontmatter block [0.14ms]
+(pass) frontmatter parsing > throws (instead of guessing) on a line outside the supported subset [0.05ms]
+(pass) frontmatter parsing > keeps CJK scalar and body content byte-for-byte [0.19ms]
+(pass) frontmatter parsing > parses invocation flags and rejects the legacy field names [0.17ms]
+(pass) corpus listing > lists directory bundles and flat markdown entries, sorted, skipping .system [2.26ms]
+(pass) corpus listing > an absent corpus root is an empty listing, never an error (a corpus may land later) [0.20ms]
+(pass) readSkillFile > returns the parsed skill for a valid corpus file [0.40ms]
+(pass) readSkillFile > skips a missing file, a file without frontmatter, an invalid name and missing fields (with a warning) [0.55ms]
+(pass) bundled provider > registers the unique silicon provider name at the bundled rank with bundled source [0.61ms]
+(pass) bundled provider > get() returns the full content for a candidate and undefined for a bad locator [0.53ms]
+(pass) bundled provider > a model-facing write inside the corpus invalidates the provider once [0.13ms]
+(pass) bundled provider > a corpus listed lazily re-reads the directory (no stale cache in the provider) [0.33ms]
+(pass) plugin entry > exposes the cordis entry contract and the bundle-root resolution [0.14ms]
+(pass) plugin entry > apply() registers the silicon provider over <pkg-root>/skills through the adapter [0.17ms]
+[mpd-silicon-bootstrap] skill corpus served from /tmp/corpus-override (provider silicon-bundle, bundle 0.7.0)
+[mpd-silicon-bootstrap] skill corpus provider skipped (config)
+(pass) plugin entry > apply() honours skillsDir and skipSkills [0.12ms]
+[mpd-silicon-bootstrap] skill corpus served from /home/haroldzhao/MyProj/DshProj/MPD-Silicon/skills (provider silicon-bundle, bundle 0.7.0)
+(pass) plugin entry > apply() uses mpd's adapter service (mpdDsh) and has NO fallback [0.10ms]
+(pass) plugin entry > apply() carries NO preset and NO legacy home-copy logic [0.35ms]
+
+packages/mpd-silicon-bootstrap-plugin/test/skills.test.ts:
+(pass) shipped RTL corpus > ships exactly the three RTL trees, and no mpd general-purpose corpus [0.09ms]
+(pass) shipped RTL corpus > every expected template / reference / example / fixture file is present [0.29ms]
+(pass) shipped RTL corpus > each tree matches the committed corpus baseline (relative path + sha256 per file) [1.56ms]
+(skip) shipped RTL corpus > cross-check: byte-identical to the source checkout at /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills (0/3 trees present)
+(pass) corpus frontmatter subset > parses every markdown file without throwing (templates carry none on purpose) [0.27ms]
+(pass) corpus frontmatter subset > every SKILL.md carries a legal name and a non-empty description [0.20ms]
+(pass) corpus frontmatter subset > the subset is enforced, not guessed: a mutated SKILL.md is detected [0.10ms]
+(pass) skill provider over the shipped corpus > lists exactly the three RTL skills at the bundled rank, with no warnings [0.48ms]
+(pass) skill provider over the shipped corpus > get() loads each skill's full content, and the resource base is the tree root [0.61ms]
+(pass) skill provider over the shipped corpus > the corpus paths the skills reference actually resolve (templates are shipped, not described) [0.90ms]
+(pass) skill provider over the shipped corpus > the provider's corpus root is <pkg-root>/skills, i.e. what the bundle patch will serve [0.33ms]
+
+packages/mpd-silicon-guard-plugin/test/guard.test.ts:
+(pass) guard contract > is inject-free and named for the refusal it performs [0.02ms]
+(pass) guard contract > the refusal names the pinned dependency and the row to enable [0.01ms]
+(pass) waitForService > resolves on the first poll when the service is already present [0.26ms]
+(pass) waitForService > keeps polling and resolves as soon as the service appears [0.20ms]
+(pass) waitForService > rejects with the actionable guard message once the deadline passes [0.08ms]
+(pass) waitForService > a zero timeout rejects without scheduling a poll [0.06ms]
+(pass) apply > returns without arming a timer when the provider is ACTIVE [0.09ms]
+(pass) apply > arms the poll when the strict probe throws (provider absent or not ACTIVE) [0.19ms]
+
+packages/mpd-silicon-guard-plugin/test/dependency-surface.test.ts:
+(pass) @mpd-dsh/mpd adapter surface > the service name is mpdDsh (the name consumers inject)
+(pass) @mpd-dsh/mpd adapter surface > every symbol the bundle imports exists at runtime [0.04ms]
+(pass) @mpd-dsh/mpd adapter surface > the local adapter port is gone and the dependency is pinned [0.06ms]
+
+packages/mpd-mcp-lsp/test/launch.test.ts:
+(pass) launch.mjs > no config leaves the child PATH equal to the parent PATH [24.14ms]
+(pass) launch.mjs > user config prepends verible.bin, tolerating JSONC comments and trailing commas [23.01ms]
+(pass) launch.mjs > project config overrides the user layer [23.05ms]
+(pass) launch.mjs > malformed config warns once on stderr and still spawns with the inherited PATH [21.63ms]
+(pass) launch.mjs > extra argv reaches the child unchanged [20.87ms]
+(pass) launch.mjs > prepends ossCadSuite before verible and skips directories that do not exist [44.20ms]
+(pass) launch.mjs > prepends slangServer.bin after ossCadSuite and verible so slang-server resolves [45.56ms]
+(pass) launch.mjs > derives <home>/bin when a section has no explicit bin [21.60ms]
+(pass) launch.mjs > propagates the child exit code [22.84ms]
+(pass) launch.mjs > forwards SIGTERM and exits with the child's code [23.78ms]
+
+1 tests skipped:
+(skip) shipped RTL corpus > cross-check: byte-identical to the source checkout at /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills (0/3 trees present)
+
+ 325 pass
+ 1 skip
+ 0 fail
+ 3336 expect() calls
+Ran 326 tests across 25 files. [874.00ms]
+EXIT[bun test packages/]=0
+=== $ node scripts/verify-corpus.mjs ===
+[verify-corpus] root: /home/haroldzhao/MyProj/DshProj/MPD-Silicon | corpus: /home/haroldzhao/MyProj/DshProj/MPD-Silicon/skills | files: 36
+[verify-corpus] fidelity baseline: /home/haroldzhao/MyProj/DshProj/MPD-Silicon/evidence/verification/corpus-baseline.json | source cross-check: /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills
+  PASS  skills/ holds exactly the three RTL trees (rtl-codestyle, rtl-ip-flow, rtl-verif)
+  PASS  rtl-ip-flow: all 10 required files present
+  PASS  rtl-codestyle: all 6 required files present
+  PASS  rtl-verif: all 20 required files present
+  PASS  corpus file count 36 >= 36
+  PASS  rtl-ip-flow: 10 files match the committed baseline (sha256, source rev 3d99718)
+  PASS  rtl-codestyle: 6 files match the committed baseline (sha256, source rev 3d99718)
+  PASS  rtl-verif: 20 files match the committed baseline (sha256, source rev 3d99718)
+  PASS  text hygiene: all 36 files are LF-only UTF-8
+  PASS  provider "silicon-bundle" loads all 3 skills: rtl-codestyle, rtl-ip-flow, rtl-verif
+  SKIP  fidelity cross-check: no source checkout at /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills — the committed baseline above is authoritative (set MPD_SOURCE_ROOT or MPD_SOURCE_SKILLS to cross-check)
+[verify-corpus] PASS — 10 check(s) passed, 1 skipped
+EXIT[node scripts/verify-corpus.mjs]=0
+=== $ node scripts/verify-rows-disjoint.mjs ===
+[rows-disjoint] mpd root: /home/haroldzhao/MyProj/DshProj/MPD-Silicon/node_modules/@mpd-dsh/mpd (via installed dependency node_modules/@mpd-dsh/mpd)
+[rows-disjoint] silicon: 1 layer(s) via /home/haroldzhao/MyProj/DshProj/MPD-Silicon/package.json
+[rows-disjoint] mpd: 2 layer(s) via /home/haroldzhao/MyProj/DshProj/MPD-Silicon/node_modules/@mpd-dsh/mpd/package.json
+[rows-disjoint] silicon layer 1/1 (/home/haroldzhao/MyProj/DshProj/MPD-Silicon/packages/mpd-bundle/cordis.patch.yml): 5 row id(s) — insert 5, id-target 0
+[rows-disjoint] mpd layer 1/2 (/home/haroldzhao/MyProj/DshProj/MPD-Silicon/node_modules/@mpd-dsh/mpd/cordis.patch.yml): 34 row id(s) — insert 34, id-target 0
+[rows-disjoint] mpd layer 2/2 (/home/haroldzhao/MyProj/DshProj/MPD-Silicon/node_modules/@mpd-dsh/mpd/presets/mpd.patch.yml): 1 row id(s) — insert 1, id-target 0
+[rows-disjoint] silicon total: 5 row id(s) — insert 5, id-target 0, across 1 layer(s)
+[rows-disjoint] mpd total: 35 row id(s) — insert 35, id-target 0, across 2 layer(s)
+[rows-disjoint] PASS: silicon ∩ mpd = ∅
+EXIT[node scripts/verify-rows-disjoint.mjs]=0
+=== $ node scripts/build-lsp.mjs --check ===
+[build-lsp] check PASS: dist/cli.js sha256 04b49f8c192d03b5… (235271 bytes) matches BUILD.lock, both HDL registry entries present, overlay anchor present, 2 reference docs and 4 fixtures in place
+EXIT[node scripts/build-lsp.mjs --check]=0
+=== $ node scripts/pack-silicon.mjs --self-test ===
+[pack-silicon] self-test: proving the package-set guards can fail
+[pack-silicon] self-test PASS: control group: an unlisted package (mpd-stripped-plugin) is caught
+[pack-silicon] self-test PASS: control group: the guard reports the unlisted package as a violation
+[pack-silicon] self-test PASS: control group: stage() would be rejected
+[pack-silicon] self-test PASS: clean payload: no unlisted packages
+[pack-silicon] self-test PASS: clean payload: no violations at all
+[pack-silicon] self-test PASS: clean payload: stage() would be accepted
+[pack-silicon] self-test PASS: clean payload: the launcher ships with the copied asset package
+[pack-silicon] self-test PASS: clean payload: the tests fixture tree ships
+[pack-silicon] self-test PASS: control group: a staged payload without the tests fixture is caught
+[pack-silicon] self-test PASS: control group: stage() would be rejected without the tests fixture
+[pack-silicon] self-test PASS: clean payload: no adapter-wiring violations
+[pack-silicon] self-test PASS: control group: a staged patch naming the deleted local adapter is caught
+[pack-silicon] self-test PASS: control group: an inlined adapter is caught
+[pack-silicon] self-test PASS: control group: a consumer dist without the external import is caught
+[pack-silicon] self-test PASS: control group: a copied asset package without launch.mjs is caught
+[pack-silicon] self-test PASS: control group: stage() would be rejected without the launcher
+[pack-silicon] self-test PASS: missing-dist: a listed package without dist is caught
+[pack-silicon] self-test PASS: control group: a source-tree leftover package is caught
+[pack-silicon] self-test PASS: clean source tree: no leak reported
+[pack-silicon] self-test PASS: control group: a resurrected local adapter package is caught
+[pack-silicon] self-test PASS: control group: a 600 file is normalized to 644
+[pack-silicon] self-test PASS: control group: a nested 600 file is normalized too
+[pack-silicon] self-test PASS: control group: an existing 755 bit is preserved
+[pack-silicon] self-test PASS: control group: a 700 executable is normalized to 755
+[pack-silicon] self-test PASS: control group: the 600 fix is counted, not silently skipped
+[pack-silicon] self-test PASS: control group: no file stays unreadable after normalization
+[pack-silicon] self-test PASSED: package-set guards are falsifiable and mode normalization is proven (600 -> 644, 755 preserved)
+EXIT[node scripts/pack-silicon.mjs --self-test]=0
+=== $ node scripts/verify-github-workflows.mjs ===
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+EXIT[node scripts/verify-github-workflows.mjs]=0
+=== $ node scripts/pack-silicon.mjs --check ===
+[pack-silicon] check PASS: every committed file is readable by a non-root consumer
+EXIT[node scripts/pack-silicon.mjs --check]=0
+=== $ node scripts/pack-silicon.mjs ===
+[pack-silicon] package set guard PASS: exactly 4 listed package(s), no extras (mpd-verif-plugin, mpd-silicon-bootstrap-plugin, mpd-silicon-guard-plugin, mpd-docgen-plugin)
+[pack-silicon] dependency guard PASS: no local adapter row; mpd-verif-plugin, mpd-silicon-bootstrap-plugin, mpd-docgen-plugin import @mpd-dsh/mpd externally
+[pack-silicon] modes normalized: 56 files (chmod 644: 54, kept/forced 755: 1, already 644: 1)
+[pack-silicon] patch decoupled: 0 plugin path group(s) rewritten to @mpd-dsh/silicon/packages/...
+[pack-silicon] staged package -> /home/haroldzhao/MyProj/DshProj/MPD-Silicon/dist/silicon-package
+EXIT[node scripts/pack-silicon.mjs]=0
+=== $ node scripts/verify-package-files.mjs --self-test ===
+verify-package-files self-test: proving the guard fails when the publish surface breaks
+verify-package-files self-test PASS: an untouched copy passes
+verify-package-files: FAIL: missing required file skills/rtl-codestyle/SKILL.md (rtl-codestyle skill); the installed bundle cannot load it
+verify-package-files self-test PASS: control group: a renamed required file is rejected by name
+verify-package-files: FAIL: missing required file docs/toolchain.md (toolchain configuration guide); the installed bundle cannot load it
+verify-package-files: FAIL: missing required file docs/docgen-guide.md (docgen guide); the installed bundle cannot load it
+verify-package-files self-test PASS: control group: a copy without the docs tree is rejected
+verify-package-files: FAIL: not covered by package.json files: tests/golden/fixtures/verilog/modules/adder4.v (rtl-verif Makefile default RTL_DIR); npm pack would omit it
+verify-package-files: FAIL: not covered by package.json files: tests/golden/fixtures/verilog/modules/cnt8.v (rtl-verif Makefile default RTL_DIR); npm pack would omit it
+verify-package-files: FAIL: not covered by package.json files: tests/golden/fixtures/verilog/modules (rtl-verif fixture modules); npm pack would omit the tree
+verify-package-files self-test PASS: control group: a required tree missing from files is rejected as uncovered
+verify-package-files: FAIL: files allowlist is too broad: it would also ship packages/mpd-verif-plugin/src/index.ts; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship packages/mpd-verif-plugin/test/smoke.test.ts; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship packages/mpd-mcp-lsp/test/cli.test.ts; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship packages/mpd-mcp-lsp/overlay/README.md; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship evidence/verification/t13-manual-commands.md; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship .github/workflows/ci.yml; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship .mpd/boulder.json; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship .toolchain/bin/bun; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship node_modules/@mpd-dsh/mpd/package.json; list runtime paths, not a tree root
+verify-package-files: FAIL: files allowlist is too broad: it would also ship dist/silicon-package/package.json; list runtime paths, not a tree root
+verify-package-files self-test PASS: control group: a broad allowlist is rejected as bloat
+verify-package-files: FAIL: bundle patch packages/mpd-bundle/cordis.patch.yml contains no "- insert:" rows
+verify-package-files self-test PASS: control group: a patch without insert rows is rejected
+verify-package-files: FAIL: missing required file LICENSE (license text referenced by package.json); the installed bundle cannot load it
+verify-package-files self-test PASS: control group: a package without its license file is rejected
+verify-package-files self-test: PASS (copy passes; rename, dropped docs tree, dropped files entry, broad allowlist, empty patch and a missing license file each fail)
+EXIT[node scripts/verify-package-files.mjs --self-test]=0
+=== $ node scripts/verify-package-files.mjs ===
+verify-package-files: PASS (every required file and tree present and covered, 2 patch insert row(s), allowlist excludes src/test/evidence/state)
+EXIT[node scripts/verify-package-files.mjs]=0
+
+############################################################
+# Reviewer measurement section (appended after the §3 gates)
+# host: Linux 7.0.0-38-generic x86_64 | node v24.21.0 | bun 1.4.2 | npm 11.19.0 | python 6.0.3
+############################################################
+=== $ git rev-parse HEAD ===
+3d4d1284dfbc7230c87de5407e2509895dfdcdde
+=== $ git diff | sha256sum ===
+4d7d09ed89340ad47c050685a5b8cd35f62099f367d0d74a12d80300df685f76  -
+=== $ git diff --stat ===
+ .github/PULL_REQUEST_TEMPLATE.md    |  4 +--
+ .github/workflows/release.yml       |  9 +++++++
+ AGENT.md                            |  3 ++-
+ AGENTS.md                           | 21 ++++++++++-----
+ CHANGELOG.md                        | 10 ++++++++
+ CONTRIBUTING.md                     | 23 +++++++++++------
+ CONTRIBUTING.zh-CN.md               | 10 ++++----
+ README.md                           | 43 ++++++++++++++++++-------------
+ README.zh-CN.md                     | 19 +++++++-------
+ scripts/verify-github-workflows.mjs | 51 +++++++++++++++++++++++++++++++++++--
+ 10 files changed, 142 insertions(+), 51 deletions(-)
+=== $ git status --short --untracked-files=all ===
+ M .github/PULL_REQUEST_TEMPLATE.md
+ M .github/workflows/release.yml
+ M AGENT.md
+ M AGENTS.md
+ M CHANGELOG.md
+ M CONTRIBUTING.md
+ M CONTRIBUTING.zh-CN.md
+ M README.md
+ M README.zh-CN.md
+ M scripts/verify-github-workflows.mjs
+
+=== $ node scripts/verify-github-workflows.mjs ===
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+EXIT=0
+
+=== $ node scripts/verify-github-workflows.mjs --self-test ===
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+PASS self-test: good.yml — valid workflow accepted
+PASS self-test: bad-name.yml — tampered workflow rejected by name
+PASS self-test: bad-on.yml — tampered workflow rejected by on
+PASS self-test: bad-permissions.yml — tampered workflow rejected by permissions
+PASS self-test: bad-jobs.yml — tampered workflow rejected by jobs
+PASS self-test: bad-runs-on.yml — tampered workflow rejected by runs-on
+PASS self-test: bad-steps.yml — tampered workflow rejected by steps
+PASS self-test: bad-step-body.yml — tampered workflow rejected by step-body
+PASS self-test: bad-tab.yml — tampered workflow rejected by no-tabs
+PASS self-test: bad-script.yml — tampered workflow rejected by script-ref
+PASS self-test: bad-provider.yml — tampered workflow rejected by provider-reference
+PASS self-test: bad-registry.yml — tampered workflow rejected by registry-reference
+PASS self-test: bad-pipeline-dir.yml — tampered workflow rejected by pipeline-dir-reference
+PASS self-test: bad-yaml.yml — tampered workflow rejected by yaml-parse
+PASS self-test: ci.yml — valid workflow accepted
+PASS self-test: ci.yml — tampered workflow rejected by gate-missing
+PASS self-test: ci.yml — tampered workflow rejected by gate-order
+PASS self-test: ci.yml — tampered workflow rejected by ci-no-publish
+PASS self-test: boot-e2e.yml — valid workflow accepted
+PASS self-test: boot-e2e.yml — tampered workflow rejected by boot-e2e-no-pr
+PASS self-test: docker-verify.yml — valid workflow accepted
+PASS self-test: docker-verify.yml — tampered workflow rejected by docker-verify-run
+PASS self-test: release.yml — valid workflow accepted
+PASS self-test: release.yml — tampered workflow rejected by release-version-assert
+PASS self-test: release.yml — tampered workflow rejected by release-ghcr
+PASS self-test: release.yml — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml — tampered workflow rejected by release-id-token
+PASS self-test: release.yml — tampered workflow rejected by release-npm-tokenless
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 29/29 fixtures behaved
+EXIT=0
+
+=== PyYAML 6.x safe_load assertions on .github/workflows/release.yml ===
+PASS workflow permissions.contents=write
+PASS workflow permissions.packages=write
+PASS workflow permissions.id-token=write
+PASS trigger push.tags contains v*
+PASS publish after npm pack
+PASS publish after archive
+PASS publish before GitHub Release
+PASS publish run exact
+PASS all 11 §3 gate commands present
+PASS §3 gate order preserved
+PASS version assert before first gate
+PASS parsed workflow semantic tree is tokenless
+NOTE raw comment lines naming NPM_TOKEN/.npmrc: ['# NPM_TOKEN secret and no .npmrc are involved.']
+RESULT= PASS
+EXIT=0
+
+=== negative controls on COPIES (real tree untouched) ===
+CASE=clean EXIT=0
+CASE=publish-removed EXIT=1
+      [release-npm-publish] release.yml must publish to npm with a step whose run contains `npm publish --access public --provenance` (Trusted Publishing)
+CASE=id-token-removed EXIT=1
+      [release-id-token] release.yml needs permissions.id-token: write so npm Trusted Publishing can exchange a GitHub OIDC token
+CASE=token-added EXIT=1
+      [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "NPM_TOKEN" in a workflow value (not a comment)
+      [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "_authToken" in a workflow value (not a comment)
+      [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found ".npmrc" in a workflow value (not a comment)
+CASE=publish-after-release EXIT=1
+      [release-npm-publish-order] release.yml must publish to npm before creating the GitHub Release
+REAL_TREE_SHA_BEFORE=92b2f38a442dbf7e7c3531de3c3e1d3828d473f34f6d4988fd7c8c8a839d20e9
+REAL_TREE_SHA_AFTER =92b2f38a442dbf7e7c3531de3c3e1d3828d473f34f6d4988fd7c8c8a839d20e9
+REAL_TREE_UNCHANGED=YES
+
+=== extra adversarial probes (copies; gate exit 0 means the rule does NOT bite) ===
+PROBE=dry-run EXIT=0 0 release-issues
+PROBE=if-false EXIT=0 0 release-issues
+PROBE=continue-on-error EXIT=0 0 release-issues
+PROBE=echo-only EXIT=0 0 release-issues
+PROBE=negated EXIT=0 0 release-issues
+PROBE=legacy-password EXIT=0 0 release-issues
+7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  .github/workflows/release.yml
+
+=== npm registry fact check: @mpd-dsh/silicon@0.7.0 ===
+$ npm view @mpd-dsh/silicon@0.7.0 version dist.shasum dist.fileCount license repository.url --json
+{
+  "version": "0.7.0",
+  "dist.shasum": "01c5775d4559b6c452d3784da6b252ac81f651cb",
+  "dist.fileCount": 86,
+  "license": "MIT",
+  "repository.url": "git+https://github.com/HaroldZ32/MPD-Silicon.git"
+}
+EXIT=0
+
+$ npm pack @mpd-dsh/silicon@0.7.0  (into .tmp/npmprobe)
+PACK_EXIT=0
+01c5775d4559b6c452d3784da6b252ac81f651cb  mpd-dsh-silicon-0.7.0.tgz
+regular files in tarball: 86
+
+$ npm view @mpd-dsh/silicon@0.7.0 dist.attestations --json
+(empty output above = the packument exposes no attestations)
+
+trusted-publisher anonymous probe:
+https://registry.npmjs.org/-/npm/v1/trusted-publishers/@mpd-dsh/silicon -> HTTP 404
+https://registry.npmjs.org/-/npm/v1/trusted-publishing/@mpd-dsh/silicon -> HTTP 404
+NOTE: npm does not expose trusted-publisher settings anonymously; this item is INCONCLUSIVE.

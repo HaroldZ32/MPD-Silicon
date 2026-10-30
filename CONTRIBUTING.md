@@ -8,7 +8,8 @@
 tooling, the RTL skill corpus, the HDL language-service row, and the startup guard that
 makes `@mpd-dsh/mpd` a hard requirement. This repository is hosted on **GitHub**
 (`HaroldZ32/MPD-Silicon`) and its pipelines run on **GitHub Actions**; there is no mirror of the
-source repository and no npm publish.
+source repository, and releases publish to npm from the release workflow through Trusted
+Publishing.
 
 **Compatibility baseline:** DeepSeek Harness `0.2.1-rc.2`, `@mpd-dsh/mpd` `0.15.1`,
 bun `1.4.3`, Node `24` in CI.
@@ -112,11 +113,14 @@ console. Four workflows ship:
 | `.github/workflows/ci.yml` | push to `main`; PR to `main`; manual dispatch | installs bun `1.4.3` and Node 24, runs the static gates below in order, stages `dist/silicon-package` | `silicon-package` |
 | `.github/workflows/docker-verify.yml` | push to `main`; PR to `main`; manual dispatch | builds the repository `Dockerfile` (real iverilog / verilator / yosys), runs the full gate suite plus the EDA smoke and expects `DOCKER-VERIFY: PASS`; pushes `ghcr.io/haroldz32/mpd-silicon:edge` on non-PR runs | `docker-verify-log` |
 | `.github/workflows/boot-e2e.yml` | push to `main` touching `packages/**`, `scripts/**`, `package.json`, `bun.lock` or `packages/mpd-bundle/cordis.patch.yml`; manual dispatch | installs bun `1.4.3` and dsh `0.2.1-rc.2`, runs both boot modes with `--require` | `ci-boot-logs` |
-| `.github/workflows/release.yml` | tag push matching `v*` | asserts the tag equals `package.json.version` (accepts `vX.Y.Z` and `X.Y.Z`), runs the same gates, builds the `npm pack` tarball and `dist/silicon-package.tar.gz`, publishes a GitHub Release and pushes the image to GHCR | GitHub Release assets + GHCR image |
+| `.github/workflows/release.yml` | tag push matching `v*` | asserts the tag equals `package.json.version` (only `vX.Y.Z`: the trigger is `v*`), runs the same gates, builds the `npm pack` tarball and `dist/silicon-package.tar.gz`, publishes `@mpd-dsh/silicon@<version>` to npm with `npm publish --access public --provenance` (Trusted Publishing over GitHub OIDC, no token), publishes a GitHub Release and pushes the image to GHCR | npm package + GitHub Release assets + GHCR image |
 
 `ci.yml` and `docker-verify.yml` never publish a version; publishing belongs to the release
-workflow. `release.yml` uses the repository-scoped `GITHUB_TOKEN` for both the Release and GHCR,
-and does **not** run `npm publish`.
+workflow. `release.yml` uses the repository-scoped `GITHUB_TOKEN` for the GitHub Release and GHCR,
+and authenticates to npm with a **short-lived GitHub OIDC token** (`id-token: write`, exchanged by
+the npm CLI under npm Trusted Publishing). There is **no `NPM_TOKEN` secret and no `.npmrc`**; the
+trusted publisher on npmjs is bound to repository `HaroldZ32/MPD-Silicon` **and the `release.yml`
+filename**, so do not rename that file.
 
 The release workflow reads the tag from `GITHUB_REF_NAME` and asserts `${GITHUB_REF_NAME#v}`
 equals `node -p "require('./package.json').version"`. A mismatch fails before any gate runs, and
@@ -180,15 +184,18 @@ with that change's gate evidence already on disk or in the PR.
    git push origin vX.Y.Z
    ```
 
-4. `.github/workflows/release.yml` runs. Its first real assertion checks `GITHUB_REF_NAME`
-   (with or without a leading `v`) against `package.json.version`; a mismatch fails before any
-   gate runs.
-5. The workflow builds the `npm pack` tarball `mpd-dsh-silicon-<version>.tgz` and
+4. `.github/workflows/release.yml` runs. Its first real assertion strips the leading `v` from
+   `GITHUB_REF_NAME` (only `v*` tags trigger the workflow, so the accepted form is `vX.Y.Z`)
+   and compares the result with `package.json.version`; a mismatch fails before any gate runs.
+5. Once the version assert (step 4) and the gate chain pass, the workflow publishes
+   `@mpd-dsh/silicon@<version>` to npm with `npm publish --access public --provenance`. The npm
+   CLI exchanges the GitHub OIDC token itself (`id-token: write`); no token is stored, and a
+   mismatched tag never reaches the registry because the publish step runs after the assert.
+6. The same run builds the `npm pack` tarball `mpd-dsh-silicon-<version>.tgz` and
    `dist/silicon-package.tar.gz`, publishes them as **GitHub Release assets** with generated
    release notes, and pushes the verification image to **GHCR** as
-   `ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`.
-6. There is **no npm publish**. The GitHub Release assets and the GHCR image are the
-   distribution channels.
+   `ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`. The npm package, the GitHub Release
+   assets and the GHCR image are the distribution channels.
 
 If a tag was published with the wrong version, do not move or delete a shared tag silently;
 cut a new patch version and tag. The pipeline's version assert is deliberately loud.

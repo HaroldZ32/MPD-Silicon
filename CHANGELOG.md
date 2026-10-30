@@ -7,6 +7,17 @@ the version moves independently of `@mpd-dsh/mpd`.
 
 ### Changed
 
+- **`@mpd-dsh/silicon@0.7.0` is published to npm, and the release pipeline now publishes it.**
+  The package is on the registry (measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns
+  `0.7.0`, dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files; MIT), superseding the
+  0.7.0 note that the registry form was **not measured — 0.7.0 is not published (`npm view`
+  returns 404)**. `.github/workflows/release.yml` now grants
+  `id-token: write` and, after the pack/package steps and before the GitHub Release, runs
+  `npm publish --access public --provenance` through **npm Trusted Publishing**: the npm CLI
+  exchanges the GitHub OIDC token itself, so there is no `NPM_TOKEN` secret and no `.npmrc`, and
+  `--provenance` attaches a signed build attestation. The step runs after the tag/version assert
+  and the full §3 gate chain, and the trusted publisher binds this repository, the package and the
+  `release.yml` filename — which therefore stays unchanged.
 - **Ported to GitHub (`HaroldZ32/MPD-Silicon`) with a complete GitHub Actions CI/CD.** Four
   workflows ship under `.github/workflows/`: `ci.yml` (the static gate suite on Node 24 +
   bun `1.4.3`), `docker-verify.yml` (the same suite plus a real EDA smoke — iverilog / verilator /

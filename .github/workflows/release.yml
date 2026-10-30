@@ -6,6 +6,9 @@ on:
 
 permissions:
   contents: write
+  # npm Trusted Publishing exchanges this short-lived GitHub OIDC token itself; no
+  # NPM_TOKEN secret and no .npmrc are involved.
+  id-token: write
   packages: write
 
 jobs:
@@ -66,6 +69,12 @@ jobs:
         run: npm pack --pack-destination dist
       - name: Archive the staged silicon package
         run: tar -czf dist/silicon-package.tar.gz -C dist silicon-package
+      # Trusted Publishing: the npm CLI requests a short-lived OIDC token from GitHub
+      # (id-token: write) and npmjs verifies it against the publisher configured for
+      # repository HaroldZ32/MPD-Silicon + workflow release.yml. This step must stay in
+      # release.yml: renaming the file breaks the trusted-publisher binding.
+      - name: Publish to npm (Trusted Publishing / OIDC)
+        run: npm publish --access public --provenance
       # GHCR rejects uppercase repository paths; repository_owner is mixed-case, so the
       # image prefix is lowercased once here and reused as ${{ env.IMAGE_OWNER }}.
       - name: Resolve the lowercase image prefix

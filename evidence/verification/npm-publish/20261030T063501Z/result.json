@@ -1,0 +1,175 @@
+{
+  "record": "npm Trusted Publishing change-set verification (independent reviewer)",
+  "producedAtUtc": "2026-10-30T06:35:01Z (directory stamp); measurements run 2026-10-30T06:35Z-06:47Z",
+  "reviewer": "Reviewer (findings-only; no implementation file was edited)",
+  "requirementFrozen": {
+    "publishedPackage": "@mpd-dsh/silicon@0.7.0 on npm, dist shasum 01c5775d4559b6c452d3784da6b252ac81f651cb, 86 files, MIT",
+    "trustedPublisher": "repo HaroldZ32/MPD-Silicon + workflow release.yml",
+    "releaseWorkflow": "v* tag: keep tag==package.json assert and the full §3 gate chain in order; workflow permissions contents:write, packages:write, id-token:write; npm publish --access public --provenance after pack/archive and before the GitHub Release; no NPM_TOKEN/NODE_AUTH_TOKEN/.npmrc token step; filename release.yml; keep GitHub Release + GHCR",
+    "gateScript": "REQUIRE the publish step and its order, REQUIRE id-token:write, FORBID token-based npm auth, ship falsifiable negative controls for each; existing rules/self-tests not weakened, count may grow",
+    "docs": "README+zh (npm badge, trusted publishing, no stale not-published/CI-does-not-publish claims), CONTRIBUTING+zh release procedure, AGENTS.md §1/§9 measured npm fact + future OIDC, CHANGELOG Unreleased, AGENT.md + PR template release description naming npm publish"
+  },
+  "basis": {
+    "gitHead": "3d4d1284dfbc7230c87de5407e2509895dfdcdde",
+    "workTreeDiffSha256": "4d7d09ed89340ad47c050685a5b8cd35f62099f367d0d74a12d80300df685f76",
+    "gitDiffStat": "10 files changed, 142 insertions(+), 51 deletions(-)",
+    "changedFiles": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/release.yml",
+      "AGENT.md",
+      "AGENTS.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "CONTRIBUTING.zh-CN.md",
+      "README.md",
+      "README.zh-CN.md",
+      "scripts/verify-github-workflows.mjs"
+    ],
+    "untrackedAddedByReview": "evidence/verification/npm-publish/20261030T063501Z/ only (this record + output.log); no tracked file modified, nothing committed, tagged or published",
+    "environment": {
+      "os": "Linux x86_64",
+      "node": "v24.21.0",
+      "bun": "1.4.2",
+      "npm": "11.19.0",
+      "python": "3.14.4",
+      "pyyaml": "6.0.3"
+    }
+  },
+  "items": [
+    {
+      "id": 1,
+      "subject": "change-set scope",
+      "verdict": "PASS",
+      "observed": "git status --short lists exactly the 10 files the requirement names; every hunk is on-topic (badge, install/release prose, CI section, §1/§9 npm fact, CHANGELOG Unreleased, PR template, workflow + gate script). No unrelated change, no implementation file touched.",
+      "commands": ["git status --short --untracked-files=all (exit 0)", "git diff --stat (exit 0)", "git diff (exit 0)", "git diff --check (exit 0)"],
+      "note": "bun test packages/ count is 326 across 25 files, matching the manual; the change set adds no test file."
+    },
+    {
+      "id": 2,
+      "subject": "workflow gate + self-test + PyYAML assertions",
+      "verdict": "PASS",
+      "observed": "verify-github-workflows.mjs exit 0: 4/4 workflow files PASS (required set, boot-e2e, ci, docker-verify, release). --self-test exit 0: 29/29 fixtures behaved. Independent python3+PyYAML safe_load of release.yml: permissions contents/packages/id-token all write; trigger push.tags contains v*; publish step after npm pack and after the tar archive; publish before softprops/action-gh-release; publish run is exactly `npm publish --access public --provenance`; all 11 §3 gate commands present and strictly ordered; version assert before the first gate; semantic tree tokenless.",
+      "commands": [
+        "node scripts/verify-github-workflows.mjs -> EXIT=0",
+        "node scripts/verify-github-workflows.mjs --self-test -> EXIT=0 (29/29)",
+        "python3 PyYAML assertion script -> RESULT=PASS (exit 0)"
+      ],
+      "note": "PyYAML resolves the bare `on:` key to boolean true (YAML 1.1); the assertion and the gate's own triggerMap() both handle it. A raw-text scan of release.yml does hit NPM_TOKEN and .npmrc, but only inside the explanatory comment at the permissions block; the tokenless rule correctly scans the parsed semantic tree, and a comment is not a token step."
+    },
+    {
+      "id": 3,
+      "subject": "falsifiability on copies (clean + 4 required negative controls)",
+      "verdict": "PASS",
+      "observed": {
+        "clean": "EXIT=0",
+        "publish-removed": "EXIT=1, release-npm-publish",
+        "id-token-removed": "EXIT=1, release-id-token",
+        "token-added": "EXIT=1, release-npm-tokenless (NPM_TOKEN, _authToken, .npmrc each named)",
+        "publish-after-release": "EXIT=1, release-npm-publish-order"
+      },
+      "commands": ["node scripts/verify-github-workflows.mjs --dir .tmp/final-negctl/<case> (each case, one shell invocation)"],
+      "noRealFileTouched": "sha256 over .github/workflows/*.yml before and after all copy tests: identical (92b2f38a442dbf7e7c3531de3c3e1d3828d473f34f6d4988fd7c8c8a839d20e9); release.yml sha256 7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0 before and after; git status unchanged (same 10 M)."
+    },
+    {
+      "id": 4,
+      "subject": "full §3 gate sequence",
+      "verdict": "PASS",
+      "observed": "All 11 commands exit 0: typecheck --require 0; bun test packages/ 0 (325 pass / 1 skip / 0 fail, 326 tests across 25 files); verify-corpus 0; verify-rows-disjoint 0; build-lsp --check 0; pack-silicon --self-test 0; verify-github-workflows 0; pack-silicon --check 0; pack-silicon 0; verify-package-files --self-test 0; verify-package-files 0.",
+      "commands": ["see output.log section '# Reviewer measurement section' and the preceding gate block"],
+      "note": "pack-silicon (gate 9) writes only gitignored /dist/; it is part of the mandated sequence, not a repair, and git status stayed at the same 10 M files."
+    },
+    {
+      "id": 5,
+      "subject": "license / secret scan",
+      "verdict": "PASS",
+      "observed": "No credential values in the diff. The only token-shaped strings added are the self-test fixture's literal `//registry.npmjs.org/:_authToken=${NPM_TOKEN}` placeholder (a negative control, no value) and the 40-hex npm dist shasum. No `secrets.NPM*` / `secrets.NODE_AUTH*` reference in any workflow. No committed .npmrc anywhere in the tree. release.yml carries no token step; its only mention of NPM_TOKEN/.npmrc is a comment.",
+      "commands": ["grep added diff lines for ghp_/github_pat_/npm_/AKIA/BEGIN/_authToken=/NODE_AUTH_TOKEN=/NPM_TOKEN= (no credential hits)", "find . -name .npmrc (none)", "grep secrets\\.(NPM|NODE_AUTH) .github/workflows/ (none)"]
+    },
+    {
+      "id": 6,
+      "subject": "bilingual parity and stale claims",
+      "verdict": "PASS",
+      "observed": "README.md / README.zh-CN.md: 20 headings each (unchanged from HEAD), 3 trusted-publishing mentions each, npm badge added to both, no 'not published'/'CI does not publish' claim left in either. CONTRIBUTING.md / CONTRIBUTING.zh-CN.md: 13 headings each, workflow table row and release procedure updated in both, both state the tokenless OIDC flow. AGENT.md and the PR template name npm publish. AGENTS.md §1 and §9 both carry the measured npm fact and the future OIDC statement. CHANGELOG Unreleased carries the new bullet; the only remaining 'not published/404' text in .md is the historical 0.7.0 entry (see declined list).",
+      "commands": ["heading counts (git show HEAD:<file> | grep -c '^#' vs grep -c '^#' <file>)", "grep -i 'trusted publishing|可信发布'", "grep -rn stale-claim patterns across all *.md"]
+    },
+    {
+      "id": 7,
+      "subject": "npm registry fact for @mpd-dsh/silicon@0.7.0",
+      "verdict": "PASS",
+      "observed": "npm view 0.7.0 -> version 0.7.0, dist.shasum 01c5775d4559b6c452d3784da6b252ac81f651cb, dist.fileCount 86, license MIT, repository.url git+https://github.com/HaroldZ32/MPD-Silicon.git. Downloaded tarball via npm pack: sha1 = 01c5775d4559b6c452d3784da6b252ac81f651cb, 86 regular files, inner package.json name/version/license/repository match. So the published-package half of the requirement is measured, not trusted.",
+      "commands": ["npm view @mpd-dsh/silicon@0.7.0 ... --json -> EXIT=0", "npm pack @mpd-dsh/silicon@0.7.0 -> PACK_EXIT=0; sha1sum; tar -tvzf | grep -c '^-' = 86"]
+    },
+    {
+      "id": 8,
+      "subject": "npmjs Trusted Publisher configuration (repo + release.yml)",
+      "verdict": "INCONCLUSIVE",
+      "observed": "Not observable anonymously. Guessed registry endpoints /-/npm/v1/trusted-publishers/@mpd-dsh/silicon and /-/npm/v1/trusted-publishing/@mpd-dsh/silicon return HTTP 404. 0.7.0's packument exposes dist.attestations = null and _npmUser is a user account, i.e. 0.7.0 was published with token auth before this change, which is consistent with the docs but proves nothing about the current settings-page binding.",
+      "commands": ["npm view @mpd-dsh/silicon@0.7.0 dist.attestations --json (empty)", "curl -s -o /dev/null -w '%{http_code}' <two trusted-publisher endpoints> (404, 404)"],
+      "bound": "Requires an authenticated npm web session (package Settings -> Trusted Publisher)."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "High",
+      "id": "gate-publish-text-not-effect",
+      "title": "The publish rule is satisfied by any run text containing the command; a no-op or disabled publish step keeps the gate green",
+      "where": "scripts/verify-github-workflows.mjs, validateWorkflow() release.yml branch — publishSteps / publishRun (`step.run.includes(\"npm publish\")` plus flag substring checks)",
+      "why": "The requirement says the gate must REQUIRE the publish step. It proves presence of text, not effective execution. Copy probes all exit 0 with no release-* issue: `run: npm publish --access public --provenance --dry-run` (npm's dry-run performs no upload), `if: false` on the step, `continue-on-error: true` (a failed publish would not fail the job), `run: echo \"npm publish --access public --provenance\"`, and `run: true || npm publish --access public --provenance`. Each is a one-line drift that silently stops publishing while the gate — and every CI run — stays green. This is the exact failure mode the new rule exists to prevent.",
+      "direction": "Assert the effective step, not a substring: require the publish step's run to trim-equal `npm publish --access public --provenance`, reject `--dry-run`, and reject a step carrying `if`, `continue-on-error`, `env` or `with`. Optionally also assert the step is the only publish step and that no earlier step shares its name."
+    },
+    {
+      "severity": "Medium",
+      "id": "gate-tokenless-denylist",
+      "title": "Tokenless rule is a four-literal denylist; a legacy token-auth publish step passes",
+      "where": "scripts/verify-github-workflows.mjs, validateWorkflow() — the loop over [\"NPM_TOKEN\", \"NODE_AUTH_TOKEN\", \"_authToken\", \".npmrc\"] on JSON.stringify(data)",
+      "why": "A copy whose publish step sets `env: LEGACY_PUBLISH_SECRET: ${{ secrets.LEGACY_PUBLISH_SECRET }}` and runs `npm config set //registry.npmjs.org/:username npm` + `npm config set //registry.npmjs.org/:_password \"$(...|base64)\"` + `npm publish --access public --provenance` exits 0 with no release-* issue. The named literals (verified by the shipped control) are caught, but the property the requirement states — FORBID token-based npm auth — is not: `_auth`/`_password` and an arbitrary secret name are outside the blocklist. A blocklist cannot prove the absence of token auth.",
+      "direction": "Make the publish step's shape positive: no `env`, no `with`, exact run (which also closes the High finding). If a blocklist stays, add `_password`, `_auth`, `username`/`npm config set` and any `secrets.` reference inside the publish step, and ship a control for the legacy form."
+    },
+    {
+      "severity": "Medium",
+      "id": "selftest-missing-order-control",
+      "title": "No shipped self-test control for release-npm-publish-order, although the requirement asks for a control per rule",
+      "where": "scripts/verify-github-workflows.mjs, runSelfTest() fixtures list (28 fixtures + 1 missing-workflow = 29)",
+      "why": "The rule fires correctly (a copy with the publish block moved after softprops/action-gh-release exits 1 with release-npm-publish-order), but nothing in the shipped self-test exercises it: at HEAD there were 25 fixtures + 1; the change adds exactly three (release-npm-publish, release-id-token, release-npm-tokenless). The requirement says the script must 'ship falsifiable negative controls for each'. Deleting the order rule from the validator would leave --self-test at 29/29 green.",
+      "direction": "Add one fixture that moves NPM_PUBLISH_STEP after the GitHub Release step and expects release-npm-publish-order (29 -> 30 fixtures, 30/30), and optionally a second that moves it before npm pack."
+    },
+    {
+      "severity": "Nit",
+      "id": "changelog-supersession-wording",
+      "title": "CHANGELOG Unreleased describes what it supersedes as 'unmeasured', while the 0.7.0 note actually asserts 'not published (npm view returns 404)'",
+      "where": "CHANGELOG.md, Unreleased > Changed, first bullet vs the 0.7.0 > Added install bullet",
+      "why": "The new bullet says it supersedes 'the 0.7.0 note that the registry form was unmeasured'; the superseded sentence makes the stronger, now-false claim that 0.7.0 is not published. A reader landing on the 0.7.0 section still reads a present-tense falsehood. Changelog history should not be rewritten, so this is wording, not a defect.",
+      "direction": "Reword the supersession to name the actual claim ('the 0.7.0 note that the package was not published'), or add a one-line pointer at the 0.7.0 entry."
+    },
+    {
+      "severity": "Nit",
+      "id": "contributing-tag-form-claim",
+      "title": "CONTRIBUTING (both languages) says the release assert accepts `vX.Y.Z` and `X.Y.Z`, but the workflow only triggers on `tags: ['v*']`",
+      "where": "CONTRIBUTING.md and CONTRIBUTING.zh-CN.md, release workflow table row (modified by this change)",
+      "why": "The modified row re-asserts an internally contradictory claim: an `X.Y.Z` tag never starts release.yml, so the assert's `#v` tolerance is unreachable for that form. Pre-existing text, but re-touched here.",
+      "direction": "Drop 'and `X.Y.Z`' from the row, or widen the trigger to `tags: ['v*', '[0-9]*']` if the form is intended."
+    }
+  ],
+  "declinedToJudge": [
+    "Trusted Publisher configuration on npmjs — cannot be read anonymously (404 endpoints, unsigned 0.7.0); recorded INCONCLUSIVE, not a finding.",
+    "0.7.0 has no provenance attestation and was published by a user account — docs explicitly say it predates the OIDC step; the requirement demands provenance only for future tag publishes.",
+    "Publish-before-GHCR/GitHub-Release means a later image/release failure leaves an immutable npm version published — the frozen requirement mandates this exact order.",
+    "Historical CHANGELOG 0.7.0 'not published (404)' sentence — changelog history is a record of that release; the Unreleased bullet supersedes it. Only the wording nit above is raised.",
+    "npm publish re-runs the manifest's `prepack` guard (verify-package-files.mjs) against dist/silicon-package — pre-existing lifecycle behaviour, not introduced here; it passed after the pack step.",
+    "Comment lines in release.yml naming NPM_TOKEN/.npmrc — comments are not a token step; the requirement bans token steps and the gate intentionally scans semantic values only.",
+    "Registry *install* path (`dsh plugin add ... @mpd-dsh/silicon@0.7.0`) not re-measured — docs state this bound explicitly; running it needs a real dsh profile and a writable HOME.",
+    "docker-verify.yml / boot-e2e.yml unchanged and not re-run — outside this change set.",
+    "The npm publish tarball is the root package while the prepack guard checks the rewritten staged package — pre-existing design; not part of the requirement and no failure observed.",
+    "A second publish step after the GitHub Release is not detected when an earlier valid publish step exists (publishSteps[0] only) — contrived; covered by the High finding's 'assert the publish step' direction."
+  ],
+  "bounds": [
+    "The real GitHub Actions tag run is UNPROVEN: no OIDC token exchange, no npm provenance attestation, no actual v0.7.1 publish was performed (no tag, no credentials). Only the workflow definition and the offline gate were measured.",
+    "The npmjs Trusted Publisher binding (repo + workflow filename) is UNPROVEN: not exposed anonymously.",
+    "Did not run docker-verify.yml or boot-e2e.yml (Docker image build, real harness boots); out of scope for this change set.",
+    "Did not run the registry install path end to end (needs a writable HOME/dsh profile).",
+    "Did not re-derive the published 0.7.0 tarball from this working tree; only its registry metadata, downloaded sha1 and file count were measured.",
+    "Read: the full 10-file diff, release.yml, the gate script's validation/self-test regions, the doc diffs, package.json, AGENTS.md/AGENT.md. Not read line-by-line: the untouched parts of scripts/verify-github-workflows.mjs (lines 1-380, 580-680) beyond what the diff and runs exercise."
+  ],
+  "verdict": "REQUEST CHANGES",
+  "verdictJustification": "The workflow and docs are correct and every mandated check passes, but the new gate rules can be satisfied by a no-op/disabled publish step and by a legacy token-auth step, and the publish-order rule ships no self-test control — so the requirement's 'REQUIRE the publish step' and 'negative controls for each' clauses are not fully met."
+}
