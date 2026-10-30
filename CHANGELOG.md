@@ -5,8 +5,12 @@ the version moves independently of `@mpd-dsh/mpd`.
 
 ## Unreleased
 
+## 0.7.1 — 2026-10-30
+
 ### Changed
 
+- **Infrastructure-only patch release: the npm Trusted Publishing pipeline and its documentation.**
+  No plugin or API behaviour change.
 - **`@mpd-dsh/silicon@0.7.0` is published to npm, and the release pipeline now publishes it.**
   The package is on the registry (measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns
   `0.7.0`, dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files; MIT), superseding the
