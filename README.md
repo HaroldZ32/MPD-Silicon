@@ -117,7 +117,8 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@
 ```
 
 The registry **install** command above has not been re-measured on this host; the measured form
-is the tarball command below. `0.7.0` was the first publication; `0.7.1` was never published (its
+is the tarball command below. `0.7.0` was the first real release (a `0.0.0-stage` name-claim placeholder precedes it on the
+registry); `0.7.1` was never published (its
 tag's direct `npm publish` attempt was denied), and every later version is **staged** by
 `release.yml` on a `v*` tag through npm Trusted Publishing (GitHub OIDC, provenance, no token),
 then approved by a maintainer with 2FA before it becomes live.
@@ -139,7 +140,8 @@ dependency** that declares `dsh.bundle.patch` to `dsh.profile.bundles`, so no ma
 is needed. It writes the profile's `package.json`, `pnpm-lock.yaml` and `node_modules` and
 leaves the rest of `$DSH_HOME` alone.
 
-**Measured on this host (2026-10-23, tarball form above)**: pnpm 9.15.9, dsh 0.2.1-rc.2,
+**Measured on this host (2026-10-23, with the then-current 0.7.0 tarball, sha256
+`4dd00e88…`; the 0.7.2 tarball and the registry install were not re-measured)**: pnpm 9.15.9, dsh 0.2.1-rc.2,
 isolated `DSH_HOME`. The install exited 0; the profile manifest ended with
 `@mpd-dsh/mpd` and `@mpd-dsh/silicon` in `dependencies` and both in `dsh.profile.bundles`;
 a real boot logged `[mpd-silicon-bootstrap] skill corpus served`. A **silicon-only**
@@ -435,7 +437,7 @@ attestation. A maintainer then approves the staged version with 2FA before it be
 guard). `0.7.2` is on the registry (measured 2026-10-30 after staged approval: `npm view
 @mpd-dsh/silicon@0.7.2` returns `0.7.2`, dist shasum
 `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance attestation);
-`0.7.0` was the first publication, published before the OIDC step landed, and `0.7.1` was never
+`0.7.0` was the first real release (a `0.0.0-stage` placeholder precedes it), published before the OIDC step landed; `0.7.1` was never
 published. Branch model: `main` is the trunk
 and the only pull-request target; `feature/*` / `fix/*` are short-lived; `release/vX.Y.Z` carries
 the release bump (the annotated `vX.Y.Z` tag is cut on `main`). See

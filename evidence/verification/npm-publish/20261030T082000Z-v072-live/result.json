@@ -55,9 +55,10 @@
     {"cmd": "gh release view v0.7.2 --json assets", "result": "mpd-dsh-silicon-0.7.2.tgz, silicon-package.tar.gz"}
   ],
   "bounds": [
-    "the registry INSTALL path (`dsh plugin add @mpd-dsh/silicon@0.7.2`) was not re-measured; the measured form remains `npm pack` + tarball install",
+    "the registry INSTALL path (`dsh plugin add @mpd-dsh/silicon@0.7.2`) was not re-measured; the measured install used the 0.7.0 tarball (sha256 4dd00e881ac84390bfc10813ddbca1e1aa410ff99988de52d10d283d99d73335), and the 0.7.2 tarball install was not re-measured",
     "the 2FA approval happened in the maintainer's browser flow and is not observable by the agent; the record asserts only the post-approval registry state and the empty stage list",
     "the provenance attestation is verified as present via registry metadata; it was not independently rebuilt or verified against the tag commit beyond the recorded gitHead",
-    "0.7.1 was never published; the failed tag run is retained as history"
+    "0.7.1 was never published; the failed tag run is retained as history",
+    "the registry's first published version is the 0.0.0-stage name-claim placeholder (2026-10-30T06:20:19Z); 0.7.0 is the first real release"
   ]
 }
