@@ -1,0 +1,41 @@
+{
+  "record": "github-port — local UNSUBSTITUTED Docker build + real-machine run",
+  "recordedAtUtc": "2026-10-30T02:30:00Z",
+  "closesBoundIn": "evidence/verification/github-port/20261029T133557Z/result.json (as-is docker build INCONCLUSIVE: registry.npmjs.org unreachable on this host at that time)",
+  "whyNow": "registry.npmjs.org became reachable again on this host at 2026-10-30T02:26Z (DNS resolves, HTTPS 200, bun pm view works); the earlier block was environment/network, not a repository defect",
+  "inputs": {
+    "dockerfile": {"path": "Dockerfile", "sha256": "96da92a70a5d65f61f3fdfbd72fcc391343f3f59f824ccee12fd86a2bdf9bfcd"},
+    "dockerignore": {"path": ".dockerignore", "sha256": "570ce328cd09b933c93b017bd72aa20537b9c378c81db6f347757e00392ef367"},
+    "verifyScript": {"path": "docker/verify.sh", "sha256": "0e9b54f6652f9c74f0a33a9f5cecd28f81afa3cfe4fbd17c4de50fa8fa82dc04"},
+    "bunfigSubstitution": "ABSENT — no bunfig.toml in the tree or in the build context; the shipped Dockerfile built byte-for-byte as committed"
+  },
+  "build": {
+    "command": "DOCKER_CONFIG=$PWD/.tmp/docker-config docker build --progress=plain -t mpd-silicon-verify:local .",
+    "exit": 0,
+    "imageId": "sha256:2594db77232bafcbbbc37902e5a052edabaf4b1e0b33011d0d1b9c07a3073af9",
+    "imageBytes": 2724238133,
+    "createdAtLocal": "2026-10-30T10:26:47+08:00",
+    "network": "registry.npmjs.org reachable; `RUN bun install --frozen-lockfile` completed inside BuildKit with no registry override"
+  },
+  "run": {
+    "command": "docker run --rm --name mpd-silicon-verify mpd-silicon-verify:local",
+    "exit": 0,
+    "verdict": "DOCKER-VERIFY: PASS — 11/11 gates + 4/4 EDA smoke steps, real tools, no skips",
+    "toolVersions": {
+      "node": "v24.21.0",
+      "bun": "1.4.3",
+      "iverilog": "Icarus Verilog version 11.0 (stable)",
+      "verilator": "Verilator 5.006 2023-01-22 (Debian 5.006-3)",
+      "yosys": "Yosys 0.23 (git sha1 7ce5011c24b)"
+    },
+    "gateSuite": "the same 11 AGENTS §4 steps, including the workflow gate and the packer/package gates",
+    "edaSmoke": "adder4 iverilog compile + vvp sim (verdict marker asserted), cnt8 compile/lint, verilator --lint-only, yosys synth — 4/4"
+  },
+  "artifacts": [
+    "build-tail.log — BuildKit tail including the image export",
+    "run-head.log — image banner and real tool versions",
+    "run-tail.log — final gate/EDA lines and DOCKER-VERIFY: PASS",
+    "gate-summary.log — one line per OK gate/EDA step"
+  ],
+  "conclusion": "The shipped Dockerfile builds and runs UNSUBSTITUTED on a host with normal npm registry access, closing the environment bound from the review record. The GitHub-hosted docker-verify run (40988939341 / 40989236273) remains the authoritative CI proof; this record is the local reproduction."
+}
