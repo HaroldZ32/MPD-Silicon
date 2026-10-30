@@ -18,6 +18,10 @@ the version moves independently of `@mpd-dsh/mpd`.
   direct `npm publish` was denied with `E403 "OIDC permission denied for this action"` because the
   trusted publisher allows staged publishing only — **0.7.1 was never published**; its entry below
   stays as history.
+- **`@mpd-dsh/silicon@0.7.2` is live on npm** (approved 2026-10-30 after staging): `npm view
+  @mpd-dsh/silicon@0.7.2` returns `0.7.2`, dist shasum
+  `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance attestation.
+  GitHub Release `v0.7.2` and GHCR `v0.7.2`/`latest` are published by the same tag run.
 
 ## 0.7.1 — 2026-10-30
 

@@ -1,0 +1,64 @@
+{
+  "record": "npm publish — @mpd-dsh/silicon@0.7.2 staged via Trusted Publishing, approved, live",
+  "measuredAtUtc": "2026-10-30T08:20:00Z",
+  "package": {
+    "name": "@mpd-dsh/silicon",
+    "version": "0.7.2",
+    "distTag": {"latest": "0.7.2"},
+    "license": "MIT",
+    "dist": {
+      "shasum": "36d96f048bd5d0c49d8eaaac461b67d65ce1482e",
+      "fileCount": 86,
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@mpd-dsh%2fsilicon@0.7.2",
+        "predicateType": "https://slsa.dev/provenance/v1"
+      }
+    },
+    "gitHead": "09d7fddccc1149e906d8935ef8197c2d69003459",
+    "npmUser": "GitHub Actions"
+  },
+  "stagedPublish": {
+    "stageId": "d58dfc75-7681-4ee4-aa72-89c714a98318",
+    "stagedAtUtc": "2026-10-30T07:50:43.291Z",
+    "stagedBy": "GitHub Actions (trusted automation)",
+    "access": "public",
+    "tag": "latest",
+    "statusBeforeApproval": "staged",
+    "approval": "performed by the maintainer in the npm 2FA flow; `npm stage list @mpd-dsh/silicon` afterwards reports no staged versions and the version resolves from the registry",
+    "assistantAttemptWithoutOtp": "npm stage approve <id> without an OTP exits 1 with EOTP (proof-of-presence); the agent did not bypass 2FA"
+  },
+  "releaseRun": {
+    "workflow": "Release",
+    "runId": 41022507287,
+    "ref": "v0.7.2",
+    "conclusion": "success",
+    "stagedNpmStep": "Stage the npm publish (Trusted Publishing / OIDC) — success",
+    "otherSteps": ["Login to GHCR — success", "Build and push the image — success", "Create the GitHub Release — success"],
+    "artifactAssetNames": ["mpd-dsh-silicon-0.7.2.tgz", "silicon-package.tar.gz"]
+  },
+  "gitHubRelease": {"tag": "v0.7.2", "url": "https://github.com/HaroldZ32/MPD-Silicon/releases/tag/v0.7.2", "assets": ["mpd-dsh-silicon-0.7.2.tgz", "silicon-package.tar.gz"]},
+  "containerImage": {"name": "ghcr.io/haroldz32/mpd-silicon", "tagsVerified": ["v0.7.2", "latest"], "method": "docker manifest inspect (anonymous pull succeeds)"},
+  "failedHistory": {
+    "tag": "v0.7.1",
+    "runId": 41019623710,
+    "failedStep": "Publish to npm (Trusted Publishing / OIDC)",
+    "error": "E403 — OIDC permission denied for this action (the trusted publisher allows staged publishing only; direct npm publish needs --allow-publish)",
+    "versionPublished": false
+  },
+  "commands": [
+    {"cmd": "npm view @mpd-dsh/silicon@0.7.2 version", "result": "0.7.2"},
+    {"cmd": "npm view @mpd-dsh/silicon dist-tags --json", "result": "{\"latest\":\"0.7.2\"}"},
+    {"cmd": "npm view @mpd-dsh/silicon@0.7.2 --json (selected fields)", "result": "shasum 36d96f048bd5d0c49d8eaaac461b67d65ce1482e, fileCount 86, license MIT, provenance SLSA v1, _npmUser GitHub Actions"},
+    {"cmd": "npm stage list @mpd-dsh/silicon", "result": "No staged versions of package name \"@mpd-dsh/silicon\"."},
+    {"cmd": "docker manifest inspect ghcr.io/haroldz32/mpd-silicon:v0.7.2", "result": "OK"},
+    {"cmd": "docker manifest inspect ghcr.io/haroldz32/mpd-silicon:latest", "result": "OK"},
+    {"cmd": "gh release view v0.7.2 --json assets", "result": "mpd-dsh-silicon-0.7.2.tgz, silicon-package.tar.gz"}
+  ],
+  "bounds": [
+    "the registry INSTALL path (`dsh plugin add @mpd-dsh/silicon@0.7.2`) was not re-measured; the measured install used the 0.7.0 tarball (sha256 4dd00e881ac84390bfc10813ddbca1e1aa410ff99988de52d10d283d99d73335), and the 0.7.2 tarball install was not re-measured",
+    "the 2FA approval happened in the maintainer's browser flow and is not observable by the agent; the record asserts only the post-approval registry state and the empty stage list",
+    "the provenance attestation is verified as present via registry metadata; it was not independently rebuilt or verified against the tag commit beyond the recorded gitHead",
+    "0.7.1 was never published; the failed tag run is retained as history",
+    "the registry's first published version is the 0.0.0-stage name-claim placeholder (2026-10-30T06:20:19Z); 0.7.0 is the first real release"
+  ]
+}

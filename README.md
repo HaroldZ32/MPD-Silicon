@@ -13,7 +13,7 @@ language-service row. It is a **companion bundle, not a standalone one**: it req
 `@mpd-dsh/mpd` `0.15.1` at runtime (pinned in `package.json`) and refuses to boot
 without that bundle's `mpdDsh` service.
 
-**Bundle version 0.7.0** · targets **DeepSeek Harness `0.2.1-rc.2`** and requires
+**Bundle version 0.7.2** · targets **DeepSeek Harness `0.2.1-rc.2`** and requires
 **`@mpd-dsh/mpd` `0.15.1`**. The dependency-profile evidence is in
 `evidence/verification/mpd-dependency/`; the earlier adaptation evidence is in
 `evidence/verification/harness-0.2.1-rc.2/`.
@@ -108,24 +108,26 @@ Prerequisites:
 A silicon-only install is not enough: silicon's rows need the `mpdDsh` service, and an mpd
 installed **transitively** is not auto-activated. Install **both bundles in one command**.
 
-From the registry — `@mpd-dsh/silicon@0.7.0` **is published** (measured 2026-10-30:
-`npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-`01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files):
+From the registry — `@mpd-dsh/silicon@0.7.2` **is published** (measured 2026-10-30:
+`npm view @mpd-dsh/silicon@0.7.2` returns `0.7.2`, dist shasum
+`36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance attestation):
 
 ```bash
-dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@0.7.0
+dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@0.7.2
 ```
 
 The registry **install** command above has not been re-measured on this host; the measured form
-is the tarball command below. Later versions are **staged** by `release.yml` on a `v*` tag through
-npm Trusted Publishing (GitHub OIDC, provenance, no token), then a maintainer approves the staged
-version with 2FA before it becomes live.
+is the tarball command below. `0.7.0` was the first real release (a `0.0.0-stage` name-claim placeholder precedes it on the
+registry); `0.7.1` was never published (its
+tag's direct `npm publish` attempt was denied), and every later version is **staged** by
+`release.yml` on a `v*` tag through npm Trusted Publishing (GitHub OIDC, provenance, no token),
+then approved by a maintainer with 2FA before it becomes live.
 
 From a tarball built in this repository (works without a publish):
 
 ```bash
 npm pack
-dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-0.7.0.tgz
+dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-0.7.2.tgz
 ```
 
 Replace `<your-profile>` with the profile you boot (for example `dsh-tui`). `dsh plugin`
@@ -138,7 +140,8 @@ dependency** that declares `dsh.bundle.patch` to `dsh.profile.bundles`, so no ma
 is needed. It writes the profile's `package.json`, `pnpm-lock.yaml` and `node_modules` and
 leaves the rest of `$DSH_HOME` alone.
 
-**Measured on this host (2026-10-23, tarball form above)**: pnpm 9.15.9, dsh 0.2.1-rc.2,
+**Measured on this host (2026-10-23, with the then-current 0.7.0 tarball, sha256
+`4dd00e88…`; the 0.7.2 tarball and the registry install were not re-measured)**: pnpm 9.15.9, dsh 0.2.1-rc.2,
 isolated `DSH_HOME`. The install exited 0; the profile manifest ended with
 `@mpd-dsh/mpd` and `@mpd-dsh/silicon` in `dependencies` and both in `dsh.profile.bundles`;
 a real boot logged `[mpd-silicon-bootstrap] skill corpus served`. A **silicon-only**
@@ -161,7 +164,7 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon
 ```
 
 The registry form `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` is
-**published for `0.7.0`**; later versions are staged and appear only after a maintainer approves
+**published for `0.7.2`**; later versions are staged and appear only after a maintainer approves
 them. The registry *install* path was not re-measured on this host — the tarball path above is the
 measured one.
 
@@ -184,7 +187,7 @@ silicon-only profile, which then stops at the guard.
 The profile-directory path still works when you want to control the files yourself:
 
 1. Add both bundles to `$DSH_HOME/profiles/<your-profile>/package.json` under
-   `dependencies`: `"@mpd-dsh/mpd": "0.15.1"` and `"@mpd-dsh/silicon": "0.7.0"` (or a
+   `dependencies`: `"@mpd-dsh/mpd": "0.15.1"` and `"@mpd-dsh/silicon": "0.7.2"` (or a
    `file:`/tarball spec).
 2. Add both names to `dsh.profile.bundles` in the same file — this path does not reconcile
    that list, and a bundle missing from it contributes no patch layer.
@@ -417,8 +420,9 @@ CI runs on **GitHub Actions** (`.github/workflows/`), four workflows:
   produces the `npm pack` tarball plus `dist/silicon-package.tar.gz`, **stages
   `@mpd-dsh/silicon` for npm** with `npm stage publish --access public --provenance` through
   **npm Trusted Publishing**, publishes a **GitHub Release**, and pushes the verification image to
-  **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`). A maintainer approves the
-  staged version with 2FA before it becomes live.
+  **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`) — all in that same run. A
+  maintainer **then** approves the staged version with 2FA, and only after that approval does it
+  become live.
 
 npm Trusted Publishing uses the **GitHub OIDC token**: the workflow grants `id-token: write`, npm
 exchanges that short-lived token with the registry itself, and the trusted publisher is bound to
@@ -430,10 +434,11 @@ stage step runs after the version assert and the whole gate chain, so a tag that
 attestation. A maintainer then approves the staged version with 2FA before it becomes live. The
 `v0.7.1` tag is a failed attempt retained as history. The manifest is publishable by design
 (`files`, `engines`, `license`, `repository`, `publishConfig.access: public`, and the `prepack`
-guard). `0.7.0` is on the registry (measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns
-`0.7.0`, dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files); it was published
-before the OIDC step landed, and every later version is staged from `release.yml` and becomes live
-only after approval. Branch model: `main` is the trunk
+guard). `0.7.2` is on the registry (measured 2026-10-30 after staged approval: `npm view
+@mpd-dsh/silicon@0.7.2` returns `0.7.2`, dist shasum
+`36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance attestation);
+`0.7.0` was the first real release (a `0.0.0-stage` placeholder precedes it), published before the OIDC step landed; `0.7.1` was never
+published. Branch model: `main` is the trunk
 and the only pull-request target; `feature/*` / `fix/*` are short-lived; `release/vX.Y.Z` carries
 the release bump (the annotated `vX.Y.Z` tag is cut on `main`). See
 [`CONTRIBUTING.md`](./CONTRIBUTING.md), the PR template at

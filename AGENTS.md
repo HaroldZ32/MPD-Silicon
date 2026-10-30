@@ -34,12 +34,17 @@ its own repository so the RTL surface lives in one place and `@mpd-dsh/mpd` no l
 - **Install path**: one command installs both bundles —
   `dsh plugin --profile <profile> add -w @mpd-dsh/mpd@0.15.1 <silicon-spec>` — because a
   transitively installed mpd is **not** auto-activated. `<silicon-spec>` is the published package
-  (`@mpd-dsh/silicon@0.7.0`) or the tarball built by `npm pack`
-  (`./mpd-dsh-silicon-0.7.0.tgz`); the tarball is the measured form. **0.7.0 is published**:
-  measured 2026-10-30, `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files. Future versions are **STAGED** by
-  `.github/workflows/release.yml` on a `v*` tag via npm Trusted Publishing (GitHub OIDC, no
-  token); each one becomes live only after a maintainer approves the staged version with 2FA.
+  (`@mpd-dsh/silicon@0.7.2`) or the tarball built by `npm pack`
+  (`./mpd-dsh-silicon-0.7.2.tgz`); the tarball install was measured with the 0.7.0 artifact
+  (sha256 `4dd00e88…`), and neither the 0.7.2 tarball nor the registry install was re-measured.
+  **0.7.2 is published**:
+  measured 2026-10-30 after staged approval, `npm view @mpd-dsh/silicon@0.7.2` returns `0.7.2`,
+  dist shasum `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance
+  attestation; `0.7.0` was the first real release (a `0.0.0-stage` name-claim placeholder precedes
+  it) and `0.7.1` was never published. Future versions
+  are **STAGED** by `.github/workflows/release.yml` on a `v*` tag via npm Trusted Publishing
+  (GitHub OIDC, no token); each one becomes live only after a maintainer approves the staged
+  version with 2FA.
   `dsh plugin add` reconciles `dsh.profile.bundles` itself, so no manifest edit is needed.
   Measured 2026-10-23 (pnpm 9.15.9); §9 carries the environment bounds.
 - **What ships**: the `mpd-verif` plugin (**10** `mpd_verif_*` tools: venv/backends/compile/
@@ -337,10 +342,12 @@ never rebased or force-pushed.
   0, writes the profile `package.json` + `pnpm-lock.yaml` + `node_modules`, and auto-reconciles
   `dsh.profile.bundles` from the newly installed direct dependencies that declare
   `dsh.bundle.patch` (no manifest edit). `<silicon-spec>` is the `npm pack` tarball
-  (`./mpd-dsh-silicon-0.7.0.tgz`; that tarball form is the measured one — the registry *install*
-  form was not re-measured). The registry **package** is published: measured 2026-10-30,
-  `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files; future versions are **STAGED** by
+  (`./mpd-dsh-silicon-0.7.2.tgz`; the measured install used the 0.7.0 tarball, sha256
+  `4dd00e88…` — neither the 0.7.2 tarball nor the registry *install* form was re-measured). The registry **package** is published: measured 2026-10-30 after
+  staged approval, `npm view @mpd-dsh/silicon@0.7.2` returns `0.7.2`, dist shasum
+  `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`, 86 files, with a signed SLSA provenance
+  attestation; `0.7.0` was the first real release (a `0.0.0-stage` placeholder precedes it) and
+  `0.7.1` was never published. Future versions are **STAGED** by
   `.github/workflows/release.yml` on a `v*` tag via npm Trusted Publishing (GitHub OIDC, no
   token), then approved by a maintainer with 2FA before they become live. The resulting boot logs
   `[mpd-silicon-bootstrap] skill corpus served`; a silicon-only profile installs and then exits 1

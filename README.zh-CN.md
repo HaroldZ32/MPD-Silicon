@@ -9,7 +9,7 @@
 
 DeepSeek Harness 的 **RTL 能力 bundle** —— 即 `@mpd-dsh/mpd` 的「RTL 面」：RTL 验证工具链、RTL skill 语料，以及 HDL 语言服务行。它是一个**伴生 bundle，不是独立 bundle**：运行期要求 `@mpd-dsh/mpd` `0.15.1`（钉在 `package.json`），且在该 bundle 的 `mpdDsh` 服务缺席时拒绝启动。
 
-**bundle 版本 0.7.0** · 面向 **DeepSeek Harness `0.2.1-rc.2`**，要求 **`@mpd-dsh/mpd` `0.15.1`**。依赖 profile 的证据在 `evidence/verification/mpd-dependency/`；更早的适配证据在 `evidence/verification/harness-0.2.1-rc.2/`。
+**bundle 版本 0.7.2** · 面向 **DeepSeek Harness `0.2.1-rc.2`**，要求 **`@mpd-dsh/mpd` `0.15.1`**。依赖 profile 的证据在 `evidence/verification/mpd-dependency/`；更早的适配证据在 `evidence/verification/harness-0.2.1-rc.2/`。
 
 ## 随附内容
 
@@ -71,23 +71,26 @@ patch 共 5 行，**没有 adapter 行**：`mpdDsh` 服务由 `@mpd-dsh/mpd` 自
 只装 silicon 不够：它的行需要 `mpdDsh` 服务，而**传递安装**的 mpd 不会被自动激活。请用**一条命令
 同时安装两个 bundle**。
 
-从注册表安装 —— `@mpd-dsh/silicon@0.7.0` **已发布**（2026-10-30 实测：`npm view
-@mpd-dsh/silicon@0.7.0` 返回 `0.7.0`，dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`，
-86 个文件）：
+从注册表安装 —— `@mpd-dsh/silicon@0.7.2` **已发布**（2026-10-30 实测：`npm view
+@mpd-dsh/silicon@0.7.2` 返回 `0.7.2`，dist shasum `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`，
+86 个文件，附带已签名的 SLSA provenance 证明）：
 
 ```bash
-dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@0.7.0
+dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@0.7.2
 ```
 
-上面的注册表**安装**命令尚未在本机复测；已实测的是下面的 tarball 形式。后续版本由 `release.yml`
+上面的注册表**安装**命令尚未在本机复测；已实测的是下面的 tarball 形式（2026-10-23 实测的是当时的
+0.7.0 tarball，sha256 `4dd00e88…`；0.7.2 tarball 与注册表安装未复测）。`0.7.0` 是首个正式版本
+（注册表上更早还有一个 `0.0.0-stage` 占位包）；
+`0.7.1` 从未发布（其 tag 上的直接 `npm publish` 尝试被拒绝），此后每个新版本都由 `release.yml`
 在 `v*` 标签上通过 npm Trusted Publishing（GitHub OIDC、provenance、无 token）**暂存发布**，
-随后由维护者用 2FA 批准暂存版本，才会正式上线。
+再由维护者用 2FA 批准，才会正式上线。
 
 用本仓库打出的 tarball 安装（无需先发布）：
 
 ```bash
 npm pack
-dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-0.7.0.tgz
+dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-0.7.2.tgz
 ```
 
 把 `<your-profile>` 换成你启动的 profile（例如 `dsh-tui`）。`dsh plugin` 把 `--profile <name>` 之后的
@@ -98,7 +101,7 @@ pnpm 9 不接受不带它的根安装。
 `dsh.profile.bundles`，无需手改 manifest。它写入 profile 的 `package.json`、`pnpm-lock.yaml` 与
 `node_modules`，不碰 `$DSH_HOME` 的其他内容。
 
-**本机实测（2026-10-23，上面的 tarball 形式）**：pnpm 9.15.9、dsh 0.2.1-rc.2、隔离 `DSH_HOME`。
+**本机实测（2026-10-23，当时的 0.7.0 tarball，sha256 `4dd00e88…`；0.7.2 tarball 与注册表安装未复测）**：pnpm 9.15.9、dsh 0.2.1-rc.2、隔离 `DSH_HOME`。
 安装退出码 0；profile manifest 的 `dependencies` 最终同时含 `@mpd-dsh/mpd` 与 `@mpd-dsh/silicon`，
 `dsh.profile.bundles` 同时含两者；真实启动打印 `[mpd-silicon-bootstrap] skill corpus served`。**只装
 silicon** 的 profile 安装同样成功，但启动时以退出码 1 停在 `silicon-require-mpd` 守卫信息上 —— 这是
@@ -117,7 +120,7 @@ npm pack
 dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-<new-version>.tgz
 ```
 
-注册表形式 `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` 的 **`0.7.0`
+注册表形式 `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` 的 **`0.7.2`
 已发布**；后续版本先暂存，经维护者批准后才会上线。注册表**安装**路径未在本机复测 —— 上面那条
 tarball 路径才是已实测的形式。
 
@@ -138,7 +141,7 @@ dsh plugin --profile <your-profile> remove @mpd-dsh/silicon
 需要自己掌控文件时，profile 目录路径仍然可用：
 
 1. 在 `$DSH_HOME/profiles/<your-profile>/package.json` 的 `dependencies` 中加入两个 bundle：
-   `"@mpd-dsh/mpd": "0.15.1"` 与 `"@mpd-dsh/silicon": "0.7.0"`（或 `file:`/tarball 说明符）。
+   `"@mpd-dsh/mpd": "0.15.1"` 与 `"@mpd-dsh/silicon": "0.7.2"`（或 `file:`/tarball 说明符）。
 2. 在同一文件的 `dsh.profile.bundles` 中加入这两个名字 —— 该路径不会核对这个列表，不在列表里的
    bundle 不会贡献任何 patch 层。
 3. 在该 profile 目录执行 `bun install`（该路径需要 **bun**）。
@@ -268,9 +271,9 @@ CI 跑在 **GitHub Actions**（`.github/workflows/`），共四个工作流：
 - `ci.yml` —— 在 `main` 上（push 与 pull request）跑**静态门禁**：类型、测试、语料、行 id、LSP 资产、打包器自检、workflow 检查、`--self-test`/`--check`（`--fix` 只在本地）、pack、包自检与包校验；并把 `dist/silicon-package` 作为 `silicon-package` 产物上传。
 - `docker-verify.yml` —— **docker 真机验证**：构建仓库 `Dockerfile`（Node 24 + bun `1.4.3` 上的真实 iverilog、verilator 与 yosys），跑完整门禁与 EDA 冒烟，期望 `DOCKER-VERIFY: PASS`，并把 `docker-verify.log` 运行日志作为 `docker-verify-log` 产物上传。
 - `boot-e2e.yml` —— 在命中路径的 `main` push 与手动触发上跑两个真实启动（共存与无 mpd 拒绝）。
-- `release.yml` —— `v*` 标签先断言标签版本等于 `package.json.version`，跑门禁，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm stage publish --access public --provenance` 通过 **npm Trusted Publishing** 把 `@mpd-dsh/silicon` **暂存到 npm**（维护者用 2FA 批准后才上线），发布 **GitHub Release**，并把验证镜像推送到 **GHCR**（`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest`）。
+- `release.yml` —— `v*` 标签先断言标签版本等于 `package.json.version`，跑门禁，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm stage publish --access public --provenance` 通过 **npm Trusted Publishing** 把 `@mpd-dsh/silicon` **暂存到 npm**，发布 **GitHub Release**，并把验证镜像推送到 **GHCR**（`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest`）——这些都在同一次运行中完成；维护者**随后**用 2FA 批准暂存版本，只有批准后才正式上线。
 
-npm Trusted Publishing 使用 **GitHub OIDC token**：工作流授予 `id-token: write`，npm 自己用这枚短时 token 与注册表交换凭据，可信发布者绑定到本仓库加 `release.yml` 这个文件名 —— 因此**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**。对可信发布者而言暂存发布始终被允许，而直接的 `npm publish` 需要 `--allow-publish`，在 `v0.7.1` 尝试中因 `E403` 失败（run `41019623710`）。暂存步骤排在版本断言与整条门禁链之后，所以与 `package.json.version` 不匹配的标签永远到不了注册表，`--provenance` 还会附上签名的构建证明；随后维护者用 2FA 批准暂存版本，才会正式上线。`v0.7.1` 标签是保留为历史的失败尝试。manifest 本身可发布（`files`、`engines`、`license`、`repository`、`publishConfig.access: public` 与 `prepack` 守卫）。`0.7.0` 已在注册表上（2026-10-30 实测：`npm view @mpd-dsh/silicon@0.7.0` 返回 `0.7.0`，dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`，86 个文件）；它是在 OIDC 步骤落地之前发布的，此后每个版本都由 `release.yml` 暂存，并在批准后上线。分支模型：`main` 是主干，也是唯一的 PR 目标；`feature/*` / `fix/*` 为短分支；`release/vX.Y.Z` 承载发布版本递增（annotated `vX.Y.Z` 标签打在 `main` 上）。参见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)、PR 模板 `.github/PULL_REQUEST_TEMPLATE.md`、[`CHANGELOG.md`](./CHANGELOG.md) 与 [`docs/toolchain.md`](./docs/toolchain.md)。其中 `CONTRIBUTING.md`、`.github/`、`AGENTS.md` 与 `evidence/` 记录**仅仓库**——不在 npm tarball 中。
+npm Trusted Publishing 使用 **GitHub OIDC token**：工作流授予 `id-token: write`，npm 自己用这枚短时 token 与注册表交换凭据，可信发布者绑定到本仓库加 `release.yml` 这个文件名 —— 因此**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**。对可信发布者而言暂存发布始终被允许，而直接的 `npm publish` 需要 `--allow-publish`，在 `v0.7.1` 尝试中因 `E403` 失败（run `41019623710`）。暂存步骤排在版本断言与整条门禁链之后，所以与 `package.json.version` 不匹配的标签永远到不了注册表，`--provenance` 还会附上签名的构建证明；随后维护者用 2FA 批准暂存版本，才会正式上线。`v0.7.1` 标签是保留为历史的失败尝试。manifest 本身可发布（`files`、`engines`、`license`、`repository`、`publishConfig.access: public` 与 `prepack` 守卫）。`0.7.2` 已在注册表上（2026-10-30 暂存批准后实测：`npm view @mpd-dsh/silicon@0.7.2` 返回 `0.7.2`，dist shasum `36d96f048bd5d0c49d8eaaac461b67d65ce1482e`，86 个文件，附带已签名的 SLSA provenance 证明）；`0.7.0` 是首个正式版本（更早有一个 `0.0.0-stage` 占位包），发生在 OIDC 步骤落地之前；`0.7.1` 从未发布。分支模型：`main` 是主干，也是唯一的 PR 目标；`feature/*` / `fix/*` 为短分支；`release/vX.Y.Z` 承载发布版本递增（annotated `vX.Y.Z` 标签打在 `main` 上）。参见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)、PR 模板 `.github/PULL_REQUEST_TEMPLATE.md`、[`CHANGELOG.md`](./CHANGELOG.md) 与 [`docs/toolchain.md`](./docs/toolchain.md)。其中 `CONTRIBUTING.md`、`.github/`、`AGENTS.md` 与 `evidence/` 记录**仅仓库**——不在 npm tarball 中。
 
 ## 许可
 
