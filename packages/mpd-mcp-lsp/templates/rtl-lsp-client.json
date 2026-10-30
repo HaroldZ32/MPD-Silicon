@@ -1,0 +1,14 @@
+{
+  "lsp": {
+    "verible": {
+      "command": ["verible-verilog-ls"],
+      "extensions": [".v", ".vh"],
+      "priority": 100
+    },
+    "slang-server": {
+      "command": ["slang-server"],
+      "extensions": [".sv", ".svh"],
+      "priority": 100
+    }
+  }
+}

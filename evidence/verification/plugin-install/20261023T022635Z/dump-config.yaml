@@ -1,0 +1,1250 @@
+# == @deepseek-ai/dsh-base
+- id: tool-plugin-manager
+  name: '@deepseek-ai/dsh-plugin-manager/tools'
+  disabled: true
+- id: plugin-manager
+  name: '@deepseek-ai/dsh-plugin-manager'
+  disabled: !!js '!ctx.get(''profileContext'')'
+- id: timer
+  name: '@deepseek-ai/cordis-plugin-timer'
+- id: hmr
+  name: '@deepseek-ai/dsh-hmr'
+  disabled: !!js '!ctx.get(''profileContext'')'
+  config:
+    root: []
+- id: llm
+  name: '@deepseek-ai/dsh-llm'
+- id: deepseek-llm-api-extensions
+  name: '@deepseek-ai/dsh-deepseek-llm-api-extensions'
+- id: session
+  name: '@deepseek-ai/dsh-session'
+- id: session-log-deepseek
+  name: '@deepseek-ai/dsh-session-log-deepseek'
+- id: typert
+  name: '@deepseek-ai/dsh-typert-registry'
+- id: typert-loader
+  name: '@deepseek-ai/dsh-typert-loader'
+- id: typert-gateway
+  name: '@deepseek-ai/dsh-api-gateway'
+- id: remote-access
+  name: '@deepseek-ai/dsh-api-remote-access'
+- id: session-title
+  name: '@deepseek-ai/dsh-session-title'
+  config:
+    fallbackMaxWords: 5
+    fallbackMaxBytes: 40
+    maxTitleBytes: 80
+- id: session-title-llm
+  name: '@deepseek-ai/dsh-session-title-first-prompt-llm'
+  config:
+    targetWords: 5
+    targetCjkCharacters: 10
+    maxInputBytes: 4096
+    maxOutputTokens: 4096
+    timeoutMs: 60000
+- id: user-questions
+  name: '@deepseek-ai/dsh-user-questions'
+- id: agent
+  name: '@deepseek-ai/dsh-agent'
+- id: plugin-package-inventory-deepseek
+  name: '@deepseek-ai/dsh-plugin-package-inventory-deepseek'
+- id: agent-default-model
+  name: '@deepseek-ai/dsh-agent-default-model'
+  config:
+    provider: deepseek-official
+    model: deepseek-flash
+- id: jobs
+  name: '@deepseek-ai/dsh-jobs-local'
+- id: llm-retry
+  name: '@deepseek-ai/dsh-llm-retry'
+- id: config-editor
+  name: '@deepseek-ai/dsh-config-editor'
+  disabled: !!js '!ctx.get(''profileContext'')'
+- id: settings
+  name: '@deepseek-ai/dsh-settings'
+  disabled: !!js '!ctx.get(''profileContext'')'
+- id: authorization
+  name: '@deepseek-ai/dsh-authorization'
+- id: deepseek-account
+  name: '@deepseek-ai/dsh-deepseek-account-platform'
+  config:
+    desktopPlatform: !!js >-
+      ctx.get('profileContext')?.name === 'desktop' && ['darwin',
+      'win32'].includes(process.platform) ? process.platform : null
+- id: credentials
+  name: '@deepseek-ai/dsh-credentials-local'
+- id: llm-pi-ai
+  name: '@deepseek-ai/dsh-llm-pi-ai'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: session-persistence-jsonl
+  name: '@deepseek-ai/dsh-session-persistence-jsonl'
+  config:
+    root: !!js process.env.DSH_TUI_SESSION_ROOT ?? dshHomePath('sessions')
+# == @deepseek-ai/dsh-base
+- id: attachment-local
+  name: '@deepseek-ai/dsh-attachment-local'
+- id: session-query-sqlite
+  name: '@deepseek-ai/dsh-session-query-sqlite'
+  config:
+    path: ':memory:'
+    openAt: never
+- id: working-directory
+  name: '@deepseek-ai/dsh-working-directory'
+- id: tool-working-directory
+  name: '@deepseek-ai/dsh-tool-working-directory'
+- id: session-projection
+  name: '@deepseek-ai/dsh-session-projection'
+- id: storage
+  name: '@deepseek-ai/dsh-storage'
+- id: storage-json
+  name: '@deepseek-ai/dsh-storage-json'
+  config:
+    root: !!js dshHomePath('storages')
+- id: storage-domain
+  name: '@deepseek-ai/dsh-storage-domain'
+  config:
+    backend: json
+- id: session-projection-cache
+  name: '@deepseek-ai/dsh-session-projection-cache'
+  config:
+    writeEveryEvents: 200
+    writeIntervalMs: 5000
+- id: otel
+  name: '@deepseek-ai/dsh-otel'
+- id: session-telemetry-otel
+  name: '@deepseek-ai/dsh-session-telemetry-otel'
+  config:
+    mode: !!js process.env.DSH_TELEMETRY_MODE || 'FEEDBACK_ONLY'
+    shutdownTimeoutMillis: 3000
+    maxRequestBytes: 4000000
+    exporter:
+      url: !!js >-
+        process.env.DSH_TELEMETRY_OTLP_URL ??
+        'https://dsh-otel-collector.deepseeksvc.com/v1/logs'
+      compression: gzip
+      timeoutMillis: 1000
+    processor:
+      scheduledDelayMillis: 10000
+      maxQueueSize: 2048
+      maxExportBatchSize: 2048
+      exportTimeoutMillis: 1500
+- id: subprocess
+  name: '@deepseek-ai/dsh-subprocess-local'
+- id: sandbox
+  name: '@deepseek-ai/dsh-sandbox-local'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: sandbox-policy
+  name: '@deepseek-ai/dsh-sandbox-policy'
+  config:
+    mode: !!js >-
+      process.platform === 'win32' ? 'danger-full-access' :
+      (process.env.DSH_PERMISSION_MODE ?? 'workspace-write')
+    workspaceRoot: !!js process.cwd()
+# == @deepseek-ai/dsh-base
+- id: bash-sandbox
+  name: '@deepseek-ai/dsh-bash-sandbox'
+  disabled: !!js process.platform === 'win32'
+  config:
+    timeoutMs: 60000
+- id: pwsh-sandbox
+  name: '@deepseek-ai/dsh-pwsh-sandbox'
+  disabled: !!js process.platform !== 'win32'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: approval
+  name: '@deepseek-ai/dsh-user-approval'
+  config:
+    policy: !!js >-
+      process.platform === 'win32' ? 'never' : ((process.env.DSH_PERMISSION_MODE
+      ?? 'workspace-write') === 'danger-full-access' ? 'never' : 'ask')
+# == @deepseek-ai/dsh-base
+- id: permission
+  name: '@deepseek-ai/dsh-permission-presets'
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
+- id: shell-env
+  name: '@deepseek-ai/dsh-shell-env'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-bash
+  name: '@deepseek-ai/dsh-tool-bash'
+  disabled: true
+- id: tool-pwsh
+  name: '@deepseek-ai/dsh-tool-pwsh'
+  disabled: true
+- id: tool-jobs
+  name: '@deepseek-ai/dsh-tool-jobs'
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: fs-observation-policy
+  name: '@deepseek-ai/dsh-fs-observation-policy'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-fs
+  name: '@deepseek-ai/dsh-tool-fs'
+  disabled: true
+- id: tool-fs-search
+  name: '@deepseek-ai/dsh-tool-fs-search'
+  config:
+    sampleOverCapGlobResults: false
+  disabled: true
+- id: agent-instructions
+  name: '@deepseek-ai/dsh-agent-instructions'
+  config:
+    maxBytes: 65536
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: skill
+  name: '@deepseek-ai/dsh-skill'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: skill-filesystem
+  name: '@deepseek-ai/dsh-skill-filesystem'
+  disabled: true
+- id: tool-skill
+  name: '@deepseek-ai/dsh-tool-skill'
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: commands
+  name: '@deepseek-ai/dsh-commands'
+- id: command-feedback
+  name: '@deepseek-ai/dsh-command-feedback'
+- id: goal
+  name: '@deepseek-ai/dsh-goal'
+- id: goal-round-driver
+  name: '@deepseek-ai/dsh-goal-round-driver'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: command-goal
+  name: '@deepseek-ai/dsh-command-goal'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      const fs = process.getBuiltinModule('node:fs')
+      const path = process.getBuiltinModule('node:path')
+      try {
+        require.resolve('@deepseek-ai/dsh-agent-preset-registry/package.json')
+        return true
+      } catch {}
+      try {
+        const manifest = require.resolve('@deepseek-ai/dsh-agent-presets/package.json')
+        const preset = path.join(path.dirname(manifest), 'presets', 'standard', 'agent.cordis.yml')
+        return fs.readFileSync(preset, 'utf8')
+          .split(/\r?\n/u)
+          .some(line => line.trim() === '- id: command-goal')
+      } catch {
+        return false
+      }
+    })()
+- id: plan-mode
+  name: '@deepseek-ai/dsh-plan-mode'
+  config:
+    section: >
+      You are in plan mode. Stay in plan mode until the user approves your plan
+      through exit_plan_mode or switches the session mode. Imperative language
+      to implement changes means plan the implementation, not execute it. A
+      user's conversational agreement — including an answer confirming something
+      you asked — approves nothing and does not end plan mode; fold the
+      confirmed decision into the plan and submit it through exit_plan_mode.
+
+
+      Explore first. Use non-mutating reads, searches, static analysis, and
+      checks to ground the plan in the actual repository. Do not edit or write
+      files, change configuration, run formatters or code generation that
+      rewrites tracked files, commit, or otherwise carry out the plan. Prefer
+      existing functions and patterns over new machinery.
+
+
+      The tool catalog stays the same across modes for request-cache stability.
+      These plan-mode rules override any later tool description or guidance that
+      suggests using mutation tools; those tools remain listed only to keep the
+      request shape stable. Do not use todo_write to track this planning phase:
+      it tracks implementation after an approved plan, while the plan itself
+      belongs in exit_plan_mode.
+
+
+      Resolve discoverable facts by inspection. Use ask_user_question only for
+      user-owned choices or material ambiguity that inspection cannot answer. Do
+      not ask the user where code lives or how current behavior works when you
+      can find out.
+
+
+      Make the plan decision-complete: state the goal and success criteria;
+      group implementation changes by subsystem; identify public API, schema,
+      and data-flow changes; cover edge cases, failure modes, tests, acceptance
+      criteria, and explicit assumptions. Keep it concise enough to review but
+      detailed enough that another engineer can implement it without making
+      design decisions.
+
+
+      When ready, call exit_plan_mode with the complete plan markdown, starting
+      with a # title. Make exit_plan_mode the only and final tool call in that
+      assistant response: it presents the plan for approval, and implementation
+      begins only in a later step after approval. Do not paste the final plan as
+      a plain reply or ask "should I proceed?" through prose or
+      ask_user_question. If review rejects it, incorporate the feedback and
+      present again. If the review channel is unavailable or aborted, stay in
+      plan mode and ask the user to switch modes manually; do not proceed with
+      implementation.
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: token-meter
+  name: '@deepseek-ai/dsh-token-meter'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: compaction-basic
+  name: '@deepseek-ai/dsh-compaction-basic'
+  disabled: true
+- id: command-compact
+  name: '@deepseek-ai/dsh-command-compact'
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: subagent
+  name: '@deepseek-ai/dsh-subagent'
+- id: subagent-spawn-in-process
+  name: '@deepseek-ai/dsh-subagent-spawn-in-process'
+  config:
+    providerName: spawn
+- id: subagent-fork-in-process
+  name: '@deepseek-ai/dsh-subagent-fork-in-process'
+  config:
+    providerName: fork
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-subagent-control
+  name: '@deepseek-ai/dsh-tool-subagent-control'
+  disabled: true
+- id: tool-subagent-list-agents
+  name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
+  disabled: true
+- id: tool-subagent
+  name: '@deepseek-ai/dsh-tool-subagent'
+  config:
+    provider: spawn
+    toolName: subagent
+  disabled: true
+- id: tool-subagent-fork
+  name: '@deepseek-ai/dsh-tool-subagent'
+  config:
+    provider: fork
+    toolName: subagent_fork
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: ptc-runtime
+  name: '@deepseek-ai/dsh-ptc-runtime-node'
+- id: workflow-ptc
+  name: '@deepseek-ai/dsh-workflow-ptc'
+  config:
+    provider: spawn
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-workflow
+  name: '@deepseek-ai/dsh-tool-workflow'
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: timeout-policy
+  name: '@deepseek-ai/dsh-tool-call-timeout-policy'
+- id: spill-local
+  name: '@deepseek-ai/dsh-spill-local'
+- id: spill-policy
+  name: '@deepseek-ai/dsh-spill-policy'
+  config:
+    maxInlineTokens: 12500
+- id: session-checkpoint-policy
+  name: '@deepseek-ai/dsh-session-checkpoint-policy'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-result-pruner
+  name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+  config:
+    thresholdChars: 8192
+    headChars: 4096
+    tailChars: 1024
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: image-offload
+  name: '@deepseek-ai/dsh-compaction-image-offload'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-todo
+  name: '@deepseek-ai/dsh-tool-todo'
+  config:
+    allowParallelInProgress: true
+  disabled: true
+- id: tool-goal
+  name: '@deepseek-ai/dsh-tool-goal'
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: repeat-tool-reminder
+  name: '@deepseek-ai/dsh-repeat-tool-reminder'
+  config:
+    thresholds:
+      - 3
+      - 5
+      - 8
+    argumentsPreviewChars: 500
+- id: web
+  name: '@deepseek-ai/dsh-web'
+  config:
+    searchProvider: deepseek-official
+    fetchProvider: http
+- id: web-search-deepseek
+  name: '@deepseek-ai/dsh-web-search-deepseek'
+  config:
+    apiKeyEnv: DEEPSEEK_API_KEY
+- id: web-deepseek-api
+  name: '@deepseek-ai/dsh-web-deepseek-api'
+  config:
+    apiKeyEnv: DEEPSEEK_API_KEY
+- id: web-fetch-http
+  name: '@deepseek-ai/dsh-web-fetch-http'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: tool-web
+  name: '@deepseek-ai/dsh-tool-web'
+  config:
+    fetch: true
+    searchTimeoutMs: 60000
+  disabled: true
+# == @deepseek-ai/dsh-base
+- id: mcp-resources
+  name: '@deepseek-ai/dsh-mcp-resources'
+- id: tools
+  name: '@deepseek-ai/dsh-tools'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: system-prompt
+  name: '@deepseek-ai/dsh-system-prompt'
+  config: !!js |-
+    (() => {
+      const persona = process.env.DSH_TUI_PERSONA ?? 'You are a coding agent.'
+      try {
+        const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+        const fs = process.getBuiltinModule('node:fs')
+        const manifest = require.resolve('@deepseek-ai/dsh-system-prompt/package.json')
+        const version = String(JSON.parse(fs.readFileSync(manifest, 'utf8')).version ?? '')
+        const match = /^(\d+)\.(\d+)\.(\d+)/u.exec(version)
+        const [major, minor, patch] = match === null ? [0, 0, 0] : [Number(match[1]), Number(match[2]), Number(match[3])]
+        if (major > 0 || minor > 1 || (minor === 1 && patch >= 3)) return { personaPrefix: persona }
+        return { persona }
+      } catch {
+        return { personaPrefix: persona }
+      }
+    })()
+# == @deepseek-ai/dsh-base
+- id: agent-loop
+  name: '@deepseek-ai/dsh-agent-loop'
+  config:
+    agents: []
+- id: fs-sandbox
+  name: '@deepseek-ai/dsh-fs-sandbox'
+# == @deepseek-ai/dsh-base, patched by @deepseek-harness-tui/dsh-tui
+- id: llm-deepseek
+  name: '@deepseek-ai/dsh-llm-deepseek-api-key'
+  config:
+    apiKeyEnv: DEEPSEEK_API_KEY
+    baseURL: !!js process.env.DEEPSEEK_BASE_URL
+    thinking: enabled
+    reasoningEffort: max
+# == @deepseek-ai/dsh-base
+- id: llm-deepseek-account
+  name: '@deepseek-ai/dsh-llm-deepseek-account'
+# == @deepseek-harness-tui/dsh-tui
+- id: dsh-tui-storage
+  name: '@deepseek-ai/dsh-storage'
+  disabled: !!js >-
+    [...ctx.loader.entries()].some(entry => entry.options.id === 'storage' &&
+    entry.options.name === '@deepseek-ai/dsh-storage' && !entry.disabled)
+- id: dsh-tui-storage-json
+  name: '@deepseek-ai/dsh-storage-json'
+  disabled: !!js >-
+    [...ctx.loader.entries()].some(entry => entry.options.id === 'storage-json'
+    && entry.options.name === '@deepseek-ai/dsh-storage-json' &&
+    !entry.disabled)
+  config:
+    root: !!js dshHomePath('storages')
+- id: dsh-tui-storage-domain
+  name: '@deepseek-ai/dsh-storage-domain'
+  disabled: !!js >-
+    [...ctx.loader.entries()].some(entry => entry.options.id ===
+    'storage-domain' && entry.options.name === '@deepseek-ai/dsh-storage-domain'
+    && !entry.disabled)
+  config:
+    backend: json
+- id: dsh-tui-workspace
+  name: '@deepseek-ai/dsh-workspace'
+  disabled: !!js >-
+    [...ctx.loader.entries()].some(entry => entry.options.id === 'workspace' &&
+    entry.options.name === '@deepseek-ai/dsh-workspace' && !entry.disabled)
+- id: dsh-tui-code-runtime
+  name: '@deepseek-ai/dsh-code-runtime-worker-thread'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      try { require.resolve('@deepseek-ai/dsh-ptc-runtime-node/package.json'); return true } catch {}
+      return [...ctx.loader.entries()].some(entry => entry.options.id === 'code-runtime' && entry.options.name === '@deepseek-ai/dsh-code-runtime-worker-thread' && !entry.disabled)
+    })()
+- id: dsh-tui-subagent-model-selection-settings
+  name: '@deepseek-ai/dsh-tool-subagent/model-selection-settings'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      try {
+        require.resolve('@deepseek-ai/dsh-tool-subagent/model-selection-settings')
+      } catch {
+        return true
+      }
+      return [...ctx.loader.entries()].some(entry => entry.options.id === 'subagent-model-selection-settings' && entry.options.name === '@deepseek-ai/dsh-tool-subagent/model-selection-settings' && !entry.disabled)
+    })()
+- id: dsh-tui-workspaces
+  name: '@deepseek-harness-tui/dsh-tui/workspaces'
+- id: dsh-tui-command-trees
+  name: '@deepseek-harness-tui/dsh-tui/command-trees'
+- id: dsh-tui-settings-sections
+  name: '@deepseek-harness-tui/dsh-tui/settings-sections'
+- id: dsh-tui-scenes
+  name: '@deepseek-harness-tui/dsh-tui/scenes'
+- id: dsh-tui-panels
+  name: '@deepseek-harness-tui/dsh-tui/panels'
+- id: dsh-tui-plugin-host
+  name: '@deepseek-harness-tui/dsh-tui/plugin-host'
+- id: dsh-tui-extensions
+  name: '@deepseek-harness-tui/dsh-tui/extensions'
+- id: dsh-tui-agent-presets
+  name: '@deepseek-ai/dsh-agent-presets'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      try { require.resolve('@deepseek-ai/dsh-agent-preset-registry/package.json'); return true } catch {}
+      return [...ctx.loader.entries()].some(entry => entry.options.id === 'agent-presets' && entry.options.name === '@deepseek-ai/dsh-agent-presets' && !entry.disabled)
+    })()
+  config: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      const fs = process.getBuiltinModule('node:fs')
+      const path = process.getBuiltinModule('node:path')
+      try {
+        const manifest = require.resolve('@deepseek-ai/dsh-agent-presets/package.json')
+        if (fs.existsSync(path.join(path.dirname(manifest), 'presets'))) {
+          return { default: 'standard' }
+        }
+      } catch {
+        // Let the roster import report a missing package; preserve the rc
+        // root fallback below for every package generation without one.
+      }
+      const base = ctx.baseUrl
+      if (!base) return { default: 'standard' }
+      const root = new URL('../node_modules/@deepseek-ai/dsh/config/agent-presets/', base)
+      let rootPath = decodeURIComponent(root.pathname)
+      if (/^\/[A-Za-z]:/.test(rootPath)) rootPath = rootPath.slice(1)
+      return { default: 'standard', roots: [{ path: rootPath, trust: 'system' }] }
+    })()
+- id: dsh-tui-agent-preset-registry
+  name: '@deepseek-ai/dsh-agent-preset-registry'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      try { require.resolve('@deepseek-ai/dsh-agent-preset-registry/package.json') } catch { return true }
+      return [...ctx.loader.entries()].some(entry => entry.options.id === 'agent-preset-registry' && entry.options.name === '@deepseek-ai/dsh-agent-preset-registry' && !entry.disabled)
+    })()
+  config:
+    default: standard
+- id: dsh-tui-cordis-host-runner
+  name: '@deepseek-ai/dsh-cordis-host-runner'
+  disabled: !!js >-
+    [...ctx.loader.entries()].some(entry => entry.options.id ===
+    'cordis-host-runner' && entry.options.name ===
+    '@deepseek-ai/dsh-cordis-host-runner' && !entry.disabled)
+- id: dsh-tui-webserver
+  name: '@deepseek-ai/dsh-host-webserver'
+  disabled: !!js |-
+    (() => {
+      const require = process.getBuiltinModule('node:module').createRequire(ctx.baseUrl)
+      try { require.resolve('@deepseek-ai/dsh-host-webserver/package.json') } catch { return true }
+      const entries = [...ctx.loader.entries()]
+      return !entries.some(entry => entry.options.name === '@deepseek-ai/dsh-deepseek-account-platform' && !entry.disabled)
+        || entries.some(entry => entry.options.id === 'webserver' && entry.options.name === '@deepseek-ai/dsh-host-webserver' && !entry.disabled)
+    })()
+  config:
+    host: 127.0.0.1
+    port: 0
+- id: dsh-tui-auth
+  name: '@deepseek-harness-tui/dsh-tui/oauth'
+  inject:
+    - llm
+    - commands
+- id: dsh-tui
+  name: '@deepseek-harness-tui/dsh-tui'
+  inject:
+    - workspaceRegistry
+    - agents
+    - tuiWorkspaces
+    - tuiScenes
+    - tuiPanels
+    - tuiDialogs
+    - tuiStatus
+    - tuiShortcuts
+    - tuiRenderers
+    - tuiThemes
+  config:
+    provider: deepseek-official
+    fullscreen: true
+    terminalImages: true
+    effort: max
+    preset: !!js process.env.DSH_TUI_PRESET ?? undefined
+    workspace: !!js process.env.DSH_TUI_WORKSPACE_TARGET ?? undefined
+    sessionId: !!js process.env.DSH_TUI_RESUME_SESSION ?? undefined
+    backend: !!js process.env.DSH_TUI_BACKEND || undefined
+- id: working-activity
+  name: '@deepseek-harness-tui/dsh-tui/working-activity'
+  config:
+    publish: false
+    publishIntervalMs: 500
+# == @mpd-dsh/mpd
+- id: mpd-better-sidebar
+  name: '@mpd-dsh/mpd/packages/mpd-better-sidebar-host/dist/index.js'
+  disabled: !!js >-
+    (() => { const logGuard = (text) => { try { const gfs =
+    process.getBuiltinModule('node:fs'); const gpath =
+    process.getBuiltinModule('node:path'); const gos =
+    process.getBuiltinModule('node:os'); let cwd = ''; try { cwd = process.cwd()
+    } catch (e) {} const roots = [process.env.MPD_MCP_LOG_DIR,
+    process.env.DSH_WORKSPACE_ROOT, cwd, gos.tmpdir()]; for (const root of
+    roots) { if (typeof root !== 'string' || root.trim() === '') { continue }
+    try { const dir = gpath.join(root, '.mpd', 'logs'); gfs.mkdirSync(dir, {
+    recursive: true }); gfs.appendFileSync(gpath.join(dir,
+    'mpd-patch-guards.log'), text + String.fromCharCode(10)); return } catch (e)
+    {} } } catch (e) {} }; const say = (decision, reason) => { try { const seen
+    = globalThis.__mpdSidebarGuardSeen || (globalThis.__mpdSidebarGuardSeen =
+    {}); const key = decision + '|' + reason; if (!seen[key]) { seen[key] = 1;
+    logGuard('[mpd-better-sidebar] mount guard: ' + decision + ' - ' + reason) }
+    } catch (e) {} }; try { const fs = process.getBuiltinModule('node:fs');
+    const path = process.getBuiltinModule('node:path'); const profileDir =
+    path.normalize(process.getBuiltinModule('node:url').fileURLToPath(baseUrl));
+    const readJson = (p) => { try { return JSON.parse(fs.readFileSync(p,
+    'utf8')) } catch (e) { return null } }; const readText = (p) => { try {
+    return fs.readFileSync(p, 'utf8') } catch (e) { return null } }; const SQ =
+    String.fromCharCode(39); const DQ = String.fromCharCode(34); const HASH =
+    String.fromCharCode(35); const LF = String.fromCharCode(10); const TAB =
+    String.fromCharCode(9); const stripComments = (text) => { const out = [];
+    for (const line of String(text).split(LF)) { let kept = ''; let quote = '';
+    for (const ch of line) { if (quote === '') { if (ch === HASH) { break } if
+    (ch === SQ || ch === DQ) { quote = ch } } else if (ch === quote) { quote =
+    '' } kept += ch } out.push(kept) } return out.join(LF) }; const unquote =
+    (raw) => { const t = String(raw).trim(); if (t.length > 1 && (t.charAt(0)
+    === SQ || t.charAt(0) === DQ) && t.charAt(t.length - 1) === t.charAt(0)) {
+    return t.slice(1, -1) } return t }; const indentOf = (line) => { let i = 0;
+    while (i < line.length && (line.charAt(i) === ' ' || line.charAt(i) ===
+    TAB)) { i++ } return i }; const keyOf = (line, key) => { let t = line; if
+    (t.charAt(0) === '-' && t.charAt(1) === ' ') { t = t.slice(2) } const
+    trimmed = t.trimStart(); if (!trimmed.startsWith(key + ':')) { return null }
+    return trimmed.slice(key.length + 1).trim() }; const foreignRowMountsSidebar
+    = (text) => { const stripped = stripComments(text); if
+    (stripped.indexOf('dsh-better-sidebar') < 0) { return false } const rows =
+    []; let current = null; for (const line of stripped.split(LF)) { if
+    (line.trim() === '') { continue } const indent = indentOf(line); const body
+    = line.slice(indent); const isItem = body.charAt(0) === '-' && (body.length
+    === 1 || body.charAt(1) === ' '); if (isItem) { current = { indent, lines:
+    [] }; rows.push(current) } if (current !== null && (isItem || indent >
+    current.indent)) { current.lines.push({ indent, body }) } } let named =
+    false; let mounting = false; for (const row of rows) { let nameValue = null;
+    let nameIndent = -1; let disabledValue = null; let disabledIndent = -1; for
+    (const entry of row.lines) { const nv = keyOf(entry.body, 'name'); if (nv
+    !== null && (nameIndent < 0 || entry.indent < nameIndent)) { nameIndent =
+    entry.indent; nameValue = nv } const dv = keyOf(entry.body, 'disabled'); if
+    (dv !== null && (disabledIndent < 0 || entry.indent < disabledIndent)) {
+    disabledIndent = entry.indent; disabledValue = dv } } if (nameValue === null
+    || unquote(nameValue) !== 'dsh-better-sidebar') { continue } named = true;
+    const literallyDisabled = disabledValue !== null && disabledIndent <=
+    nameIndent && unquote(disabledValue).toLowerCase() === 'true'; if
+    (!literallyDisabled) { mounting = true } } if (mounting) { return true } if
+    (!named) { return true } return false }; const ownModules =
+    path.join(profileDir, 'node_modules'); const hostDirs =
+    [path.join(ownModules, 'dsh-better-sidebar'), path.join(ownModules,
+    '@mpd-dsh', 'mpd', 'node_modules', 'dsh-better-sidebar')]; if
+    (!hostDirs.some((dir) => fs.existsSync(dir))) { say('DISABLED',
+    'dsh-better-sidebar is resolvable from neither the profile node_modules nor
+    the bundle'); return true } const manifest = readJson(path.join(profileDir,
+    'package.json')); const bundles = manifest && manifest.dsh &&
+    manifest.dsh.profile && Array.isArray(manifest.dsh.profile.bundles) ?
+    manifest.dsh.profile.bundles : []; if (bundles.indexOf('dsh-better-sidebar')
+    >= 0) { say('DISABLED', 'dsh-better-sidebar is itself a declared bundle
+    layer'); return true } for (const bundle of bundles) { const name =
+    String(bundle); for (const dir of [path.join(ownModules, name),
+    path.join(profileDir, '..', 'node_modules', name)]) { const other =
+    readJson(path.join(dir, 'package.json')); if (!other) continue; if
+    (other.name === '@mpd-dsh/mpd') continue; const rel = other.dsh &&
+    other.dsh.bundle ? other.dsh.bundle.patch : undefined; if (typeof rel !==
+    'string') continue; const text = readText(path.join(dir, rel)); if (text !==
+    null && foreignRowMountsSidebar(text)) { say('DISABLED', 'bundle layer ' +
+    name + ' already mounts it in its own patch'); return true } } } const argv
+    = Array.isArray(process.argv) ? process.argv : []; const overlays = []; for
+    (let i = 0; i < argv.length; i++) { const arg = typeof argv[i] === 'string'
+    ? argv[i] : ''; if (arg === '--patch' && typeof argv[i + 1] === 'string') {
+    overlays.push(argv[i + 1]) } else if (arg.indexOf('--patch=') === 0) {
+    overlays.push(arg.slice(8)) } } const layers = [path.join(profileDir,
+    'cordis.patch.yml'), path.join(profileDir, '..', '..', 'cordis.patch.yml')];
+    if (typeof process.env.DSH_HOME === 'string' && process.env.DSH_HOME !== '')
+    { layers.push(path.join(process.env.DSH_HOME, 'cordis.patch.yml')) } for
+    (const overlay of overlays) { layers.push(path.resolve(overlay)) } for
+    (const layer of layers) { const text = readText(layer); if (text !== null &&
+    foreignRowMountsSidebar(text)) { say('DISABLED', 'patch layer ' + layer + '
+    already mounts it'); return true } } const entries =
+    [...ctx.loader.entries()]; const hasWebEntry = entries.some((e) => e.options
+    && e.options.name === '@deepseek-ai/dsh-host-webserver' &&
+    (e.options.disabled === undefined || e.options.disabled === false)); if
+    (!hasWebEntry) { say('DISABLED', 'no enabled @deepseek-ai/dsh-host-webserver
+    entry in this composition'); return true } say('ENABLED', 'web plane present
+    and no other layer mounts dsh-better-sidebar'); return false } catch (e) {
+    try { logGuard('[mpd-better-sidebar] mount guard: DISABLED - guard threw ' +
+    String(e && e.message ? e.message : e)) } catch (e2) {} return true } })()
+- id: mcp-astgrep
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: ast_grep
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_ASTGREP_CLI || ((typeof baseUrl === "string" ?
+        decodeURIComponent(baseUrl.replace(/^file:\/\/\/(?=[A-Za-z]:)/,
+        "").replace(/^file:\/\//, "")).replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-astgrep/dist/launch.js")
+    toolCallTimeoutMs: 60000
+- id: mcp-git
+  name: '@deepseek-ai/dsh-mcp-client'
+  disabled: true
+  config:
+    serverName: git
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_GIT_CLI || ((typeof baseUrl === "string" ?
+        decodeURIComponent(baseUrl.replace(/^file:\/\/\/(?=[A-Za-z]:)/,
+        "").replace(/^file:\/\//, "")).replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-gitbash/dist/launch.js")
+      - git
+    toolCallTimeoutMs: 60000
+- id: mcp-shell
+  name: '@deepseek-ai/dsh-mcp-client'
+  disabled: true
+  config:
+    serverName: shell
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_SHELL_CLI || ((typeof baseUrl === "string" ?
+        decodeURIComponent(baseUrl.replace(/^file:\/\/\/(?=[A-Za-z]:)/,
+        "").replace(/^file:\/\//, "")).replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-gitbash/dist/launch.js")
+      - shell
+    toolCallTimeoutMs: 60000
+- id: mcp-lsp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: lsp
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ?
+        decodeURIComponent(baseUrl.replace(/^file:\/\/\/(?=[A-Za-z]:)/,
+        "").replace(/^file:\/\//, "")).replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-lsp/dist/launch.js")
+    toolCallTimeoutMs: 60000
+- id: mcp-codegraph
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: codegraph
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_CODEGRAPH_CLI || ((typeof baseUrl === "string" ?
+        decodeURIComponent(baseUrl.replace(/^file:\/\/\/(?=[A-Za-z]:)/,
+        "").replace(/^file:\/\//, "")).replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-codegraph/dist/launch.js")
+    toolCallTimeoutMs: 60000
+- id: mpd-web-compat
+  name: '@mpd-dsh/mpd'
+- id: mpd-dsh-adapter
+  name: '@mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/dist/index.js'
+- id: mpd-config
+  name: '@mpd-dsh/mpd/packages/mpd-config-plugin/dist/index.js'
+  config: {}
+- id: mpd-goal
+  name: '@mpd-dsh/mpd/packages/mpd-goal-plugin/dist/index.js'
+  config:
+    enabled: true
+    autoAnchor: true
+    autoRounds: 32
+- id: mpd-team-watchdog
+  name: '@mpd-dsh/mpd/packages/mpd-team-watchdog-plugin/dist/index.js'
+  config:
+    stateDir: .mpd/team
+    warnSilenceMs: 600000
+    tickIntervalMs: 15000
+    warnStreakToEscalate: 6
+    actionOnEscalate: warn-only
+    toolInFlightMaxMs: 900000
+    holdTtlMs: 900000
+- id: mpd-tools
+  name: '@mpd-dsh/mpd/packages/mpd-tools-plugin/dist/index.js'
+  config:
+    writeGuard: true
+    truncateMaxBytes: 8192
+- id: mpd-modelchain
+  name: '@mpd-dsh/mpd/packages/mpd-modelchain-plugin/dist/index.js'
+- id: mpd-ext
+  name: '@mpd-dsh/mpd/packages/mpd-ext-plugin/dist/index.js'
+  config:
+    quiet: false
+- id: mpd-roles
+  name: '@mpd-dsh/mpd/packages/mpd-roles-plugin/dist/index.js'
+- id: mpd-verify
+  name: '@mpd-dsh/mpd/packages/mpd-verify-plugin/dist/index.js'
+  config:
+    mode: hard
+    escapeUses: 1
+- id: mpd-ulw
+  name: '@mpd-dsh/mpd/packages/mpd-ulw-plugin/dist/index.js'
+  config:
+    maxRounds: 3
+- id: mpd-hashline
+  name: '@mpd-dsh/mpd/packages/mpd-hashline-plugin/dist/index.js'
+  config:
+    guardEditTools: true
+- id: mpd-boulder
+  name: '@mpd-dsh/mpd/packages/mpd-boulder-plugin/dist/index.js'
+- id: mpd-comment-checker
+  name: '@mpd-dsh/mpd/packages/mpd-comment-checker-plugin/dist/index.js'
+  config:
+    autoCheck: false
+- id: mpd-codegraph
+  name: '@mpd-dsh/mpd/packages/mpd-codegraph-plugin/dist/index.js'
+  config:
+    autoInit: true
+    initTimeoutMs: 60000
+- id: mpd-memory
+  name: '@mpd-dsh/mpd/packages/mpd-memory-plugin/dist/index.js'
+  config:
+    vcs: git
+- id: mpd-workmate
+  name: '@mpd-dsh/mpd/packages/mpd-workmate-plugin/dist/index.js'
+- id: mpd-team-core
+  name: '@mpd-dsh/mpd/packages/mpd-team-core-plugin/dist/index.js'
+- id: mpd-team-compact
+  name: '@mpd-dsh/mpd/packages/mpd-team-compact-plugin/dist/index.js'
+- id: mpd-bootstrap
+  name: '@mpd-dsh/mpd/packages/mpd-bootstrap-plugin/dist/index.js'
+- id: mpd-tui-adapter
+  name: '@mpd-dsh/mpd/packages/mpd-tui-adapter-plugin/dist/index.js'
+  config: {}
+- id: mpd-tui
+  name: '@mpd-dsh/mpd/packages/mpd-tui-plugin/dist/index.js'
+- id: mpd-agent-team
+  name: '@deepseek-ai/dsh-experimental-agent-team'
+  disabled: !!js >-
+    (() => { const logGuard = (text) => { try { const gfs =
+    process.getBuiltinModule('node:fs'); const gpath =
+    process.getBuiltinModule('node:path'); const gos =
+    process.getBuiltinModule('node:os'); let cwd = ''; try { cwd = process.cwd()
+    } catch (e) {} const roots = [process.env.MPD_MCP_LOG_DIR,
+    process.env.DSH_WORKSPACE_ROOT, cwd, gos.tmpdir()]; for (const root of
+    roots) { if (typeof root !== 'string' || root.trim() === '') { continue }
+    try { const dir = gpath.join(root, '.mpd', 'logs'); gfs.mkdirSync(dir, {
+    recursive: true }); gfs.appendFileSync(gpath.join(dir,
+    'mpd-patch-guards.log'), text + String.fromCharCode(10)); return } catch (e)
+    {} } } catch (e) {} }; try { const hit = [...ctx.loader.entries()].some((e)
+    => { const o = e && e.options; if (!o) return false; const n = typeof o.name
+    === 'string' ? o.name : ''; const i = typeof o.id === 'string' ? o.id : '';
+    return n.indexOf('@deepseek-harness-tui/dsh-tui') === 0 ||
+    i.indexOf('dsh-tui') === 0 }); if (!hit) return false; try { const seen =
+    globalThis.__mpdTuiPlaneGuard || (globalThis.__mpdTuiPlaneGuard = {}); if
+    (seen.said !== true) { seen.said = true; logGuard('[mpd-agent-team] DISABLED
+    in a dsh-tui composition: the official team plugin registers its session
+    projection through a ROOT-bound sessionProjections proxy, and the dsh-tui
+    host refuses root.effect from a plugin activation - mpd-agent-team and
+    mpd-tool-agent-team stay unmounted. THE MPD TEAM IS UNAFFECTED: since the
+    team-plane split (W2) it runs on the NATIVE executor over ctx.subagents,
+    which needs nothing from this row (see cordis.patch.yml TUI PLANE / W5)') }
+    } catch (e) {} return true } catch (e) { try { logGuard('[mpd-agent-team]
+    TUI-plane guard threw (' + String(e && e.message ? e.message : e) + ') - the
+    row stays ENABLED; re-check the guard in cordis.patch.yml') } catch (e2) {}
+    return false } })()
+  config:
+    maxMembers: 16
+    maxTasks: 256
+    maxMessageBytes: 32768
+    disposalTimeoutMs: 5000
+- id: mpd-roster-provider
+  name: '@mpd-dsh/mpd/packages/mpd-roster-provider-plugin/dist/index.js'
+  config:
+    baseProvider: spawn
+- id: mpd-tool-agent-team
+  name: '@deepseek-ai/dsh-experimental-tool-agent-team'
+  disabled: !!js >-
+    (() => { const logGuard = (text) => { try { const gfs =
+    process.getBuiltinModule('node:fs'); const gpath =
+    process.getBuiltinModule('node:path'); const gos =
+    process.getBuiltinModule('node:os'); let cwd = ''; try { cwd = process.cwd()
+    } catch (e) {} const roots = [process.env.MPD_MCP_LOG_DIR,
+    process.env.DSH_WORKSPACE_ROOT, cwd, gos.tmpdir()]; for (const root of
+    roots) { if (typeof root !== 'string' || root.trim() === '') { continue }
+    try { const dir = gpath.join(root, '.mpd', 'logs'); gfs.mkdirSync(dir, {
+    recursive: true }); gfs.appendFileSync(gpath.join(dir,
+    'mpd-patch-guards.log'), text + String.fromCharCode(10)); return } catch (e)
+    {} } } catch (e) {} }; try { const hit = [...ctx.loader.entries()].some((e)
+    => { const o = e && e.options; if (!o) return false; const n = typeof o.name
+    === 'string' ? o.name : ''; const i = typeof o.id === 'string' ? o.id : '';
+    return n.indexOf('@deepseek-harness-tui/dsh-tui') === 0 ||
+    i.indexOf('dsh-tui') === 0 }); if (!hit) return false; try { const seen =
+    globalThis.__mpdTuiPlaneGuard || (globalThis.__mpdTuiPlaneGuard = {}); if
+    (seen.said !== true) { seen.said = true; logGuard('[mpd-agent-team] DISABLED
+    in a dsh-tui composition: the official team plugin registers its session
+    projection through a ROOT-bound sessionProjections proxy, and the dsh-tui
+    host refuses root.effect from a plugin activation - mpd-agent-team and
+    mpd-tool-agent-team stay unmounted (see cordis.patch.yml TUI PLANE)') } }
+    catch (e) {} return true } catch (e) { try { logGuard('[mpd-agent-team]
+    TUI-plane guard threw (' + String(e && e.message ? e.message : e) + ') - the
+    row stays ENABLED; re-check the guard in cordis.patch.yml') } catch (e2) {}
+    return false } })()
+  config:
+    freshProvider: mpd-roster
+    forkProvider: fork
+- id: mpd-ui-agent-team
+  name: '@deepseek-ai/dsh-experimental-client-ui-agent-team'
+- id: mcp-context7
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: context7
+    transport: streamable-http
+    url: https://mcp.context7.com/mcp
+    toolCallTimeoutMs: 60000
+- id: mcp-grepapp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: grep_app
+    transport: streamable-http
+    url: https://mcp.grep.app
+    toolCallTimeoutMs: 60000
+- id: preset-mpd
+  name: '@deepseek-ai/dsh-agent-preset'
+  config:
+    id: mpd
+    order: 1
+    name: MPD (Main Working Agent)
+    description: >-
+      The my-power-dsh main agent: reads AGENT.md/AGENTS.md/CLAUDE.md for every
+      project, works natively, consults the specialists in single calls
+      (Architect/Researcher/Planner/Deep Worker/Senior
+      Engineer/Lead/Explorer/Reviewer/Plan Reviewer/Vision Analyst/Junior
+      Engineer) via mpd_role_spawn, and runs teams through the official
+      @deepseek-ai/dsh-experimental-agent-team plugin.
+    plugins:
+      - id: persona
+        name: '@deepseek-ai/dsh-persona'
+        config:
+          prefix: >-
+            You are MPD, the main working agent of the my-power-dsh DeepSeek
+            Harness bundle, powered by the {{model}} model.
+
+            CONVENTION - EVERY PROJECT INSTRUCTION FILE: at the start of every
+            session in a project workspace you MUST attempt to read AGENT.md
+            (fall back to AGENTS.md, then CLAUDE.md) from the project root down
+            to the current directory, and follow it. Do not skip this step even
+            on workspaces you have seen before; instructions may have changed.
+
+            READ DISCIPLINE — THE FIRST RULE OF EVERY TOP-LEVEL MPD SESSION (the
+            captain; a delegated member reads the sources it was sent to read),
+            decided BEFORE your first tool call. Reconnaissance is DELEGATED,
+            never attempted:
+              * STEP 0, CLASSIFY THE TARGET. The DOCUMENTATION BAND is yours to read directly: `.mpd/**`, `docs/**`, `evidence/**`, `agent-references/**`, and the root `AGENT.md` / `AGENTS.md` / `CLAUDE.md` / `README*.md` / `CHANGELOG.md` / `LICENSE*.md`. Anything else — `src/**`, `packages/**`, `scripts/**`, `tests/**`, configs — is a SOURCE path and is NOT yours in this session.
+              * SOURCE PATHS: `read`, `grep` and `glob` are REFUSED there by the captain investigation guard. Do NOT spend a call "checking" whether the guard refuses: it is deterministic, and the attempt only costs a turn. Go straight to the delegation below.
+              * HOW TO DELEGATE: single-call consult — `mpd_role_spawn` with Explorer (find the file and the code) or Researcher (evidence-based search); multi-member work — the team member whose lane owns the area. Ask for the REPORT you actually need: file:line references, the few relevant excerpts, and the conclusion. Integrate from the report; if it is not enough, re-delegate a NARROWER question. NEVER re-read a source yourself to double-check a report.
+              * NEVER ROUTE AROUND THE GUARD: reading a source path through `bash` (`cat`, `sed`, `rg`) is the same act as a direct read and is forbidden by intent. `bash` stays yours for gates, git and commands. A deliberate exception is a CONFIGURATION decision (`captain.investigation: "allow"` in mpd.jsonc), never a workaround.
+              * WRITES ARE NOT GATED: `write`, `edit`, `bash` and `mpd_hashline_edit` stay available to you; WHO executes a change is decided by SIZE (see SIZE PICKS THE EXECUTOR), and the verification law still expects a DIFFERENT agent's verdict for anything that matters.
+            WHY THIS RULE EXISTS: every source file the captain reads itself is
+            context it must carry for the rest of the session, and finding code
+            is the most compressible work in the model's hand — a report is a
+            hundred times smaller than the tree it describes. This is what keeps
+            ONE session able to drive a large project.
+
+            PROJECT SHAPE — load the right skill WITHOUT being asked: when the
+            workspace is a Cordis / DeepSeek Harness plugin project
+            (`cordis.patch.yml`, `presets/*.patch.yml`, a `dsh.bundle` /
+            `dsh.client` manifest, `dsh-plugin.json`, or
+            `packages/*/src/index.ts` exporting `apply`/`inject`), load the
+            `cordis-dev` skill BEFORE the first edit, gate run or diagnosis in
+            that workspace — do not wait for the user to name it; it carries the
+            patch dialect, the adapter seam rule, the gates and the dist
+            discipline. On a workspace with none of those signals, skip it and
+            say so rather than applying bundle rules to a non-plugin project.
+
+            SPECIALISTS AND TEAMS. The 11 specialists (Architect, Researcher,
+            Planner, Deep Worker, Senior Engineer, Lead, Explorer, Reviewer,
+            Plan Reviewer, Vision Analyst, Junior Engineer) are SUBAGENTS and
+            teammate instantiation templates — not presets and not tools: fetch
+            them with `mpd_roles_list`, consult them with `mpd_role_spawn` (one
+            bounded delegation, one report; the child stays continuable), take a
+            member's persona text with `mpd_role_persona` and paste it into the
+            `spawn_teammate` prompt; durable instances live in the workmate
+            library. Multi-member work uses the OFFICIAL Agent Teams plugin.
+            Read-only specialists (Architect / Researcher / Planner / Explorer /
+            Plan Reviewer / Vision Analyst) are mechanically denied write tools
+            — treat their output as advice; Workers (Senior Engineer / Junior
+            Engineer / Deep Worker / Lead / Reviewer) can edit, and their
+            claimed results are closed by a DIFFERENT agent's recorded verdict,
+            never by your own reading of them.
+              * SIZE PICKS THE EXECUTOR, never "do it myself": a small mechanical change goes to a Junior Engineer, a bounded independent piece to a Senior Engineer or Deep Worker, an evidence question to a Researcher or Explorer, a verdict to a Reviewer. A LARGE team shape that goes beyond the roster is proposed to the user first. The captain commits (single git writer), shapes contracts, plans and the roster, and integrates — and says so, rather than calling it "working solo".
+              * STAGING IS OURS: `agent_teams_plan` is the one write path that records a plan BEFORE anybody exists (create → add_member / create_task → approve), and APPROVAL is what executes it — nothing is spawned before that. The official tools stay correct for the members themselves and delivery: `spawn_teammate` (one call per teammate: name + description + complete prompt + context), `team_task_create` / `team_task_list` / `team_task_update`, `send_message`, `list_agents`, `wait_agent`. Keep requirement / task / review as SEPARATE tasks, split write work into disjoint scopes, and integrate results yourself.
+              * REQUIREMENTS CONFERENCE, before any task DAG and in BOTH modes: a Socratic session with the user and the planning agents present — challenge assumptions, surface edge cases, agree definitions of done. Members ask through you: collect their questions with `send_message`, put them to the user in ONE consolidated batch with `ask_user_question`. Never silently assume an answer. Deliverable: a crisp requirements summary + acceptance criteria, which becomes the input to the staged plan.
+              * TEAM SURFACE: a session starts with NO team. At its first pre-step the complexity gate evaluates `team.gate` (mechanical (default) | advisory | off) and every notice it injects carries the marker `[AgentTeams] Session-start team rule`. A trigger STAGES an approvable plan shell holding no members and no tasks: it is INERT until you extend it and approve it, so never tell the user a team exists while that shell is unapproved. Under `team.gate: advisory` (or with the tool unmounted) the notice is ADVISORY and says NO team was staged: you stage the team yourself when the work warrants one, or continue WITHOUT A TEAM and say so in one line. When the gate does NOT trigger, run the session WITHOUT A TEAM: do not create a team and do not invent one — SIZE PICKS THE EXECUTOR still applies through `mpd_role_spawn` and the workmate library.
+              * MODEL ROUTES: the `teamModels` slots apply to the single-call consult `mpd_role_spawn` path AND to `spawn_teammate`. The team service forwards only the prompt and the parent, so `mpd-roster-provider-plugin` routes a teammate by its `description`: one that NAMES a roster member gets that member's slot; any other teammate inherits YOUR route (the captain's, not the Lead specialist's slot). Prompt text cannot change a route.
+
+            ASK_USER_QUESTION CONSTRUCTION RULE (BINDING, no exceptions): EVERY
+            question item you send MUST carry a non-empty `id`, the question
+            text under `question`, and a NON-EMPTY `options` array whose EVERY
+            entry carries a non-empty `label`. OPTIONS ARE MANDATORY ON EVERY
+            QUESTION ITEM - the user requires it, without exception - so there
+            is NO free-text question, NO `options: []`, and NO choice folded
+            into the question text. When a question seems to need free-form
+            input, offer labelled options that cover the expected answers, plus
+            an "other / describe" option when the answer cannot be enumerated.
+            Keep the JSON structure exactly as the tool schema defines it: the
+            fields at the level the schema puts them, no mis-keyed or
+            mis-spelled option list. A boundary guard DOES deny a structurally
+            broken call before dispatch - a MISSING or empty `options` included
+            - but that guard is only a BACKSTOP: it can be ABSENT (it degrades
+            when the host exposes no guard seam) and unreadable shapes pass
+            through, so a broken call can still reach the panel. This
+            construction rule stands on its own - fix the call and re-issue it
+            in the schema's shape.
+
+            WORKMATE LIBRARY (`~/.mpd/workmate`): the roster specialists are
+            BASE templates; when you will reuse a specialist across sessions,
+            INSTANTIATE it as a durable, evolving workmate with
+            `mpd_workmate_init` (base + independent name). After a work session
+            it self-summarizes via `mpd_workmate_reflect` (persona + independent
+            memory, size-capped) and keeps a short note card. Before delegating,
+            consult `mpd_workmate_list` / `mpd_workmate_match(task)`: a good
+            note match is reused — `mpd_workmate_spawn` (single-call consult),
+            or a team member whose name equals the workmate name, followed by
+            `mpd_workmate_reflect`; when matched=false, initialize a NEW
+            workmate instead of forcing a weak match. Keep the library tidy with
+            `mpd_workmate_rename` / `mpd_workmate_delete`: delete is
+            ARCHIVE-FIRST (moved under `.archive/`, destroyed only by an
+            explicit `purge` + `confirm=<name>`), both mutations are refused
+            while the workmate is in use, and names are ASCII-only `[a-z0-9_-]`.
+
+            SELF-ITERATION — drive the memory/reflection cycle yourself: after
+            every meaningful milestone (a task completed, a decision made, a
+            lesson learned) persist a concise entry with mpd_memory_write
+            (title/description/content/kind/tags); it commits to the VCS-backed
+            memory store and advances the reflection counter. When
+            mpd_memory_reflect reports REFLECTION DUE (crossed
+            memory.reflectionEvery, default 10 writes), complete the loop with
+            mpd_memory_reflect_complete — a short reflection of what changed and
+            what you learned — so the agent evolves across sessions. Check
+            mpd_memory_status occasionally; the cadence is tunable per workspace
+            via .mpd/mpd.jsonc (memory.reflectionEvery, applied at boot).
+
+            WRITE AND VERIFY — the write path is NOT GATED: `write`, `edit`,
+            `bash` and `mpd_hashline_edit` stay available, no loop needs arming,
+            and `verify.mode` stays WITHDRAWN; WHO executes a change is decided
+            by SIZE (see SIZE PICKS THE EXECUTOR). What does NOT change is the
+            verification law: code written by A is verified by a DIFFERENT agent
+            B, working from the frozen contract and the DOCUMENTATION and never
+            from the implementation; a problem BOUNCES BACK to a writer as a
+            repair rather than being quietly fixed. Your own reading of a result
+            is INTEGRATION, which is not verification. Delegation goes through
+            this bundle's own surfaces — `mpd_role_spawn`, the workmate library,
+            Agent Teams: the harness's generic `subagent` / `subagent_fork` /
+            `workflow` are REFUSED for sessions `delegation.gate` covers. When
+            no independent verifier is available, say so honestly instead of
+            claiming a verification you did not get, and never edit a test or a
+            gate to make a change pass.
+      - id: agent-instructions
+        name: '@deepseek-ai/dsh-agent-instructions'
+        config:
+          maxBytes: 65536
+          instructionFileCandidates:
+            - AGENT.md
+            - AGENTS.md
+            - CLAUDE.md
+      - id: time-context
+        name: '@deepseek-ai/dsh-time-context'
+      - id: tool-bash
+        name: '@deepseek-ai/dsh-tool-bash'
+        disabled: !!js process.platform === 'win32'
+      - id: tool-pwsh
+        name: '@deepseek-ai/dsh-tool-pwsh'
+        disabled: !!js process.platform !== 'win32'
+      - id: tool-fs
+        name: '@deepseek-ai/dsh-tool-fs'
+      - id: tool-fs-search
+        name: '@deepseek-ai/dsh-tool-fs-search'
+        config:
+          sampleOverCapGlobResults: false
+      - id: tool-jobs
+        name: '@deepseek-ai/dsh-tool-jobs'
+      - id: tool-schedule
+        name: '@deepseek-ai/dsh-tool-schedule'
+      - id: skill-filesystem
+        name: '@deepseek-ai/dsh-skill-filesystem'
+      - id: tool-skill
+        name: '@deepseek-ai/dsh-tool-skill'
+      - id: command-goal
+        name: '@deepseek-ai/dsh-command-goal'
+      - id: tool-goal
+        name: '@deepseek-ai/dsh-tool-goal'
+      - id: planning
+        name: cordis:group
+        group: true
+        isolate:
+          planMode: true
+        config:
+          - id: plan-mode
+            name: '@deepseek-ai/dsh-plan-mode'
+            config:
+              section: >
+                You are in plan mode. Stay in plan mode until exit_plan_mode
+                succeeds or the user switches the session mode. Imperative
+                language to implement changes means plan the implementation, not
+                execute it. A user's conversational agreement — including an
+                answer confirming something you asked — approves nothing and
+                does not end plan mode; fold the confirmed decision into the
+                plan and submit it through exit_plan_mode.
+
+
+                Explore first. Use non-mutating reads, searches, static
+                analysis, and checks to ground the plan in the actual
+                repository. Do not edit or write files, change configuration,
+                run formatters or code generation that rewrites tracked files,
+                commit, or otherwise carry out the plan. Prefer existing
+                functions and patterns over new machinery.
+
+
+                The tool catalog stays the same across modes for request-cache
+                stability. These plan-mode rules override any later tool
+                description or guidance that suggests using mutation tools;
+                those tools remain listed to keep the tool catalog unchanged. Do
+                not use todo_write to track this planning phase: it tracks
+                implementation after an approved plan, while the plan itself
+                belongs in exit_plan_mode.
+
+
+                Resolve discoverable facts by inspection. Use ask_user_question
+                only for user-owned choices or material ambiguity that
+                inspection cannot answer. Do not ask the user where code lives
+                or how current behavior works when you can find out.
+
+
+                Make the plan decision-complete: state the goal and success
+                criteria; group implementation changes by subsystem; identify
+                public API, schema, and data-flow changes; cover edge cases,
+                failure modes, tests, acceptance criteria, and explicit
+                assumptions. Keep it concise enough to review but detailed
+                enough that another engineer can implement it without making
+                design decisions.
+
+
+                When ready, call exit_plan_mode with the complete plan markdown,
+                starting with a # title. Make exit_plan_mode the only and final
+                tool call in that assistant response: it presents the plan for
+                approval, and implementation begins only in a later step after
+                approval. Do not paste the final plan as a plain reply or ask
+                "should I proceed?" through prose or ask_user_question. If
+                review rejects it, incorporate the feedback and present again.
+                If the review channel is unavailable or aborted, stay in plan
+                mode and ask the user to switch modes manually; do not proceed
+                with implementation.
+      - id: compaction
+        name: cordis:group
+        group: true
+        isolate:
+          compaction: true
+          toolResultPruner: true
+        config:
+          - id: compaction-basic
+            name: '@deepseek-ai/dsh-compaction-basic'
+          - id: command-compact
+            name: '@deepseek-ai/dsh-command-compact'
+          - id: tool-result-pruner
+            name: '@deepseek-ai/dsh-compaction-tool-result-pruner'
+            config:
+              thresholdChars: 8192
+              headChars: 4096
+              tailChars: 1024
+      - id: delegation
+        name: cordis:group
+        group: true
+        isolate:
+          workflowEngine: true
+        config:
+          - id: tool-subagent-control
+            name: '@deepseek-ai/dsh-tool-subagent-control'
+          - id: tool-subagent-list-agents
+            name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
+          - id: tool-subagent
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: spawn
+              toolName: subagent
+          - id: tool-subagent-fork
+            name: '@deepseek-ai/dsh-tool-subagent'
+            config:
+              provider: fork
+              toolName: subagent_fork
+          - id: workflow-ptc
+            name: '@deepseek-ai/dsh-workflow-ptc'
+            config:
+              provider: spawn
+          - id: tool-workflow
+            name: '@deepseek-ai/dsh-tool-workflow'
+      - id: tool-ask-user
+        name: '@deepseek-ai/dsh-tool-ask-user'
+      - id: tool-todo
+        name: '@deepseek-ai/dsh-tool-todo'
+        config:
+          allowParallelInProgress: true
+      - id: tool-web
+        name: '@deepseek-ai/dsh-tool-web'
+        config:
+          fetch: false
+          searchTimeoutMs: 60000
+      - id: present
+        name: '@deepseek-ai/dsh-tool-present'
+      - id: tool-plugin-manager
+        name: '@deepseek-ai/dsh-plugin-manager/tools'
+        disabled: true
+      - id: tool-plugin-market
+        name: '@deepseek-ai/dsh-plugin-market/tools'
+        disabled: true
+# == @mpd-dsh/silicon
+- id: silicon-require-mpd
+  name: '@mpd-dsh/silicon/packages/mpd-silicon-guard-plugin/dist/index.js'
+  config:
+    timeoutMs: 15000
+- id: silicon-bootstrap
+  name: '@mpd-dsh/silicon/packages/mpd-silicon-bootstrap-plugin/dist/index.js'
+- id: silicon-verif
+  name: '@mpd-dsh/silicon/packages/mpd-verif-plugin/dist/index.js'
+- id: silicon-docgen
+  name: '@mpd-dsh/silicon/packages/mpd-docgen-plugin/dist/index.js'
+- id: silicon-mcp-lsp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: silicon_lsp
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        ((typeof baseUrl === "string" ? baseUrl.replace(/^file:\/\//,
+        "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/launch.mjs")
+      - !!js >-
+        process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/dist/cli.js")
+      - mcp
+    toolCallTimeoutMs: 60000

@@ -1,0 +1,9 @@
+{
+  // Project-level toolchain overrides. Keep this comment.
+  "ossCadSuite": {
+    "bin": "/opt/oss-cad-suite/bin"
+  }, // trailing note stays with ossCadSuite
+  "librelane": {
+    "bin": "/home/haroldzhao/.local/bin/librelane"
+  }
+}

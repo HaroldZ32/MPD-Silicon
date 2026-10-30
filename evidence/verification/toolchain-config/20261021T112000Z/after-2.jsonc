@@ -1,0 +1,9 @@
+{
+  // Project-level toolchain overrides. Keep this comment.
+  "ossCadSuite": {
+    "bin": "/opt/oss-cad-suite/bin" // placeholder, not installed here
+  },
+  "librelane": {
+    "bin": "/home/haroldzhao/.local/bin/librelane"
+  }
+}

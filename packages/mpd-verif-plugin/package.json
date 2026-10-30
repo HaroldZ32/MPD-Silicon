@@ -1,0 +1,16 @@
+{
+  "name": "@mpd-dsh/verif",
+  "version": "0.2.3",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Unified RTL verification plugin: iverilog/verilator/vcs validation flow with cocotb lane for open-source backends, VCS-only UVM lane, and waveform-MCP read hooks",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "bun test"
+  }
+}

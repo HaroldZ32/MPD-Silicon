@@ -1,0 +1,17 @@
+{
+  "name": "dsh-profile-probe",
+  "private": true,
+  "dependencies": {
+    "@deepseek-harness-tui/dsh-tui": "0.16.1",
+    "@mpd-dsh/mpd": "0.15.1"
+  },
+  "dsh": {
+    "profile": {
+      "bundles": [
+        "@deepseek-ai/dsh-base",
+        "@deepseek-harness-tui/dsh-tui",
+        "@mpd-dsh/mpd"
+      ]
+    }
+  }
+}

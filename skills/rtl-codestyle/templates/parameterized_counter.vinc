@@ -1,0 +1,27 @@
+// ============================================================================
+// Parameterized counter pattern (verilog-generator / Erie style).
+// Widths derive from the C_ parameter model (single source of truth) declared
+// in the module's ANSI header (see module_skeleton.vinc); never hard-code
+// literal widths. Reload the counter only at explicit state boundaries to keep
+// phase timing visible.
+// Expects in the module header:
+//   parameter C_COUNT_WIDTH = 8, C_RELOAD_VALUE = 255
+//
+// INSERTION POINT: paste ONLY the always block below into the skeleton's
+// "counter signal region" (or next to the counter updates). The declaration
+// `reg [C_COUNT_WIDTH-1:0] cnt_phase;` LIVES IN THE SKELETON — do NOT
+// re-declare cnt_phase next to this fragment (iverilog rejects the duplicate
+// declaration). This block is the SINGLE driver of cnt_phase; remove any other
+// assignment to cnt_phase in the composed module.
+// ============================================================================
+
+// ---- counter processing (single driver of cnt_phase) -----------------------
+always @(posedge i_clk or negedge i_rstn) begin
+    if (!i_rstn) begin
+        cnt_phase <= {C_COUNT_WIDTH{1'b0}};
+    end else if (state_current != state_next) begin
+        cnt_phase <= C_RELOAD_VALUE[C_COUNT_WIDTH-1:0];
+    end else if (cnt_phase != {C_COUNT_WIDTH{1'b0}}) begin
+        cnt_phase <= cnt_phase - 1'b1;
+    end
+end

@@ -1,0 +1,158 @@
+# @mpd-dsh/silicon bundle plugin layer — ADDITIVE-ONLY.
+#
+# This file declares rows that DO NOT EXIST in the @mpd-dsh/mpd bundle. Every
+# entry below is a NEW `- insert:` row id. There is deliberately NO id-target of
+# any kind, because a non-insert patch is a WHOLE-VALUE top-level assignment, not
+# a deep merge: patching `id: agent-teams` (mpd's row) with our own `config`
+# would silently delete mpd's entire `profiles` map and `sessionTeamPolicy`
+# (measured: evidence/t3-loader-semantics/loader-semantics.md §2). The same rule
+# applies to mpd's only column-0 id-target `agent-presets`.
+#
+# The rtl-ip team profile is RETIRED with the team-profile plane (`config.profiles`
+# is gone): no preset or carrier ships from this bundle. The replacement is
+# roster + teamModels + workmates, while `id: agent-teams` / `id: agent-presets`
+# stay owned by @mpd-dsh/mpd (this bundle patches neither).
+# `node scripts/verify-rows-disjoint.mjs` enforces the zero-row-id intersection
+# against mpd's patch as a gate.
+#
+# Row ids are `silicon-<capability>` on purpose: the mpd bundle already claims
+# bare ids like `mcp-lsp`, and a duplicate row id in one composed profile is a
+# FATAL loader error ("duplicate loader entry id"). Renaming our rows keeps the
+# two bundles installable side by side in the same profile, which is the t3
+# coexistence requirement.
+#
+# ── WHAT THE ROW-ID GATE DOES *NOT* COVER (methodology) ─────────────────────
+# `verify-rows-disjoint.mjs` proves the two patches claim DISJOINT LOADER ROW IDS.
+# That is necessary, not sufficient: a composed profile can still be unbootable
+# through two other name namespaces that the gate cannot see.
+#   1) Cordis SERVICE names are single-provider. This bundle no longer registers an
+#      adapter or a service of its own: `mpdDsh` is provided ONLY by
+#      @mpd-dsh/mpd's `mpd-dsh-adapter` row, so a silicon-only profile without mpd
+#      has no provider at all and the `silicon-require-mpd` row refuses the boot.
+#      Never re-register `mpdDsh` here.
+#   2) TOOL names are unique within a registry, and MCP `serverName` is a global
+#      namespace. Two rows registering the same tool name — or the same
+#      `serverName` — fail the same way. silicon's LSP row uses
+#      `serverName: silicon_lsp` because mpd's `mcp-lsp` row already owns `lsp`.
+# So: "row ids are disjoint" MUST NOT be read as "the two bundles coexist". Pick
+# distinct row ids AND distinct service/tool/serverName identifiers.
+#
+# Historical window (now CLOSED): before mpd's `mpd-verif` row was removed (task
+# t5), `mpd_verif_*` was registered by both bundles and mounting them together was
+# FATALLY broken. Do not re-create that state: never list both bundles' RTL rows in
+# one profile unless mpd no longer registers `mpd_verif_*` itself.
+#
+# @mpd-dsh/mpd is now a HARD runtime dependency (root package.json pins 0.15.1) and
+# is deliberately EXTERNALIZED from the built dists: this bundle ships no adapter
+# port of its own.
+
+# ── silicon plugins (self-owned; four built dists in this repo) ──────────────
+- insert:
+    # STARTUP GUARD FIRST. It is inject-free, so it applies in every composition —
+    # including a silicon-only profile with no @mpd-dsh/mpd on disk. It polls
+    # ctx.get("mpdDsh", true) for up to 15 s and then throws from a timer, which the
+    # CLI turns into `dsh: fatal uncaught exception: …` + exit(1). Without it the two
+    # consumer rows below (which inject `mpdDsh`) would stay PENDING and the bundle
+    # would boot with zero tools instead of failing loudly.
+    - id: silicon-require-mpd
+      name: '@mpd-dsh/silicon/packages/mpd-silicon-guard-plugin/dist/index.js'
+      config:
+        timeoutMs: 15000
+    # RTL skill corpus provisioning BY REFERENCE: registers <bundle>/skills
+    # (rtl-ip-flow, rtl-codestyle, rtl-verif) as a ctx.skills provider at rank
+    # 600. Nothing is copied into $DSH_HOME; the corpus is visible exactly while
+    # this row is mounted. The provider name `silicon-bundle` is unique
+    # process-wide, so it cannot collide with mpd's `mpd-bootstrap` provider.
+    - id: silicon-bootstrap
+      name: '@mpd-dsh/silicon/packages/mpd-silicon-bootstrap-plugin/dist/index.js'
+    # RTL verification: the ten mpd_verif_* tools (iverilog/verilator/vcs
+    # resolution via MPD_DSH_VERIF_* then PATH, cocotb lane under the project-vnv
+    # iron rule, VCS-only UVM lane, waveform-MCP handoff with graceful degrade).
+    # Tool names are mpd_verif_* — deliberately NOT renamed: the user requires the
+    # existing mpd_verif_* naming. mpd's OWN `mpd-verif` row is removed by the
+    # source-repo stripping task (t5), so exactly one provider of those names
+    # exists once migration completes. Coexistence (both bundles mounted, the
+    # pre-strip overlap window) is REAL and tested: register the same tool name
+    # twice in one scope and dsh-tools throws, so install silicon and mpd TOGETHER
+    # only after t5 strips mpd's mpd-verif row.
+    - id: silicon-verif
+      name: '@mpd-dsh/silicon/packages/mpd-verif-plugin/dist/index.js'
+    # Document generation for the rtl-ip-flow spec stage: the four mpd_docgen_* tools
+    # (register Excel workbook, bilingual user-manual docx, one-call run, artifact
+    # verifier) built from docs/user-manual.md / docs/user-manual.en.md. The OOXML is
+    # written directly — no third-party runtime dependency. A CONSUMER row like the two
+    # above: it injects `mpdDsh` for the tool seam and its dist keeps @mpd-dsh/mpd
+    # external. Tool names are mpd_docgen_*, so they cannot collide with mpd_verif_*.
+    - id: silicon-docgen
+      name: '@mpd-dsh/silicon/packages/mpd-docgen-plugin/dist/index.js'
+
+# ── HDL LSP row (Verible / slang-server) ────────────────────────────────────
+# The row travels with the RTL face per the user's explicit requirement, and the
+# assets it launches now live in this bundle (task t16 landed
+# packages/mpd-mcp-lsp/{overlay,references,templates,dist}) — so the row is
+# ENABLED here.
+#
+# It shipped `disabled: true` while those assets were missing, and that was not
+# the old "a missing command degrades gracefully" assumption — that assumption is
+# FALSE here: measured on a base-backed profile, a dsh-mcp-client row whose stdio
+# command cannot be resolved does not degrade; it retry-storms
+# `Cannot find module .../mpd-mcp-lsp/dist/cli.js` in a tight loop and the boot
+# never reaches the app (observed timeout, evidence/t3-loader-semantics/
+# coexistence.md §4). mpd's wave rows stay commented for the same boot-safety
+# reason.
+#
+# Activation verdict (t16): a REAL app boot with the row enabled — not the row's
+# presence in a dump. See evidence/verification/t16-lsp-assets.md.
+- insert:
+    - id: silicon-mcp-lsp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        # serverName namespaces the MCP tools (mcp__silicon_lsp__*) and is UNIQUE
+        # per process: dsh-mcp-client rejects a second instance reusing a name
+        # ("serverName \"lsp\" is already in use by another mcp-client
+        # instance") and that failure aborts the whole plugin tree. mpd's own
+        # mcp-lsp row already owns `lsp`, so the silicon row must not reuse it —
+        # measured in evidence/t3-loader-semantics/coexistence.md.
+        serverName: silicon_lsp
+        transport: stdio
+        command: node
+        # launch.mjs (hand-written, committed beside — never inside — dist/) reads
+        # the silicon toolchain config, prepends the configured bin dirs to PATH,
+        # then starts the pinned dist/cli.js, which finds verible-verilog-ls /
+        # slang-server there. Both paths resolve through the same baseUrl
+        # expression, so one profile layer drives the pair.
+        args:
+          - !!js '((typeof baseUrl === "string" ? baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") + "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/launch.mjs")'
+          - !!js 'process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ? baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") + "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/dist/cli.js")'
+          - mcp
+        toolCallTimeoutMs: 60000
+
+# ── Waveform-read MCP rows (wave-mcp / TraceWeave) ──────────────────────────
+# NOT mounted by default, mirroring @mpd-dsh/mpd's boot-safety rule: these wrap
+# EXTERNAL Python MCP servers the user installs with pipx. A missing or
+# mismatched `mcp` SDK on the launching python crashed the client at boot
+# (ModuleNotFoundError: No module named 'mcp.server.mcpserver'), taking the GUI
+# and agent down with it. To enable:
+#   1) pipx install wave-mcp && pipx install traceweave-mcp
+#   2) export MPD_DSH_WAVE_MCP_BIN=$(command -v wave-mcp)
+#      export MPD_DSH_TRACEWEAVE_BIN=$(command -v traceweave-mcp)
+#   3) uncomment the two rows below (command resolves env first, PATH second).
+# - id: silicon-mcp-wave-mcp
+#   name: '@deepseek-ai/dsh-mcp-client'
+#   config:
+#     serverName: wave_mcp
+#     transport: stdio
+#     command: !!js 'process.env.MPD_DSH_WAVE_MCP_BIN || "wave-mcp"'
+#     # NO --session at startup: wave-mcp 0.1.1 treats --session as an OPTIONAL
+#     # auto-open and exits with FileNotFoundError when the dir has no
+#     # session.json yet. The session is created after a sim run.
+#     toolCallTimeoutMs: 120000
+# - id: silicon-mcp-traceweave
+#   name: '@deepseek-ai/dsh-mcp-client'
+#   config:
+#     serverName: traceweave
+#     transport: stdio
+#     command: !!js 'process.env.MPD_DSH_TRACEWEAVE_BIN || "traceweave-mcp"'
+#     # No env block: the EDA environment (VERDI_HOME/NOVAS_HOME/VCS_HOME +
+#     # license vars) is inherited from the dsh launching shell.
+#     toolCallTimeoutMs: 120000

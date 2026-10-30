@@ -1,0 +1,128 @@
+{
+  "schema": "mpd-silicon/adaptation-evidence/v1",
+  "recorded_at": "2026-10-21T07:51:29Z",
+  "task": "Adapt @mpd-dsh/silicon to DeepSeek Harness 0.2.1-rc.2 and @mpd-dsh/mpd 0.15.1",
+  "bundle": {
+    "name": "@mpd-dsh/silicon",
+    "version": "0.2.0",
+    "service": "siliconDsh",
+    "adapter_package": "@mpd-dsh/dsh-adapter@0.4.0"
+  },
+  "environment": {
+    "dsh": "0.2.1-rc.2",
+    "mpd": "0.15.1",
+    "mpd_git": "v0.15.1 83ef3603b91815d57b2fd23d9602af1099d45f6a",
+    "silicon_git_base": "bf3dae2530949d9fe410cec9b25b5581bdbcc58e",
+    "node": "v24.22.0",
+    "bun": "1.4.3",
+    "eda_backends": { "iverilog": null, "verilator": null, "vcs": null }
+  },
+  "changes": [
+    "Re-ported packages/mpd-dsh-adapter-plugin from @mpd-dsh/mpd v0.15.1: src/index.ts 5090 lines, src/shared.ts 37 (byte-identical), src/log-sink.ts 642 (byte-identical copy; import rewritten from ../../mpd-mcp-shared/log-sink to ./log-sink), dist rebuilt, package version 0.4.0.",
+    "Recorded divergence D1-D6: SERVICE_NAME siliconDsh; ADAPTER_IDENTITY_MOUNTED mounted:siliconDsh; plugin name silicon-dsh-adapter and boot/log tags; local log-sink; silicon fallback hint path; service-naming comments. Internal thrown-error prefix remains mpd-dsh-adapter: by design.",
+    "Ported 11 self-contained upstream adapter test suites (164 cases) plus a 10-case silicon suite for the divergence/resolver; the 3 upstream repo-scanning gates and the 70-case schemastery-dependent suite are not ported (documented bound).",
+    "Migrated consumers: inject arrays via dshSeamInject(DSH_SEAM_TOOLS / DSH_SEAM_SKILLS); bootstrap fs/observed via adapter.onEvent; console fallback replaced by rowLogLine; the two-level resolver siliconDsh ?? mpdDsh ?? createDshAdapter kept.",
+    "Fixed scripts/verify-rows-disjoint.mjs for mpd v0.15.1: discovers every patch layer declared by dsh.bundle.patch (string or array), resolves paths against the root, falls back to the root cordis.patch.yml, fails loudly on a missing layer, and adds 6 discovery self-test controls.",
+    "Retired the rtl-ip team-profile carrier: presets/rtl-ip.profile.json and its READMEs deleted; ./presets/* removed from exports; packer asset dirs no longer include presets. The plane was removed upstream (mpd v0.10.0); replacement is roster + teamModels + workmates, with rtl-ip-flow kept as the domain skill.",
+    "Made the mpd_verif_backends test environment-aware with a printed ENV-GATED reason and a falsifiable strong branch; detection covers iverilog/verilator/vcs.",
+    "Bumped the bundle to 0.2.0; refreshed README.md / README.zh-CN.md, AGENTS.md, docs/* (dependency map, guides, sync policy), package READMEs and LICENSE-NOTICES.md to the measured baseline.",
+    "Fixed a pre-existing type-gate defect (scripts/typecheck.mjs, introduced by 07b92ce): the self-test resolved the checker from its temporary fixture root (no node_modules, so it fell through to bunx, which is absent), and check() hard-coded ran:true, which made the production !ran guard unreachable. Consequence: the self-test's healthy control passed vacuously, and the production --require path could report 'PASS — no diagnostics' when the checker never started; the negative control failed, but for the wrong reason. It now resolves the checker from the repo root for the self-test, derives ran from the spawn error/status, and requires the expected exit codes: the wrong-type control is genuinely caught (TS2322), the healthy control is genuinely clean, and a missing checker fails loudly. A focused, different-agent verification returned PASS (probes A/A2/B/D; the production before/after is the false PASS)."
+  ],
+  "adapter_parity": {
+    "upstream": "/home/haroldzhao/localProj/dshProj/my-power-dsh/packages/mpd-dsh-adapter-plugin (v0.15.1)",
+    "index_hunks": 16,
+    "hunks_file": "parity-hunks.txt",
+    "shared_ts": "IDENTICAL",
+    "log_sink_ts": "IDENTICAL to packages/mpd-mcp-shared/log-sink.ts",
+    "test_cases": 174,
+    "sha256": {
+      "src/index.ts": "5f844fc221f892ec6aef06013c26187e49f97910844ec9d2fda816f6630318be",
+      "src/shared.ts": "fd8028d5baa6007de615843f38f431e2b8946ee92c62b0b46ccdb9700b3e9004",
+      "src/log-sink.ts": "a89e2545f7cfd35711b1ef652e1022b8d5fa725937ee453c554e6a37313be97c",
+      "dist/index.js": "5d632ad0ba739b2fe3d332c3872b7bd2ca4af4cfc65a0cb228a410ab8ea07738"
+    }
+  },
+  "gates": [
+    { "command": "node scripts/typecheck.mjs --require", "exit": 0, "observed": "PASS — no diagnostics (local tsgo)" },
+    { "command": "bun test packages/", "exit": 0, "observed": "282 pass, 1 skip, 0 fail, 1620 expect() calls, 23 files; adapter alone 174 pass" },
+    { "command": "node scripts/verify-corpus.mjs", "exit": 0, "observed": "10 checks pass, 3 skipped (source trees absent after the strip)" },
+    { "command": "node scripts/verify-rows-disjoint.mjs", "exit": 0, "observed": "silicon 4 ids / 1 layer; mpd 35 ids / 2 layers (root cordis.patch.yml 34 + presets/mpd.patch.yml 1); intersection empty" },
+    { "command": "node scripts/verify-rows-disjoint.mjs --self-test", "exit": 0, "observed": "6 parser + 2 gate + 6 discovery fixtures pass" },
+    { "command": "node scripts/build-lsp.mjs --check", "exit": 0, "observed": "dist/cli.js sha256 04b49f8c… (235271 bytes) matches BUILD.lock; both HDL servers, anchor, 2 reference docs and 4 fixtures present" },
+    { "command": "node scripts/pack-silicon.mjs --self-test", "exit": 0, "observed": "package-set guards falsifiable; mode normalization proven" },
+    { "command": "node scripts/typecheck.mjs --self-test", "exit": 0, "observed": "wrong-type control caught (TS2322); healthy control clean; a missing checker fails loudly" },
+    { "command": "node scripts/pack-silicon.mjs --check", "exit": 0, "observed": "every committed file readable by a non-root consumer" }
+  ],
+  "boots": {
+    "silicon_only": {
+      "profile": "silicon-qa (silicon bundle only)",
+      "exit": 124,
+      "meaning": "stayed alive until the 40s timeout",
+      "log": "boot-silicon-only.log",
+      "fatal_signatures": 0
+    },
+    "coexistence_mpd_0_15_1": {
+      "profile": "coexist (dsh-base + @mpd-dsh/mpd 0.15.1 + @mpd-dsh/silicon)",
+      "exit": 124,
+      "meaning": "stayed alive until the 40s timeout",
+      "log": "boot-coexist-mpd-0.15.1.log",
+      "fatal_signatures": 0,
+      "warning": "mpd's own preset-mpd reports pending (agentPresets provider absent from the minimal composition); not a silicon row and not a collision"
+    }
+  },
+  "mcp": {
+    "server": "packages/mpd-mcp-lsp/dist/cli.js",
+    "protocolVersion": "2025-06-18",
+    "serverInfo": { "name": "lsp", "version": "0.1.0" },
+    "toolCount": 8,
+    "tools": ["status", "diagnostics", "goto_definition", "find_references", "symbols", "prepare_rename", "rename", "install_decision"],
+    "log": "mcp-handshake.log"
+  },
+  "real_tool_calls": {
+    "profile": "qa-headless (dsh-base + dsh-headless + @mpd-dsh/mpd 0.15.1 + @mpd-dsh/silicon), real model route",
+    "model_route": "companyapi/deepseek-flash (custom provider row in the sandbox profile; credential read at runtime, never copied or logged)",
+    "tool_call_events": 2,
+    "tool_result_events": 2,
+    "results": [
+      { "tool": "mpd_verif_venv", "args": { "action": "status" }, "status": "completed", "observed": "structured refusal: venv missing at <work>/.venv-rtl with the exact setup command" },
+      { "tool": "mcp__silicon_lsp__status", "args": {}, "status": "completed", "observed": "Configured LSP servers: 44; Installed: 0 (no HDL servers installed on this machine)" }
+    ],
+    "artifacts": ["tool-proof-clean-home.jsonl", "tool-proof-clean-home.err"],
+    "note": "A first run against a REUSED sandbox HOME returned a structured `LSP daemon unreachable … did not become reachable` error; the daemon log showed DaemonStartupDeferredError: owner_changed_during_cleanup. Clearing <sandbox-home>/.mpd/lsp-daemon and re-running produced the completed status above. The final recorded run was repeated AFTER removing the sandbox credential symlink, with the key supplied only through the process environment; it produced the same 2 tool calls and the same LSP status. This is stale sandbox state, not a harness incompatibility."
+  },
+  "review": {
+    "contract": "evidence/review/harness-0.2.1-adaptation-contract.md",
+    "first_verdict": "FAIL",
+    "findings_repaired": [
+      "F1 (medium): both bootstrap package READMEs now document the shipped resolver siliconDsh ?? mpdDsh ?? createDshAdapter and the logger exception.",
+      "F2 (medium): the sandbox credential symlink into the real ~/.dsh was removed; the real tool-call case was re-run with the credential supplied only through the process environment, and this bound was rewritten.",
+      "F3 (low): the port record's forward-reference section is retensed as a port-time record that has since landed, in both languages.",
+      "F4 (low): the dependency map no longer cites the nonexistent packages/mpd-bundle/README.md; it names the commented MCP rows in packages/mpd-bundle/cordis.patch.yml as the enable-recipe owner."
+    ],
+    "re_review_findings_repaired": [
+      "N1 (low): the evidence bound now scopes the no-link claim to the credential store and names the three read-only package trees; the reviewer's second pass returned PASS."
+    ],
+    "re_review": "PASS (reviewer, second pass; N1 wording applied)",
+    "type_gate_fix_verification": "PASS (reviewer, focused pass; probes A/A2/B/D). T1 narrative correction applied: the pre-fix self-test exited 1 — the vacuous pass was its healthy control and the production --require path, not the whole self-test."
+  },
+  "bounds": [
+    "No iverilog/verilator/vcs is installed on this machine; the verif lanes measure the structured refusal path. A host with a backend exercises the strong branch of the environment-gated test.",
+    "The adapter's three upstream repo-scanning gates are not ported (they hard-code packages/mpd-* and a frozen mpd inventory); the 70-case upstream adapter.test.ts requires mpd's schemastery harness and is replaced by a 10-case silicon suite.",
+    "The coexistence boot uses a minimal bundle set (dsh-base + mpd + silicon), so mpd's preset-mpd cannot activate without an agentPresets provider; no claim is made about a full dsh-tui composition.",
+    "`dsh plugin --profile … add <repo>` could not complete inside this sandbox: pnpm/corepack failed with ERR_PNPM_STORE_DIR_OPEN_OPERATION_LOCK (EROFS on its store operation lock). The boots and tool calls therefore used a manually assembled profile (package.json bundles + node_modules symlinks) with an isolated DSH_HOME and HOME; the row set is the same one `dsh plugin add` produces. This is a QA-environment bound, not a bundle defect.",
+    "The MCP status call needs a clean daemon state under HOME; a reused HOME after the daemon owner changes returns the structured deferral error documented above. Clearing ~/.mpd/lsp-daemon resolves it.",
+    "The real model call read the operator's credential at runtime from the credential store into the process environment. No sandbox path links to the credential store, and the key was never written into the repository or into any evidence file. The sandbox profiles symlink three read-only installed package trees (@mpd-dsh/mpd, @deepseek-ai, @dsh-std) under ~/.dsh/profiles/dsh-tui/node_modules so the coexistence boot can mount them without reinstalling.",
+    "The answer above is bound to the recorded headless run; the model call itself was not re-executed by the independent reviewer (contract exclusion), only its artifacts were inspected."
+  ],
+  "artifacts": [
+    "output.log",
+    "parity-hunks.txt",
+    "boot-silicon-only.log",
+    "boot-coexist-mpd-0.15.1.log",
+    "mcp-handshake.log",
+    "tool-proof.jsonl (reused-HOME run: structured daemon-deferral error)",
+    "tool-proof-clean-home.jsonl (clean-HOME run: both tools completed)",
+    "tool-proof.err",
+    "tool-proof-clean-home.err"
+  ]
+}

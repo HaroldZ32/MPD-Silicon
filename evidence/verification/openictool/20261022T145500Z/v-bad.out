@@ -1,0 +1,6 @@
+init 2025-06-18
+tools status,diagnostics,goto_definition,find_references,symbols,prepare_rename,rename,install_decision
+status text bytes 2920
+diagnostics text bytes 98
+error[verible] at 3:2: syntax error at "assign"
+error[verible] at 4:0: syntax error at "endmodule"

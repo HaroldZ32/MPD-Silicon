@@ -1,0 +1,49 @@
+name: CI — boot e2e (real harness mounts)
+
+# No pull_request trigger on purpose: this job installs the harness and runs two real
+# app boots, which is too slow for every pull request. `workflow_dispatch` is the
+# on-demand entry point.
+on:
+  push:
+    branches: [main]
+    paths:
+      - packages/**
+      - scripts/**
+      - package.json
+      - bun.lock
+      - packages/mpd-bundle/cordis.patch.yml
+      - .github/workflows/boot-e2e.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  boot:
+    name: Real mount boots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup bun 1.4.3
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - name: Setup node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Install the harness CLI
+        run: npm install -g @deepseek-ai/dsh@0.2.1-rc.2
+      - name: Coexist boot and no-mpd guard boot
+        run: node scripts/ci-boot.mjs --require
+      - name: Upload boot logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-boot-logs
+          path: dist/ci-boot-logs
+          retention-days: 7

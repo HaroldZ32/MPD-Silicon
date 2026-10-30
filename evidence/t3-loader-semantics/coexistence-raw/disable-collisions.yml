@@ -1,0 +1,7 @@
+# Disable the two mpd rows that collaterally collide with silicon for the
+# coexistence probe: mpd-dsh-adapter (same singleton service name `mpdDsh`) and
+# mpd-verif (same mpd_verif_* tool names). Both disappear in t5's strip.
+- id: mpd-dsh-adapter
+  disabled: true
+- id: mpd-verif
+  disabled: true

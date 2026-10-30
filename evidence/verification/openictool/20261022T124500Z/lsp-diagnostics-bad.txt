@@ -1,0 +1,2 @@
+error[verible] at 3:2: syntax error at "assign"
+error[verible] at 4:0: syntax error at "endmodule"

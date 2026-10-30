@@ -1,0 +1,17 @@
+init 2025-06-18
+tools status,diagnostics,goto_definition,find_references,symbols,prepare_rename,rename,install_decision
+status text bytes 2918
+diagnostics text bytes 690
+LSP server 'slang-server' for .sv, .svh is NOT INSTALLED.
+
+Command not found: slang-server
+
+To install, run:
+  per-platform static binaries: https://github.com/hudson-trading/slang-server/releases
+
+ACTION REQUIRED — ASK THE USER whether to install this LSP server.
+- If the user agrees: run the install command above, then retry this tool.
+- If the user declines, OR has NOT explicitly asked for LSP installation:
+    call lsp_install_decision { server_id: "slang-server", decision: "declined" },
+    which writes to /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/qa-sandbox-coexist/home/.codex/lsp-install-decisions.json,
+    then ignore this message and proceed WITHOUT LSP.

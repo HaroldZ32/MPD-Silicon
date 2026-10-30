@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Release artifacts and image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup bun 1.4.3
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - name: Setup node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Assert the tag matches the package version
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+          if [ "$tag" != "$version" ]; then
+            echo "release: tag $GITHUB_REF_NAME does not match package.json version $version" >&2
+            exit 1
+          fi
+          echo "release: tag $GITHUB_REF_NAME matches package version $version"
+      - name: Typecheck
+        run: node scripts/typecheck.mjs --require
+      - name: Tests
+        run: bun test packages/
+      - name: Corpus
+        run: node scripts/verify-corpus.mjs
+      - name: Rows disjoint
+        run: node scripts/verify-rows-disjoint.mjs
+      - name: LSP assets
+        run: node scripts/build-lsp.mjs --check
+      - name: Packer self-test
+        run: node scripts/pack-silicon.mjs --self-test
+      - name: Workflow gate
+        run: node scripts/verify-github-workflows.mjs
+      - name: Pack check
+        run: node scripts/pack-silicon.mjs --check
+      - name: Pack
+        run: node scripts/pack-silicon.mjs
+      - name: Package guards self-test
+        run: node scripts/verify-package-files.mjs --self-test
+      - name: Package verify
+        run: node scripts/verify-package-files.mjs
+      # --pack-destination dist keeps the tarball next to the staged package, which is
+      # the directory the release globs and the artifact list below point at.
+      - name: Pack the npm tarball
+        run: npm pack --pack-destination dist
+      - name: Archive the staged silicon package
+        run: tar -czf dist/silicon-package.tar.gz -C dist silicon-package
+      # GHCR rejects uppercase repository paths; repository_owner is mixed-case, so the
+      # image prefix is lowercased once here and reused as ${{ env.IMAGE_OWNER }}.
+      - name: Resolve the lowercase image prefix
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+        run: echo "IMAGE_OWNER=${REPO_OWNER,,}" >> "$GITHUB_ENV"
+      - name: Setup buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ env.IMAGE_OWNER }}/mpd-silicon:${{ github.ref_name }}
+            ghcr.io/${{ env.IMAGE_OWNER }}/mpd-silicon:latest
+      - name: Create the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tgz
+            dist/silicon-package.tar.gz
+          generate_release_notes: true

@@ -1,0 +1,30 @@
+{
+  "label": "run1",
+  "workspaceRoot": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon",
+  "args": {
+    "manual": "/home/haroldzhao/eCap/docs/user-manual.md",
+    "outputDir": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated",
+    "ip": "eCap"
+  },
+  "result": {
+    "ok": true,
+    "files": [
+      {
+        "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_regExcel_full.xlsx",
+        "bytes": 13650,
+        "sha256": "d4afdea710aab7c2cc55110257e47176a57897832144baab747e960aa23d74ba"
+      },
+      {
+        "path": "/home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/evidence/verification/docgen-fidelity/20261022T105117Z/generated/eCap_reg_user_manual.zh-CN.docx",
+        "bytes": 38642,
+        "sha256": "9d3791cb5565210450e2ca8a6df6cfbdf31a104631481ce718c631c32039e8ef",
+        "lang": "zh-CN"
+      }
+    ],
+    "registers": 31,
+    "fields": 130,
+    "warnings": [
+      "manualEn was not provided: the rtl-ip-flow spec stage requires an English twin (docs/user-manual.en.md); only the zh-CN docx was generated"
+    ]
+  }
+}

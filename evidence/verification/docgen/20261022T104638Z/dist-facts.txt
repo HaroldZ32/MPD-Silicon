@@ -1,0 +1,17 @@
+$ ls -l packages/mpd-docgen-plugin/dist/index.js
+-rw-r--r-- 1 haroldzhao haroldzhao 118777 10月 22 18:46 packages/mpd-docgen-plugin/dist/index.js
+$ stat -c %a
+644
+$ sha256sum
+2c417a991c09dd7cf16a5d529aa71a7888b6b09dd23c0cd15ffaba7d0a4555cd  packages/mpd-docgen-plugin/dist/index.js
+$ wc -c
+118777
+$ grep -c @mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/
+2
+$ grep -c SERVICE_NAME = "mpdDsh" (expect 0)
+0
+$ node: imports
+from "node:crypto"
+from "node:fs"
+from "node:path"
+from "node:zlib"

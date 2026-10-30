@@ -1,0 +1,9 @@
+init 2025-06-18
+tools status,diagnostics,goto_definition,find_references,symbols,prepare_rename,rename,install_decision
+status text bytes 445
+diagnostics text bytes 445
+LSP daemon unreachable: LSP daemon did not become reachable at /tmp/mpd-lsp-0.1.0-48bafc3702a3368f/daemon.sock.
+The MCP server is a thin proxy and never runs language servers in-process.
+Socket: /tmp/mpd-lsp-0.1.0-48bafc3702a3368f/daemon.sock
+Logs: /home/haroldzhao/localProj/dshProj/my-power-dsh-silicon/.mpd/qa-sandbox-coexist/home/.mpd/lsp-daemon/v0.1.0/daemon.log
+The daemon is auto-started on demand and will be retried on the next request.

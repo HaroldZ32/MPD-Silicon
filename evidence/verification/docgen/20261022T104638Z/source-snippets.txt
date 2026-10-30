@@ -1,0 +1,46 @@
+=== packages/mpd-docgen-plugin/src/types.ts:131-141 ===
+/** Stable error codes carried across the DSH seam (plan §2 and §5). */
+export type DocgenErrorCode =
+  | "DOCGEN_E_PARSE" // unparsable markdown: missing offset/reset, unknown heading/table shape
+  | "DOCGEN_E_FIELDS" // field spans overlap, are out of range, or do not cover [31:0]
+  | "DOCGEN_E_ACCESS" // unknown access abbreviation
+  | "DOCGEN_E_LANG_MISMATCH" // zh and en manuals describe different register skeletons
+  | "DOCGEN_E_INPUT" // a tool argument is missing or malformed
+  | "DOCGEN_E_IO" // reading an input or writing an output failed
+  | "DOCGEN_E_ZIP" // a ZIP container is malformed, truncated or fails its CRC
+  | "DOCGEN_E_INTERNAL" // fallback for an unexpected internal error
+
+
+=== packages/mpd-docgen-plugin/src/registers.ts:26-30 ===
+/**
+ * The 25 access abbreviations the manual template defines (skills/rtl-ip-flow/templates/
+ * user-manual.md:156-180). Parsing is strict against this set; RESERVED rows may omit it.
+ */
+export const ACCESS_CODES: readonly string[] = [
+
+=== skills/rtl-ip-flow/templates/user-manual.md:156-180 (access block cited) ===
+rw  read/write
+ro  read-only
+wo  write-only
+w1  write-once
+w1c write a 1 to bitwise-clear
+rc  clear on read
+rs  Read Sets All
+wrc Write Read Clears All
+wrs Write, Read Sets All
+wc  Write Clears All
+ws  Write Sets All
+wsrc Write Sets All, Read Clears All
+wcrs Write Clears All, Read Sets All
+w1s Write 1 to Set
+w1t Write 1 to Toggle
+w0c Write 0 to Clear
+w0s Write 0 to Set
+w0t Write 0 to Toggle
+w1src Write 1 to Set, Read Clears All
+w1crs Write 1 to Clear, Read Sets All
+w0src Write 0 to Set, Read Clears All
+w0crs Write 0 to Clear, Read Sets All
+woc Write Only Clears All
+wos Write Only Sets All
+wo1 Write Only, Once

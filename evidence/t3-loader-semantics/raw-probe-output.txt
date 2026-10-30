@@ -1,0 +1,71 @@
+DSH_HOME=/tmp/tmp.f6D3LXTt6A
+=== PROBE A: same id: agent-teams in the home layer (whole-config replacement) ===
+# == /tmp/tmp.f6D3LXTt6A/profiles/probe/cordis.patch.yml, patched by /tmp/tmp.f6D3LXTt6A/cordis.patch.yml
+- id: agent-teams
+  name: probe-agent-teams
+  config:
+    stateDir: .mpd/team-silicon
+    profiles:
+      rtl-ip:
+        description: RTL IP swimlane roster
+        taskPlanning: captain
+        members:
+          - name: Spec Designer
+            role: spec
+            provider: deepseek-official
+            model: deepseek-v4-pro
+[exit 0] — mpd profile is GONE (no deep merge)
+
+=== PROBE B: id + insert: targeting the non-group agent-teams row ===
+dsh: [/tmp/tmp.f6D3LXTt6A/cordis.patch.yml] patch insert: entry "agent-teams" is not a group
+# == /tmp/tmp.f6D3LXTt6A/profiles/probe/cordis.patch.yml
+- id: agent-teams
+  name: probe-agent-teams
+  config:
+    stateDir: .mpd/team
+    profiles:
+      mpd:
+        description: MPD roster
+        taskPlanning: captain
+        members:
+          - name: Architect
+            role: architecture review
+            provider: deepseek-official
+            model: deepseek-v4-pro
+[exit 0] — insert skipped: row is not a group
+
+=== PROBE C: distinct row ids, same module name ===
+# == /tmp/tmp.f6D3LXTt6A/profiles/probe/cordis.patch.yml
+- id: agent-teams
+  name: probe-agent-teams
+  config:
+    stateDir: .mpd/team
+    profiles:
+      mpd:
+        description: MPD roster
+        taskPlanning: captain
+        members:
+          - name: Architect
+            role: architecture review
+            provider: deepseek-official
+            model: deepseek-v4-pro
+# == /tmp/tmp.f6D3LXTt6A/cordis.patch.yml
+- id: agent-teams-silicon
+  name: probe-agent-teams
+  config:
+    stateDir: .mpd/team-silicon
+    profiles:
+      rtl-ip:
+        description: RTL IP swimlane roster
+        taskPlanning: captain
+        members:
+          - name: Spec Designer
+            role: spec
+            provider: deepseek-official
+            model: deepseek-v4-pro
+[exit 0] — loader accepts both rows; mounting them still collides (see PROBE D)
+
+=== PROBE D: duplicate global tool registration (see collide4.mjs beside this file) ===
+instance-A: registered OK
+instance-B: THREW Error: tool "agent_teams_create" is already registered (for a per-agent variant, register through that agent's `agent.ctx` instead)
+[exit 0] — second instance cannot mount: tool already registered

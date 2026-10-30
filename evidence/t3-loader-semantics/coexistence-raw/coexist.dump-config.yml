@@ -1,0 +1,450 @@
+# == @mpd-dsh/silicon
+- id: silicon-dsh-adapter
+  name: '@mpd-dsh/silicon/packages/mpd-dsh-adapter-plugin/dist/index.js'
+- id: silicon-bootstrap
+  name: '@mpd-dsh/silicon/packages/mpd-silicon-bootstrap-plugin/dist/index.js'
+- id: silicon-verif
+  name: '@mpd-dsh/silicon/packages/mpd-verif-plugin/dist/index.js'
+- id: silicon-mcp-lsp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: lsp
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/silicon/packages/mpd-mcp-lsp/dist/cli.js")
+      - mcp
+    toolCallTimeoutMs: 60000
+# == @mpd-dsh/mpd
+- id: mcp-astgrep
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: ast_grep
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_ASTGREP_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-astgrep/launch.mjs")
+    toolCallTimeoutMs: 60000
+- id: mcp-gitbash
+  name: '@deepseek-ai/dsh-mcp-client'
+  disabled: true
+  config:
+    serverName: git_bash
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_GITBASH_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-gitbash/dist/cli.js")
+    toolCallTimeoutMs: 60000
+- id: mcp-lsp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: lsp
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_LSP_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-lsp/dist/cli.js")
+      - mcp
+    toolCallTimeoutMs: 60000
+- id: mcp-codegraph
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: codegraph
+    transport: stdio
+    command: node
+    args:
+      - !!js >-
+        process.env.MPD_DSH_CODEGRAPH_CLI || ((typeof baseUrl === "string" ?
+        baseUrl.replace(/^file:\/\//, "").replace(/\/+$/, "") : "") +
+        "/node_modules/@mpd-dsh/mpd/packages/mpd-mcp-codegraph/launch.mjs")
+    toolCallTimeoutMs: 60000
+- id: mpd-web-compat
+  name: '@mpd-dsh/mpd'
+- id: mpd-dsh-adapter
+  name: '@mpd-dsh/mpd/packages/mpd-dsh-adapter-plugin/dist/index.js'
+- id: mpd-config
+  name: '@mpd-dsh/mpd/packages/mpd-config-plugin/dist/index.js'
+- id: mpd-tools
+  name: '@mpd-dsh/mpd/packages/mpd-tools-plugin/dist/index.js'
+  config:
+    writeGuard: true
+    truncateMaxBytes: 8192
+- id: mpd-modelchain
+  name: '@mpd-dsh/mpd/packages/mpd-modelchain-plugin/dist/index.js'
+- id: mpd-roles
+  name: '@mpd-dsh/mpd/packages/mpd-roles-plugin/dist/index.js'
+- id: mpd-ulw
+  name: '@mpd-dsh/mpd/packages/mpd-ulw-plugin/dist/index.js'
+  config:
+    maxRounds: 3
+- id: mpd-hashline
+  name: '@mpd-dsh/mpd/packages/mpd-hashline-plugin/dist/index.js'
+  config:
+    guardEditTools: true
+- id: mpd-boulder
+  name: '@mpd-dsh/mpd/packages/mpd-boulder-plugin/dist/index.js'
+- id: mpd-comment-checker
+  name: '@mpd-dsh/mpd/packages/mpd-comment-checker-plugin/dist/index.js'
+  config:
+    autoCheck: false
+- id: mpd-codegraph
+  name: '@mpd-dsh/mpd/packages/mpd-codegraph-plugin/dist/index.js'
+  config:
+    autoInit: true
+    initTimeoutMs: 60000
+- id: mpd-memory
+  name: '@mpd-dsh/mpd/packages/mpd-memory-plugin/dist/index.js'
+  config:
+    vcs: git
+- id: mpd-workmate
+  name: '@mpd-dsh/mpd/packages/mpd-workmate-plugin/dist/index.js'
+- id: mpd-bootstrap
+  name: '@mpd-dsh/mpd/packages/mpd-bootstrap-plugin/dist/index.js'
+- id: mpd-verif
+  name: '@mpd-dsh/mpd/packages/mpd-verif-plugin/dist/index.js'
+- id: agent-teams
+  name: '@mpd-dsh/mpd/packages/mpd-agent-teams-plugin/lib/index.js'
+  config:
+    stateDir: .mpd/team
+    memberProvider: spawn
+    memberMaxDepth: 1
+    maxMembers: 16
+    sessionTeamPolicy:
+      mode: auto
+      profile: mpd
+      presets:
+        - mpd
+      name: MPD Default
+      approval: required
+    profiles:
+      mpd:
+        description: >-
+          The OMO-origin specialist roster surfaced as normal-named teammate
+          templates — captain-planned (roster only; the captain designs the DAG
+          during the staged plan).
+        protocol: >-
+          Read-only members (Architect, Researcher, Planner, Explorer, Plan
+          Reviewer, Vision Analyst) take requirements/review/analysis tasks only
+          and never edit files. Workers (Senior Engineer, Junior Engineer, Deep
+          Worker, Lead, Reviewer) take implementation/verification/integration.
+          The captain leads, designs the DAG, and integrates results. Workmate
+          reuse: before delegating a role task, consult mpd_workmate_list /
+          mpd_workmate_match(task); if a workmate note matches well, delegate to
+          that workmate (member name = workmate name, so its persona/memory are
+          injected), otherwise initialize a fresh workmate with
+          mpd_workmate_init — never force a weak note match.
+        taskPlanning: captain
+        members:
+          - name: Architect
+            role: architecture review / deep debugging / self-review
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only architecture advisor. You advise, others execute — never
+              edit files. Favor simplicity and existing patterns; give one clear
+              recommendation with concise rationale and evidence.
+          - name: Researcher
+            role: code / open-source evidence search
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only researcher. Gather evidence from the codebase, AST/LSP
+              and web sources; cite file:line and URLs; never edit files or
+              invent findings.
+          - name: Planner
+            role: planning / task decomposition
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only planner. Produce decision-complete, step-ordered plans
+              with a checklist; never implement.
+          - name: Explorer
+            role: read-only codebase exploration
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only explorer. Answer with evidence and absolute file paths;
+              never edit files.
+          - name: Reviewer
+            role: correctness / risk review
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Deep reviewer. Produce correctness/risk findings with evidence;
+              recommend fixes but do not apply them.
+          - name: Plan Reviewer
+            role: work-plan QA review / UI-UX critique
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-pro
+            executionPrompt: >-
+              Read-only plan reviewer. Verify plans are executable and
+              references valid; reject only true blockers; UI/UX critique only
+              when explicitly asked; never edit files.
+          - name: Vision Analyst
+            role: image / diagram analysis
+            provider: deepseek-official
+            model: deepseek-v4-flash-vision-exp
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only vision analyst. Describe screenshots/diagrams precisely;
+              never edit files or load anything by path.
+          - name: Lead
+            role: orchestration / integration
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Orchestrator. Plan the macro structure, delegate independent units
+              in parallel, integrate and verify results.
+          - name: Deep Worker
+            role: autonomous goal-driven implementation
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Autonomous deep worker. Receive goals, execute them end-to-end
+              with tools, verify every change, report evidence-first.
+          - name: Senior Engineer
+            role: primary implementation
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Primary engineer. Plan small, execute with tools, keep diffs
+              minimal, verify every change, report honestly.
+          - name: Junior Engineer
+            role: small mechanical changes
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Fast executor. Small, well-scoped mechanical changes with quick
+              verification; keep diffs tiny.
+      rtl-ip:
+        description: >-
+          RTL IP design workflow aligned to the four-swimlane product flow
+          (product market / system design / digital design / digital
+          verification) with milestone gates 规格设计 IP01 → 代码设计 IP05 → 设计验证 IP08 →
+          IP 发布 IP10 and diamond reviews: requirements (需求说明书/应用场景/可行性报告/需求追踪表 →
+          需求评审) → spec design (内部用户手册 + DFMEA 初版 + 验证计划/验证方案 → 规格评审/验证评审) → code
+          design (RTL + 详细设计 + 环境/用例开发 + 验证调试 → 设计评审/验证评审; spec-diff rollback) →
+          verification and release (缺陷解决/回归验证 + 设计发布(内/外部用户手册)/发布评审 +
+          缺陷分析(缺陷报告/Buglist)/缺陷评审). Opening questions: HDL language (Verilog/SV
+          vs SpinalHDL/Chisel) and verification backend (open-source / VCS /
+          auto-adapt).
+        protocol: >-
+          RTL-IP SWIMLANE FLOW (skills/rtl-ip-flow is the binding execution
+          contract). Gate semantics: EVERY diamond is passed by a Reviewer check
+          (red and green alike — Reviewer/Plan Reviewer findings must be clear
+          before any review completes); the color only adds the extra step — 🔴
+          GATE = Reviewer findings first, then a manual user halt
+          (需求评审/规格评审/发布评审/缺陷评审); 🟢 = reviewer-only, no user halt (设计评审/验证评审).
+          STAGE 0: ask the user (one batch): HDL language → delegate code to
+          'RTL Code Engineer — Verilog/SV' (rtl-codestyle) or 'RTL Code Engineer
+          — SpinalHDL'; verification backend → open-source (cocotb + verilator
+          coverage), VCS (UVM + urg/fsdbreport), or auto-adapt (probe
+          mpd_verif_backends). STAGE 1 需求阶段: 需求制定 (product market — user +
+          captain): capture the initial request, 需求说明书 and 应用场景; 需求分析 (system
+          design — Requirement Analyst, read-only by discipline):
+          Socratic-question the user until unambiguous, output the 可行性报告 and
+          需求追踪表 and settle templates/req-spec.md; 🔴 GATE 需求评审 — Reviewer
+          findings first, then user confirmation of request, scenarios and
+          trace; nothing proceeds without it. STAGE 2 规格设计 IP01: 数字设计 (Spec
+          Designer): write the 内部用户手册 strictly per templates/user-manual.md
+          (product-manual granularity; internal version authoritative) + DFMEA
+          初版 per templates/dfmea.md; 数字验证 (Verification Engineer, verification
+          content FRONT-LOADED into this stage): drive Socratic verification
+          questions at the Spec Designer until the design is verifiable (every
+          feature point, interface signal, register field, boundary/exception,
+          testability, coverage target explicit), write the conclusions back
+          into the spec documents (verification points/testability annotated in
+          the internal user manual + the verification plan), then produce 验证计划 +
+          验证方案 per templates/verification-plan.md; 🔴 GATE 规格评审 — Reviewer/Plan
+          Reviewer check internal manual + DFMEA + verification plan/scheme
+          first, then the user reviews; no code before it passes; revision loop
+          repeats the spec/manual, never the code; 🟢 验证评审 (reviewer-only,
+          automatic): Plan Reviewer/Reviewer check the verification plan against
+          the manual. STAGE 3 代码设计 IP05: 数字设计 (RTL Code Engineer of the chosen
+          lane): implement per the confirmed manual under the style contract;
+          write the 详细设计 per templates/detail-design.md one-to-one with the code
+          (no code inside the doc); 数字验证 parallel: 环境开发 → 用例开发 → 验证调试 (验证报告 +
+          验证手册 per templates/validation-report.md / validation-manual.md).
+          Consistency rule: no non-essential difference between detail
+          manual/code and the internal user manual — on real divergence, stash
+          the stage-3 files (git stash / copy aside), re-run stage 2 to correct
+          the manual, get it confirmed, return and redo stage 3; never patch
+          around the divergence. 🟢 设计评审 + 🟢 验证评审 (reviewer-only, no user
+          halt): Reviewer/Plan Reviewer check code + detail manual + validation
+          debug results; the verification engineer reports the manual-vs-code
+          consistency check first. STAGE 4 设计验证 IP08 → IP 发布 IP10: 缺陷解决 (design)
+          ↔ 验证调试/回归 (verification): fix defects, rerun affected cases then full
+          回归验证 dual-track — track 1 functional per the internal manual (cocotb
+          or UVM lane per backend, all cases PASS), track 2 coverage per the
+          detail design (verilator merge/report or VCS urg + fsdbreport, targets
+          met or justified). 设计发布: 内部 + 外部用户手册 (external = pure subset) per
+          templates/user-manual.md → 🔴 GATE 发布评审 (Reviewer findings first, then
+          user halt). 缺陷分析: 缺陷报告 + Buglist per templates/defect-report.md → 🔴
+          GATE 缺陷评审 (Reviewer findings first, then user halt; closure before
+          IP10). IP10 = all reviews green + dual-track evidence committed.
+        taskPlanning: captain
+        members:
+          - name: Requirement Analyst
+            role: requirements elicitation (read-only by discipline)
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Read-only requirements analyst. Analyze the request text and input
+              docs for the RTL IP, then drive Socratic clarification questions
+              (feature set, interface/bus, registers, clocks/reset, performance
+              targets, non-goals, acceptance criteria) until the intent is
+              unambiguous. Output: question list + user answers + requirements
+              summary. Never write files, never start design.
+          - name: Spec Designer
+            role: requirements spec + user manual (gate 1 owner)
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Spec designer. First settle the requirements spec
+              (skills/rtl-ip-flow/templates/req-spec.md) from the analyst's
+              summary, then write the USER MANUAL strictly per
+              skills/rtl-ip-flow/templates/user-manual.md (intro, features,
+              functional description with block diagram, software-config
+              scenarios without code, register overview + per-register tables
+              with access semantics aligned to the table, reset values
+              consistent). Report the delivered manual path and wait for the
+              manual review gate.
+          - name: RTL Code Engineer — Verilog/SV
+            role: RTL implementation (Verilog/SV lane)
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              RTL code engineer (Verilog/SystemVerilog). Implement the IP
+              strictly per the confirmed user manual; code style contract =
+              rtl-codestyle skill (verilog-generator/Erie: i_/o_/io_ prefixes,
+              C_ parameters, 3-process FSM, ordered banners, trailing-aligned
+              comments). Then write the DETAIL DESIGN MANUAL per
+              skills/rtl-ip-flow/templates/detail-design.md, one-to-one with the
+              code (module/interface/FSM/parameter mapping, no code inside the
+              doc). Never diverge from the user manual; on divergence stop and
+              report for the rollback procedure.
+          - name: RTL Code Engineer — SpinalHDL
+            role: RTL implementation (SpinalHDL/Chisel lane)
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              RTL code engineer (SpinalHDL/Chisel). Implement the IP strictly
+              per the confirmed user manual, following the project's existing
+              SpinalHDL conventions (RDC-pattern rules: no hardware-computed
+              parameter defaults, no precision-losing resize, split register
+              fields with named fieldAt, doc-sync after every change, no
+              dangling signals). Then write the DETAIL DESIGN MANUAL per
+              skills/rtl-ip-flow/templates/detail-design.md, one-to-one with the
+              code. Never diverge from the user manual; on divergence stop and
+              report.
+          - name: Verification Engineer
+            role: verification code + plan + dual-track verification
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              Verification engineer. In stage 3 (parallel with code): derive
+              test points from the user manual, write the verification code and
+              the verification plan per
+              skills/rtl-ip-flow/templates/verification-plan.md; also run the
+              manual-vs-code consistency check and report findings. In stage 4:
+              dual-track verification — functional track per the user manual
+              (cocotb lane or UVM lane per backend; all cases PASS), coverage
+              track per the detail design (verilator coverage merge/report, or
+              VCS urg + fsdbreport; plan targets met or justified). Report
+              evidence paths; no silent target relaxing.
+          - name: Reviewer
+            role: correctness / risk review (gate support)
+            provider: deepseek-official
+            model: deepseek-v4-pro
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-flash
+            executionPrompt: >-
+              RTL-IP gate reviewer. Produce correctness/risk findings with
+              evidence (file:line); verify manual-vs-code consistency and
+              verification-plan coverage claims; recommend fixes but do not
+              apply them. Review only; never edit files.
+          - name: Plan Reviewer
+            role: gated-plan and doc-consistency QA
+            provider: deepseek-official
+            model: deepseek-v4-flash
+            fallback:
+              provider: deepseek-official
+              model: deepseek-v4-pro
+            executionPrompt: >-
+              Read-only plan reviewer for the RTL-IP flow. Verify the staged
+              plan follows the four-gate flow (halts at manual gates, rollback
+              procedure on divergence) and that documents map to their
+              templates; reject only true blockers; never edit files.
+- id: mcp-context7
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: context7
+    transport: streamable-http
+    url: https://mcp.context7.com/mcp
+    toolCallTimeoutMs: 60000
+- id: mcp-grepapp
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: grep_app
+    transport: streamable-http
+    url: https://mcp.grep.app
+    toolCallTimeoutMs: 60000

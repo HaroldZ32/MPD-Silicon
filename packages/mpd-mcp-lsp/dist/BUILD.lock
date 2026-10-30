@@ -1,0 +1,15 @@
+{
+  "source": "@mpd-dsh/mpd",
+  "sourcePackage": "packages/mpd-mcp-lsp",
+  "provenance": "byte-identical copy of the source package's offline-built artifact (task t16); no rebuild was performed in the silicon repo",
+  "build": [
+    "apply overlay/lsp/{server-definitions,language-mappings}.ts over the upstream lsp-daemon lsp-core source (drift-guard anchor mpd-rtl-overlay-v1)",
+    "bun build src/cli.ts --outdir dist --target node --format esm"
+  ],
+  "rebuildWith": "node scripts/build-lsp.mjs --build --upstream <checkout containing packages/lsp-daemon>",
+  "artifact": {
+    "file": "dist/cli.js",
+    "sha256": "04b49f8c192d03b5a9cdf1e1f17861d8f4c6741792a4c455e78d0ca8e0a973a9",
+    "bytes": 235271
+  }
+}

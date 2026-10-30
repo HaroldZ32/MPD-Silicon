@@ -1,0 +1,8 @@
+$ grep -rn DOCGEN_E_OVERVIEW_MISMATCH packages/ docs/ skills/
+
+$ grep -rn DOCGEN_E_INTERNAL packages/mpd-docgen-plugin/src/
+packages/mpd-docgen-plugin/src/tool-xlsx.ts:33:      code: "DOCGEN_E_INTERNAL",
+packages/mpd-docgen-plugin/src/tool-docx.ts:36:      code: "DOCGEN_E_INTERNAL",
+packages/mpd-docgen-plugin/src/tool-run.ts:43:      code: "DOCGEN_E_INTERNAL",
+packages/mpd-docgen-plugin/src/types.ts:140:  | "DOCGEN_E_INTERNAL" // fallback for an unexpected internal error
+packages/mpd-docgen-plugin/src/tool-verify.ts:102:      code: "DOCGEN_E_INTERNAL",

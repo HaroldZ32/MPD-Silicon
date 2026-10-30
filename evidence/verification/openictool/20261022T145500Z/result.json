@@ -1,0 +1,111 @@
+{
+  "schema": "mpd-silicon/openictool-full/v1",
+  "recorded_at": "2026-10-22T08:16:45Z",
+  "directory_label": "20261022T145500Z (Asia/Shanghai wall clock)",
+  "purpose": "Full end-to-end verification of the /opt/openictool toolchain, including the newly added slang-server, the ten mpd_verif_* tools, the HDL LSP, LibreLane, and the full gate suite",
+  "environment": {
+    "oss_cad_suite": {
+      "version": "20261021",
+      "iverilog": "Icarus Verilog version 14.0 (devel) (s20260301-631-gce9868196-dirty)",
+      "verilator": "Verilator 5.053 devel rev v5.052-521-g6388139f7 (mod)",
+      "verilator_coverage": "Verilator 5.053",
+      "slang": "12.0.0+545f88b2e (compiler)",
+      "yosys": "0.70+186",
+      "gtkwave": "present"
+    },
+    "verible": { "bin": "/opt/openictool/verible", "version": "v0.0-4296-g0f262651" },
+    "slang_server": { "path": "/opt/openictool/slang-server/slang-server", "version": "0.3.1+" },
+    "librelane": { "appimage": "/opt/openictool/librelane/librelane-devshell-x86_64.AppImage", "version": "3.0.16", "kind": "devshell" },
+    "cocotb": "2.1.0 (venv, Python 3.10.12)",
+    "vcs": "absent"
+  },
+  "config": {
+    "project_file": ".mpd/silicon.jsonc (QA sandbox)",
+    "values": {
+      "ossCadSuite.home": "/opt/openictool/oss-cad-suite",
+      "verible.bin": "/opt/openictool/verible",
+      "slangServer.bin": "/opt/openictool/slang-server",
+      "librelane.appimage": "/opt/openictool/librelane/librelane-devshell-x86_64.AppImage"
+    },
+    "comments_preserved": true,
+    "backends_source": "config"
+  },
+  "lsp": {
+    "handshake": "2025-06-18; 8 tools",
+    "configured_servers": 44,
+    "installed_servers": 2,
+    "verible": "installed; .v/.vh; clean adder: No diagnostics found; broken: error[verible] at 3:2/4:0",
+    "slang_server": "installed; .sv/.svh; clean adder_sv: No diagnostics found; broken: error at 2:22/3:12 + warning unused-port",
+    "daemon_bound": "a stale lease can defer startup (owner_pid_live_unreachable); clearing ~/.mpd/lsp-daemon and /tmp/mpd-lsp-* resolves it"
+  },
+  "tools": {
+    "venv": "ready; Python 3.10.12, cocotb 2.1.0",
+    "backends": "iverilog + verilator present from config; vcs absent",
+    "compile": { "iverilog": "OK; simv_iverilog; direct run exit 0", "verilator": "OK; Vsim; direct run exit 0" },
+    "lint": { "iverilog": "OK", "verilator": "OK" },
+    "sim": {
+      "iverilog": "PASS (1 case) with the ICARUS_BIN_DIR shim; 0 PYTHONHOME/codec lines",
+      "verilator": "PASS (1 case); coverage.dat 4,260 B"
+    },
+    "regress": { "iverilog": "1/1 PASS", "verilator": "1/1 PASS" },
+    "coverage": {
+      "merge": "OK; 4 files -> merged.dat 4,260 B",
+      "report": "OK; --annotate <dir> --annotate-all <merged.dat>; annotated report contains adder.v"
+    },
+    "uvm": "expected VERIF_E_NO_BACKEND (vcs not resolvable)",
+    "toolchain": "show resolves iverilog/verilator/verilator_coverage; paths include slangServer.bin",
+    "librelane": "mode devshell; 3.0.16; extract true (no /dev/fuse); run --version exit 0, 5,429 ms, stderr empty"
+  },
+  "fixes": [
+    "devshell argv -> [appimage, 'librelane', ...args] (0.4.0 --run was 127)",
+    "slangServer.bin config key + launcher PATH (oss -> verible -> slangServer)",
+    "cocotb SIM=icarus (was SIM=iverilog); make PATH includes the resolved tool dir",
+    "oss-cad-suite vvp wrapper re-adds PYTHONHOME; ICARUS_BIN_DIR shim runs the loader with env -u PYTHONHOME",
+    "coverage action echoes merge/report; report uses --annotate-all (not the invalid --all)",
+    "collectDatFiles excludes <top>__verFiles.dat (build metadata, not coverage)"
+  ],
+  "gates": {
+    "tests": "220 tests / 21 files (219 pass, 1 skip, 0 fail)",
+    "typecheck": "PASS --require",
+    "corpus": "PASS 10 checks / 3 skipped",
+    "rows": "PASS silicon 4 ∩ mpd 35 = ∅",
+    "lsp_assets": "PASS (BUILD.lock 04b49f8c…, 235,271 B)",
+    "gitee": "PASS 3 workflows",
+    "boots": "ci-boot --require PASS (coexist + no-mpd)"
+  },
+  "size": {
+    "dist_verif": 160209,
+    "dist_bootstrap": 11734,
+    "dist_guard": 1420,
+    "dist_total": 173363,
+    "dist_delta_vs_384819": -211456,
+    "dist_percent": "-54.9%",
+    "packed_pre_docs": 698810,
+    "packed_final": 700158,
+    "packed_delta_vs_919281": -219123,
+    "packed_percent": "-23.8%",
+    "note": "final packed measured after the docs update and stable across two packs; the pre-docs 698,810 is kept for comparison"
+  },
+  "bounds": [
+    "No VCS license: UVM/regression-through-UVM is an expected refusal.",
+    "No PDK/full RTL-to-GDS; LibreLane is status + --version only.",
+    "AppImage runs with APPIMAGE_EXTRACT_AND_RUN=1 (no /dev/fuse).",
+    "LSP daemon stale-lease recovery required once.",
+    "The verification used a QA project config, not the user-level ~/.dsh/silicon.jsonc.",
+    "The 0.4.0 release tag still carries the pre-fix devshell; this work sits on dev."
+  ],
+  "artifacts": [
+    "output.log",
+    "gates.log",
+    "sim4.jsonl",
+    "live-tools.jsonl",
+    "lsp-status-v-clean.txt",
+    "lsp-diag-v-clean.txt",
+    "lsp-diag-v-bad.txt",
+    "lsp-diag-sv-clean.txt",
+    "lsp-diag-sv-bad.txt",
+    "lsp-pre.mjs",
+    "lsp-probe2.mjs",
+    "lsp-probe-bad.mjs"
+  ]
+}

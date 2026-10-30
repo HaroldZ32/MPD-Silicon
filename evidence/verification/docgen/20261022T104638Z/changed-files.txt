@@ -1,0 +1,19 @@
+ M AGENTS.md
+ M CHANGELOG.md
+ M docs/dependency-map.md
+ M docs/dependency-map.zh-CN.md
+ M docs/rtl-ip-flow-guide.md
+ M docs/rtl-ip-flow-guide.zh-CN.md
+ M evidence/verification/corpus-baseline.json
+ M packages/mpd-bundle/cordis.patch.yml
+ M packages/mpd-silicon-bootstrap-plugin/test/skills.test.ts
+ M scripts/build.mjs
+ M scripts/pack-silicon.mjs
+ M scripts/verify-corpus.mjs
+ M skills/rtl-ip-flow/SKILL.md
+ M skills/rtl-ip-flow/templates/user-manual.md
+?? docs/docgen-guide.md
+?? docs/docgen-guide.zh-CN.md
+?? evidence/verification/docgen/
+?? packages/mpd-docgen-plugin/
+?? skills/rtl-ip-flow/templates/user-manual.en.md

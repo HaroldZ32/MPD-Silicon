@@ -1,0 +1,179 @@
+// ============================================================================
+// Module Name : <MODULE_NAME>_Interface
+// Description : <one-line description of the module>
+// Engineer    : <name>
+// Create Date : <YYYY-MM-DD>
+// Revision    : 1.0
+// ============================================================================
+// Region banners and naming below follow the rtl-codestyle skill
+// (verilog-generator / Erie style). Fill in the <> placeholders.
+// ============================================================================
+
+`timescale 1ns / 1ps
+
+module <MODULE_NAME>_Interface #(
+    //------------------------------------------------------------------------
+    // Configuration parameter region
+    //------------------------------------------------------------------------
+    parameter C_DATA_WIDTH  = 8,   // datapath width
+    parameter C_ADDR_WIDTH  = 8,   // address width
+    parameter C_COUNT_WIDTH = 8    // internal counter width
+) (
+    //------------------------------------------------------------------------
+    // Clock and reset (direction-first group)
+    //------------------------------------------------------------------------
+    input  wire i_clk,              // system clock
+    input  wire i_rstn,             // active-low asynchronous reset
+
+    //------------------------------------------------------------------------
+    // Control channel (inputs)
+    //------------------------------------------------------------------------
+    input  wire        i_start,     // start trigger
+    input  wire        i_valid,     // input data valid
+    input  wire [C_ADDR_WIDTH-1:0] i_addr,   // access address
+
+    //------------------------------------------------------------------------
+    // Data channel (inputs)
+    //------------------------------------------------------------------------
+    input  wire [C_DATA_WIDTH-1:0] i_wdata,  // write data
+
+    //------------------------------------------------------------------------
+    // Control channel (outputs)
+    //------------------------------------------------------------------------
+    output wire        o_done,      // operation done
+    output wire        o_valid,     // output data valid
+
+    //------------------------------------------------------------------------
+    // Data channel (outputs)
+    //------------------------------------------------------------------------
+    output wire [C_DATA_WIDTH-1:0] o_rdata   // read data
+);
+
+    //------------------------------------------------------------------------
+    // State parameter region
+    //------------------------------------------------------------------------
+    localparam ST_IDLE   = 2'd0;    // idle state
+    localparam ST_ACTIVE = 2'd1;    // active processing state
+    localparam ST_DONE   = 2'd2;    // done state
+
+    //------------------------------------------------------------------------
+    // State-machine signal region
+    //------------------------------------------------------------------------
+    reg [1:0] state_current;        // current FSM state
+    reg [1:0] state_next;           // next FSM state
+
+    //------------------------------------------------------------------------
+    // Counter signal region
+    //------------------------------------------------------------------------
+    reg [C_COUNT_WIDTH-1:0] cnt_phase;   // phase counter
+
+    //------------------------------------------------------------------------
+    // Flag signal region
+    //------------------------------------------------------------------------
+    reg flag_busy;                  // busy flag
+
+    //------------------------------------------------------------------------
+    // Register signal region
+    //------------------------------------------------------------------------
+    reg [C_DATA_WIDTH-1:0] reg_acc; // accumulator register
+
+    //------------------------------------------------------------------------
+    // Output signal region
+    //------------------------------------------------------------------------
+    reg [C_DATA_WIDTH-1:0] rdata_o;  // internal read-data driver
+    reg done_o;                      // internal done driver
+    reg valid_o;                     // internal valid driver
+
+    //------------------------------------------------------------------------
+    // State-machine region (process 1: combinational next-state)
+    //------------------------------------------------------------------------
+    always @(*) begin
+        state_next = state_current;
+        case (state_current)
+            // IDLE state transition branch
+            ST_IDLE: begin
+                if (i_start && !flag_busy) begin
+                    state_next = ST_ACTIVE;
+                end else begin
+                    state_next = ST_IDLE;
+                end
+            end
+            // ACTIVE state transition branch
+            ST_ACTIVE: begin
+                if (cnt_phase == {C_COUNT_WIDTH{1'b0}}) begin
+                    state_next = ST_DONE;
+                end else begin
+                    state_next = ST_ACTIVE;
+                end
+            end
+            // DONE state transition branch
+            ST_DONE: begin
+                state_next = ST_IDLE;
+            end
+            // Default state transition branch
+            default: begin
+                state_next = ST_IDLE;
+            end
+        endcase
+    end
+
+    //------------------------------------------------------------------------
+    // State-machine region (process 2: sequential state register)
+    //------------------------------------------------------------------------
+    always @(posedge i_clk or negedge i_rstn) begin
+        if (!i_rstn) begin
+            state_current <= ST_IDLE;
+        end else begin
+            state_current <= state_next;
+        end
+    end
+
+    //------------------------------------------------------------------------
+    // Output processing region (process 3: independent output/task block)
+    //------------------------------------------------------------------------
+    always @(posedge i_clk or negedge i_rstn) begin
+        if (!i_rstn) begin
+            cnt_phase  <= {C_COUNT_WIDTH{1'b0}};
+            reg_acc    <= {C_DATA_WIDTH{1'b0}};
+            flag_busy  <= 1'b0;
+            done_o     <= 1'b0;
+            valid_o    <= 1'b0;
+            rdata_o    <= {C_DATA_WIDTH{1'b0}};
+        end else begin
+            case (state_current)
+                // IDLE state task branch
+                ST_IDLE: begin
+                    flag_busy <= 1'b0;
+                    done_o    <= 1'b0;
+                    valid_o   <= 1'b0;
+                end
+                // ACTIVE state task branch
+                ST_ACTIVE: begin
+                    flag_busy  <= 1'b1;
+                    reg_acc    <= reg_acc + i_wdata;
+                    cnt_phase  <= cnt_phase - 1'b1;
+                end
+                // DONE state task branch
+                ST_DONE: begin
+                    done_o  <= 1'b1;
+                    valid_o <= 1'b1;
+                    rdata_o <= reg_acc;
+                    flag_busy <= 1'b0;
+                end
+                // Default state task branch
+                default: begin
+                    done_o  <= 1'b0;
+                    valid_o <= 1'b0;
+                end
+            endcase
+        end
+    end
+
+    //------------------------------------------------------------------------
+    // Output assign region (bridge internal _o drivers to o_ ports)
+    //------------------------------------------------------------------------
+    assign o_done  = done_o;
+    assign o_valid = valid_o;
+    assign o_rdata = rdata_o;
+
+endmodule

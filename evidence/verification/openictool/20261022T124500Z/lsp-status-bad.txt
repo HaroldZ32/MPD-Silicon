@@ -1,0 +1,49 @@
+Configured LSP servers: 44
+Installed LSP servers: 1
+
+- typescript: missing; source=builtin; extensions=.ts, .tsx, .js, .jsx, .mjs, .cjs, .mts, .cts
+- deno: missing; source=builtin; extensions=.ts, .tsx, .js, .jsx, .mjs
+- vue: missing; source=builtin; extensions=.vue
+- eslint: missing; source=builtin; extensions=.ts, .tsx, .js, .jsx, .mjs, .cjs, .mts, .cts, .vue
+- oxlint: missing; source=builtin; extensions=.ts, .tsx, .js, .jsx, .mjs, .cjs, .mts, .cts, .vue, .astro, .svelte
+- biome: missing; source=builtin; extensions=.ts, .tsx, .js, .jsx, .mjs, .cjs, .mts, .cts, .json, .jsonc, .vue, .astro, .svelte, .css, .graphql, .gql, .html
+- gopls: missing; source=builtin; extensions=.go
+- ruby-lsp: missing; source=builtin; extensions=.rb, .rake, .gemspec, .ru
+- basedpyright: missing; source=builtin; extensions=.py, .pyi
+- pyright: missing; source=builtin; extensions=.py, .pyi
+- ty: missing; source=builtin; extensions=.py, .pyi
+- ruff: missing; source=builtin; extensions=.py, .pyi
+- elixir-ls: missing; source=builtin; extensions=.ex, .exs
+- zls: missing; source=builtin; extensions=.zig, .zon
+- csharp: missing; source=builtin; extensions=.cs
+- fsharp: missing; source=builtin; extensions=.fs, .fsi, .fsx, .fsscript
+- sourcekit-lsp: missing; source=builtin; extensions=.swift, .m, .mm
+- rust: missing; source=builtin; extensions=.rs
+- clangd: missing; source=builtin; extensions=.c, .cpp, .cc, .cxx, .c++, .h, .hpp, .hh, .hxx, .h++
+- svelte: missing; source=builtin; extensions=.svelte
+- astro: missing; source=builtin; extensions=.astro
+- bash: missing; source=builtin; extensions=.sh, .bash, .zsh, .ksh
+- bash-ls: missing; source=builtin; extensions=.sh, .bash, .zsh, .ksh
+- jdtls: missing; source=builtin; extensions=.java
+- yaml-ls: missing; source=builtin; extensions=.yaml, .yml
+- lua-ls: missing; source=builtin; extensions=.lua
+- php: missing; source=builtin; extensions=.php
+- dart: missing; source=builtin; extensions=.dart
+- terraform: missing; source=builtin; extensions=.tf, .tfvars
+- terraform-ls: missing; source=builtin; extensions=.tf, .tfvars
+- prisma: missing; source=builtin; extensions=.prisma
+- ocaml-lsp: missing; source=builtin; extensions=.ml, .mli
+- texlab: missing; source=builtin; extensions=.tex, .bib
+- dockerfile: missing; source=builtin; extensions=.dockerfile
+- gleam: missing; source=builtin; extensions=.gleam
+- clojure-lsp: missing; source=builtin; extensions=.clj, .cljs, .cljc, .edn
+- nixd: missing; source=builtin; extensions=.nix
+- tinymist: missing; source=builtin; extensions=.typ, .typc
+- haskell-language-server: missing; source=builtin; extensions=.hs, .lhs
+- kotlin-ls: missing; source=builtin; extensions=.kt, .kts
+- julials: missing; source=builtin; extensions=.jl
+- razor: missing; source=builtin; extensions=.razor, .cshtml
+- verible: installed; source=builtin; extensions=.v, .vh
+- slang-server: missing; source=builtin; extensions=.sv, .svh
+
+Active LSP clients: 0

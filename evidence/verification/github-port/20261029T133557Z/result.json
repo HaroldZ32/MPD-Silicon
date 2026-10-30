@@ -1,0 +1,309 @@
+{
+  "record": "github-port — Task E independent verification (Reviewer, findings only)",
+  "contract": {
+    "file": ".mpd/plans/github-port.md",
+    "revision": 1,
+    "task": "Task E (§8)"
+  },
+  "verifier": {
+    "member": "reviewer (M5)",
+    "role": "Reviewer",
+    "discipline": "read-only: no implementation, test, workflow or doc file was edited; writes confined to this evidence directory"
+  },
+  "startedAtUtc": "2026-10-29T13:35:57Z",
+  "finishedAtUtc": "2026-10-29T14:02:17Z",
+  "basis": {
+    "gitHead": "51183f7 (\"Initial commit\"; the tree is untracked — no code commit exists, so the WORKING TREE is the verified artifact)",
+    "commitCount": 1,
+    "treeManifestFiles": 190,
+    "treeManifest": "tree-manifest.sha256",
+    "treeDigestAtStart": "6a9e30e7e211a555fd0565ca38e23b0b059bed9425e87adb6bc0a2966b54fd5f",
+    "treeDigestAtFinish": "6a9e30e7e211a555fd0565ca38e23b0b059bed9425e87adb6bc0a2966b54fd5f",
+    "treeStable": true,
+    "excludes": [
+      "node_modules",
+      ".tmp",
+      ".bun-cache",
+      ".git",
+      ".mpd",
+      ".port-src",
+      ".codegraph",
+      "dist",
+      "evidence"
+    ],
+    "note": "Because no commit exists, 'clean clone' and 'committed file modes' cannot be verified here; the tree digest freezes every non-runtime file instead.",
+    "treeDigestNote": "no separate post-install manifest was written: the cold-cache install was interrupted by the registry block and the warm/offline reinstall runs after it; the finish digest was recomputed and equals the start digest, so reinstalling node_modules did not touch any manifest-listed file."
+  },
+  "environment": {
+    "node": "v24.21.0",
+    "bunHost": "1.4.2",
+    "bunCiPin": "1.4.3",
+    "docker": "Docker version 29.9.2, build a82e528",
+    "python3": "3.14.4",
+    "pyyaml": "6.0.3",
+    "os": "Linux 7.0.0-38-generic x86_64",
+    "cpus": 16,
+    "network": "registry.npmjs.org UNRESOLVABLE on this host (systemd-resolved NO-RESULT; container EAI_AGAIN; DoH answers but TCP:443 connects while TLS stalls -> egress blocked). registry.npmmirror.com reachable (HTTP 200)."
+  },
+  "items": [
+    {
+      "id": 1,
+      "name": "clean state install + full §3 gate sequence (11 steps)",
+      "verdict": "PASS",
+      "detail": {
+        "install": "rm -rf node_modules; bun install --frozen-lockfile --offline from the committed bun.lock against the warm workspace cache: exit 0, 206 packages, 0.14 s. A fresh-cache NETWORK install was attempted first and is blocked by the npmjs DNS/egress failure (environment, not tree); lockfile resolvability independently proven against registry.npmmirror.com: exit 0, 206 packages, 8.61 s. True clean-clone on a normal-network host remains unproven (bound).",
+        "finalGateRun": "all 11 steps exit 0 (see gateSequence)",
+        "firstRawRun": "step 8 (pack-silicon --check) exited 1 on three 0600 files under untracked scratch .tmp/docker-config/buildx/ created by an earlier docker client session; removing that non-shipped scratch made step 8 exit 0. Not a tree defect (gitignored, dockerignored, absent from a clone); see findings F1."
+      }
+    },
+    {
+      "id": 2,
+      "name": "workflow gate + --self-test + PyYAML parse of all four workflows",
+      "verdict": "PASS",
+      "detail": {
+        "gate": "exit 0, oracle python3 + PyYAML 6.0.3, 4/4 workflows PASS (required set included)",
+        "selfTest": "exit 0, 26/26 fixtures behaved",
+        "pyyaml": "all four .github/workflows/*.yml parse (safe_load); PyYAML maps unquoted on: to True and the gate normalizes that (triggerMap)",
+        "inImage": "inside the docker image the same gate ran with the bun + Bun.YAML.parse fallback (no PyYAML in the image): exit 0, 4 workflows",
+        "retiredStrings": "no gitee/npmmirror/.workflow tokens under .github/** (strict regex, 0 matches)"
+      }
+    },
+    {
+      "id": 3,
+      "name": "docker build + docker run",
+      "verdict": "PASS (substituted build) / as-is build INCONCLUSIVE (environment)",
+      "detail": {
+        "asIsBuild": "BuildKit cache-hits layers 8-11 then stalls forever at RUN bun install --frozen-lockfile because registry.npmjs.org is unreachable (docker-build-probe.log exit 124; the same stall hung the captain's build). Legacy builder fails earlier at apt (deb.debian.org also unresolvable): docker-legacy-probe.log exit 100. Evidence: docker-network-diagnosis.log.",
+        "substitution": "ONE line in a context copy: COPY package.json bun.lock ./ -> COPY package.json bun.lock bunfig.toml ./ with bunfig.toml pinning [install] registry to registry.npmmirror.com (a mirror of the same registry). Diff in docker-context.txt; every other Dockerfile byte is identical; bun.lock sha256 3baca4a4... unchanged and still --frozen-lockfile.",
+        "build": {
+          "exit": 0,
+          "elapsedSeconds": 22,
+          "image": "mpd-silicon-verify:review",
+          "sizeBytes": 2724967872,
+          "imageId": "sha256:f4c8025bcb0f8bb1d54017c1f1be781e931a0f2a2fbb4fad371edac8ec59baf4"
+        },
+        "run": {
+          "exit": 0,
+          "network": "none",
+          "verdictLine": "DOCKER-VERIFY: PASS",
+          "gates": "11/11",
+          "eda": "4/4",
+          "versions": {
+            "node": "v24.21.0",
+            "bun": "1.4.3",
+            "iverilog": "Icarus Verilog version 11.0 (stable)",
+            "verilator": "Verilator 5.006 2023-01-22 (Debian 5.006-3)",
+            "yosys": "Yosys 0.23 (git sha1 7ce5011c24b)"
+          },
+          "tests": "325 pass / 1 skip / 0 fail, 326 tests across 25 files",
+          "log": "docker-run.log (1001 lines)"
+        },
+        "contentFidelity": "image /work source tree is content-identical to the working tree for every context file (184 workspace files vs 182 image files; the only absent files are .github/ISSUE_TEMPLATE.md and .github/PULL_REQUEST_TEMPLATE.md, intentionally excluded by .dockerignore). Two review-only context files (bunfig.toml, Dockerfile.review) exist inside the review image and are NOT part of the shipped image build."
+      }
+    },
+    {
+      "id": 4,
+      "name": "license audit (MIT)",
+      "verdict": "PASS",
+      "detail": {
+        "rootLICENSE": "MIT License, Copyright (c) 2026 Harold Zhao",
+        "licenseMd": "ABSENT (deleted)",
+        "manifests": "root package.json license=MIT; all five packages/*/package.json license=MIT; staged dist/silicon-package/package.json license=MIT",
+        "metadata": "repository=git+https://github.com/HaroldZ32/MPD-Silicon.git, bugs.url, homepage, packageManager=bun@1.4.3; files includes LICENSE and LICENSE-NOTICES.md, not LICENSE.md",
+        "packageSurface": "npm tarball ships LICENSE + LICENSE-NOTICES.md and no LICENSE.md; staged LICENSE byte-identical to root LICENSE (sha256 afa04875...)",
+        "sulMentions": "only external-dependency/provenance statements (README, README.zh-CN, AGENTS §1, LICENSE-NOTICES, docs/toolchain provenance); no claim that this repository's own code is SUL"
+      }
+    },
+    {
+      "id": 5,
+      "name": "retired-reference scan + no secrets + docs/gate-command consistency",
+      "verdict": "PASS",
+      "detail": {
+        "strictScan": "0 matches for gitee / GITEE_ / npmmirror / .workflow across README*, docs/**, CONTRIBUTING*, AGENTS.md, AGENT.md, package.json, packages/**, scripts/**, .github/**",
+        "exemptions": "CHANGELOG historical entries (2 lines, 0.7.0 section) and evidence/** records only",
+        "secrets": "no GITEE_TOKEN, no token-shaped strings; workflows reference only secrets.GITHUB_TOKEN (GitHub-supplied)",
+        "docs": "AGENTS §4 CI-workflows row and CONTRIBUTING both/zh carry node scripts/verify-github-workflows.mjs; no verify-gitee-workflows anywhere; README CI section describes the four workflows and the gate table names GitHub workflows; bilingual pair check: 14 pairs, all with language switch links, heading counts aligned, the only files without a twin are the documented exemptions (sync-policy.md bilingual-in-one-file, adder4.md, cnt8.md)",
+        "branchModel": "main trunk + feature/fix + release/vX.Y.Z, no dev/master, stated as a deliberate divergence in AGENTS §5, CONTRIBUTING, CHANGELOG"
+      }
+    },
+    {
+      "id": 6,
+      "name": "negative controls on copies outside the tree",
+      "verdict": "PASS",
+      "detail": {
+        "baselineCopy": "PASS (exit 0)",
+        "a_missingGateStep": "ci.yml gate step 9 (Pack) removed -> exit 1, rule [gate-order]",
+        "b_retiredProviderReference": "gitee injected into ci.yml -> exit 1, rule [provider-reference]",
+        "c_releaseTagAssertRemoved": "release.yml version-assert step removed -> exit 1, rule [release-version-assert]",
+        "d_extra_packCheckRemoved": "ci.yml gate step 8 removed -> exit 1, rule [gate-missing]",
+        "evidence": "negative-controls.log (no real file was modified; copies were under /tmp)"
+      }
+    },
+    {
+      "id": 7,
+      "name": "evidence records",
+      "verdict": "PASS",
+      "detail": {
+        "path": "evidence/verification/github-port/20261029T133557Z/",
+        "files": [
+          "docker-build-probe.log",
+          "docker-build.log",
+          "docker-context.txt",
+          "docker-exits.txt",
+          "docker-legacy-probe.log",
+          "docker-network-diagnosis.log",
+          "docker-run.log",
+          "image-source-manifest.sha256",
+          "negative-controls.log",
+          "output.log",
+          "ref-license-audit.log",
+          "result.json",
+          "selftests.log",
+          "tree-manifest-final.sha256",
+          "tree-manifest.sha256",
+          "workflow-gate.log",
+          "workspace-source-manifest.sha256"
+        ]
+      }
+    }
+  ],
+  "gateSequence": {
+    "contract": "§3 steps 1-11 after bun install --frozen-lockfile",
+    "finalRun": [
+      {
+        "n": 1,
+        "cmd": "node scripts/typecheck.mjs --require",
+        "exit": 0,
+        "note": "[typecheck] PASS — no diagnostics (local tsgo)"
+      },
+      {
+        "n": 2,
+        "cmd": "bun test packages/",
+        "exit": 0,
+        "note": "325 pass / 1 skip / 0 fail; 326 tests across 25 files; the skip is the declared source-checkout cross-check (no source tree present)"
+      },
+      {
+        "n": 3,
+        "cmd": "node scripts/verify-corpus.mjs",
+        "exit": 0,
+        "note": "PASS — 10 checks passed, 1 skipped (fidelity cross-check, no source checkout)"
+      },
+      {
+        "n": 4,
+        "cmd": "node scripts/verify-rows-disjoint.mjs",
+        "exit": 0,
+        "note": "PASS: silicon ∩ mpd = ∅ (5 silicon ids vs 35 mpd ids via installed node_modules/@mpd-dsh/mpd); --self-test PASS (6 parser + 2 gate + 7 discovery fixtures)"
+      },
+      {
+        "n": 5,
+        "cmd": "node scripts/build-lsp.mjs --check",
+        "exit": 0,
+        "note": "check PASS: dist/cli.js sha256 04b49f8c… (235271 bytes) matches BUILD.lock; --self-test PASS"
+      },
+      {
+        "n": 6,
+        "cmd": "node scripts/pack-silicon.mjs --self-test",
+        "exit": 0
+      },
+      {
+        "n": 7,
+        "cmd": "node scripts/verify-github-workflows.mjs",
+        "exit": 0,
+        "note": "PyYAML oracle, 4/4 workflows"
+      },
+      {
+        "n": 8,
+        "cmd": "node scripts/pack-silicon.mjs --check",
+        "exit": 0,
+        "note": "PASS after removing non-shipped .tmp/docker-config scratch (raw first run exit 1; see findings F1)"
+      },
+      {
+        "n": 9,
+        "cmd": "node scripts/pack-silicon.mjs",
+        "exit": 0,
+        "note": "staged dist/silicon-package"
+      },
+      {
+        "n": 10,
+        "cmd": "node scripts/verify-package-files.mjs --self-test",
+        "exit": 0,
+        "note": "6 controls + control group"
+      },
+      {
+        "n": 11,
+        "cmd": "node scripts/verify-package-files.mjs",
+        "exit": 0,
+        "note": "PASS (required files/trees covered; allowlist excludes src/test/evidence/state)"
+      }
+    ],
+    "ciAndReleaseCommandLists": "ci.yml and release.yml carry exactly the same 11 commands in the same order (extracted programmatically); docker/verify.sh runs the same 11 as run_step gate 1/11 … 11/11 plus build"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "Nit",
+      "what": "pack-silicon --check (gate 8) fails on 0600 files under the untracked scratch dir .tmp/**",
+      "where": "scripts/pack-silicon.mjs mode sweep vs .tmp/docker-config/buildx/{.buildNodeID,.lock,activity/default}",
+      "why": "the sweep covers non-shipped, gitignored/dockerignored scratch, so a dirty local scratch dir can block gate 8 even though a clone/CI/image is clean (first §3 run exit 1; clean rerun exit 0)",
+      "direction": "exclude .tmp/ (gitignored scratch) from the mode sweep or document the scratch-clean precondition; pre-existing behaviour, not introduced by the port and not a contract violation"
+    },
+    {
+      "id": "F2",
+      "severity": "Nit",
+      "what": "README does not name the workflow-gate command",
+      "where": "README.md:445 ('GitHub workflows') and the CI section",
+      "why": "AGENTS §4 / AGENT.md / CONTRIBUTING(.zh-CN) carry node scripts/verify-github-workflows.mjs; README only describes the step, so 'README/AGENTS/CONTRIBUTING gate commands match §3' is satisfied in meaning but not literally in README",
+      "direction": "add the command to the README gate-table row for symmetry (not required by contract §7-D3)"
+    },
+    {
+      "id": "F3",
+      "severity": "Nit",
+      "what": "AGENTS.md title still reads 'my-power-dsh-silicon Repository Manual'",
+      "where": "AGENTS.md:1",
+      "why": "cosmetic identity mismatch with the GitHub repo MPD-Silicon / bundle @mpd-dsh/silicon",
+      "direction": "retitle or state that the manual covers the bundle name; no functional impact"
+    },
+    {
+      "id": "F4",
+      "severity": "Info",
+      "what": "docker-verify.yml hardcodes ghcr.io/haroldz32/mpd-silicon",
+      "where": ".github/workflows/docker-verify.yml:76",
+      "why": "contract §6-C4 dictates exactly this; if the repository owner/name changes the push breaks",
+      "direction": "none now; derive from github.repository_owner when the contract allows"
+    },
+    {
+      "id": "F5",
+      "severity": "Info",
+      "what": ".bun-cache/ is not in .gitignore (untracked scratch)",
+      "where": ".gitignore",
+      "why": "the verification/installation runs put a bun cache there; it must be deleted before the commit (plan §9 already requires it), otherwise it would be an untracked 300+ MB dir",
+      "direction": "captain cleanup step; optionally ignore it"
+    }
+  ],
+  "declined": [
+    "No implementation, test, workflow, script or documentation file was edited — write scope was this evidence directory only; the defects above are reported, not repaired.",
+    "No gate was re-run against the author's own evidence claims used as proof; every verdict above comes from a command run in this session.",
+    "Did not run boot-e2e (needs npm install of the dsh CLI; npmjs unreachable here) — see bounds.",
+    "Did not verify GitHub-hosted runner behaviour, the PR run, merge, tag release, Release assets or GHCR publication — not measurable from this host (bounds).",
+    "Did not verify byte-identity of historical CHANGELOG entries / evidence records against a pre-port baseline: the repository has no history and .port-src was deleted before this verification (bounds)."
+  ],
+  "bounds": [
+    "GitHub-hosted runner behaviour (actions/checkout@v4, oven-sh/setup-bun@v2 1.4.3, actions/setup-node@v4 24, ubuntu-24.04, docker/build-push-action@v6, GHCR login/push, softprops/action-gh-release@v2) is UNPROVEN until the PR runs ci.yml + docker-verify.yml on GitHub.",
+    "boot-e2e.yml runs only on push to main (and manual dispatch); it was NOT run here — network-heavy and npmjs is unreachable from this host.",
+    "The v0.7.0 Release (npm-pack tarball + staged package) and the GHCR image push are UNPROVEN until the tag CD run executes; release.yml static shape is verified, its runtime is not.",
+    "The as-is docker build of the shipped Dockerfile is UNPROVEN on this host: registry.npmjs.org is blocked (DNS + egress). The image was built with a disclosed one-line mirror substitution and its runtime verified; CI (docker-verify.yml) or a networked host must prove the unsubstituted build.",
+    "A true clean-clone install (fresh machine, normal registry) is UNPROVEN: no commit exists and npmjs is unreachable. Lockfile resolvability was proven offline from the warm cache and from the npmmirror mirror (206 packages each).",
+    "Committed file modes are UNVERIFIED (no commit); the working tree is 644/755 and gate 8 passes on it.",
+    "Historical byte-identity of CHANGELOG/evidence (invariant 2) is UNVERIFIED — no baseline is available in this workspace (.port-src deleted, single empty commit).",
+    "Not measured: macOS/Windows, arm64, a real VCS/UVM lane (unchanged from the repository's known limitations), and any PDK/RTL-to-GDS flow."
+  ],
+  "overall": {
+    "verdict": "PASS on every locally measurable acceptance criterion, with ONE environment-bounded INCONCLUSIVE (as-is docker build) and explicit bounds; no Blocker and no High finding.",
+    "blockers": 0,
+    "high": 0,
+    "medium": 0,
+    "nit": 3,
+    "info": 2,
+    "note": "The tree, its gates, the GitHub workflows, the MIT relicensing, the reference hygiene and the workflow gate's falsifiability all hold under independent re-execution. What remains unproven is exactly what only GitHub can prove: the runner execution of the four workflows, the tag Release and the GHCR push — plus a from-scratch docker build on a host that can reach registry.npmjs.org."
+  }
+}

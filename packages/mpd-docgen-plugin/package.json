@@ -1,0 +1,16 @@
+{
+  "name": "@mpd-dsh/docgen",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "Document generation for the rtl-ip-flow spec stage: register Excel workbook and bilingual user-manual docx built from docs/user-manual.md, with no third-party runtime dependency",
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "bun test"
+  }
+}
