@@ -5,6 +5,17 @@ the version moves independently of `@mpd-dsh/mpd`.
 
 ## Unreleased
 
+### Changed
+
+- **The release workflow now stages the npm publish; a direct `npm publish` is gone.**
+  The v0.7.1 Release run (`41019623710`) failed at the npm step with
+  `E403 "OIDC permission denied for this action"`: the trusted publisher allows staged publishing
+  but not a direct `npm publish` (which needs `--allow-publish`). `release.yml` now runs
+  `npm stage publish --access public --provenance`; staging is always allowed for the trusted
+  publisher, and a maintainer approves the staged version with 2FA before it becomes live. The
+  `v0.7.1` tag is a failed attempt kept as history; the next release still needs its tag run and
+  the manual approval before it is live.
+
 ## 0.7.1 — 2026-10-30
 
 ### Changed
