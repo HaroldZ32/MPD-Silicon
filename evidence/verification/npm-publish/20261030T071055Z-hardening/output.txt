@@ -1,0 +1,345 @@
+npm Trusted Publishing — residual hardening re-verification (raw output)
+producedAtUtc: 2026-10-30T07:13:42Z (directory stamp 2026-10-30T07:10:55Z; measurements 07:06Z-07:13Z)
+reviewer: Reviewer (findings-only; no implementation file edited; nothing committed, tagged or published)
+basis HEAD: 3d4d1284dfbc7230c87de5407e2509895dfdcdde
+basis diff sha256: 08428ee791e1441003ac6ce1aaa2ed2a311da4fa0797683094029d66a822cced
+basis diff stat:  10 files changed, 283 insertions(+), 56 deletions(-)
+environment: node v24.21.0 | bun 1.4.2 | npm 11.19.0 | python Python 3.14.4 | PyYAML 6.0.3
+
+===== 1. workflow gate (real tree) =====
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+
+===== 2. self-test (real tree, 37 expected) =====
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+PASS self-test: good.yml — valid workflow accepted
+PASS self-test: bad-name.yml — tampered workflow rejected by name
+PASS self-test: bad-on.yml — tampered workflow rejected by on
+PASS self-test: bad-permissions.yml — tampered workflow rejected by permissions
+PASS self-test: bad-jobs.yml — tampered workflow rejected by jobs
+PASS self-test: bad-runs-on.yml — tampered workflow rejected by runs-on
+PASS self-test: bad-steps.yml — tampered workflow rejected by steps
+PASS self-test: bad-step-body.yml — tampered workflow rejected by step-body
+PASS self-test: bad-tab.yml — tampered workflow rejected by no-tabs
+PASS self-test: bad-script.yml — tampered workflow rejected by script-ref
+PASS self-test: bad-provider.yml — tampered workflow rejected by provider-reference
+PASS self-test: bad-registry.yml — tampered workflow rejected by registry-reference
+PASS self-test: bad-pipeline-dir.yml — tampered workflow rejected by pipeline-dir-reference
+PASS self-test: bad-yaml.yml — tampered workflow rejected by yaml-parse
+PASS self-test: ci.yml — valid workflow accepted
+PASS self-test: ci.yml — tampered workflow rejected by gate-missing
+PASS self-test: ci.yml — tampered workflow rejected by gate-order
+PASS self-test: ci.yml — tampered workflow rejected by ci-no-publish
+PASS self-test: boot-e2e.yml — valid workflow accepted
+PASS self-test: boot-e2e.yml — tampered workflow rejected by boot-e2e-no-pr
+PASS self-test: docker-verify.yml — valid workflow accepted
+PASS self-test: docker-verify.yml — tampered workflow rejected by docker-verify-run
+PASS self-test: release.yml — valid workflow accepted
+PASS self-test: release.yml — tampered workflow rejected by release-version-assert
+PASS self-test: release.yml — tampered workflow rejected by release-ghcr
+PASS self-test: release.yml — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml — tampered workflow rejected by release-id-token
+PASS self-test: release.yml — tampered workflow rejected by release-npm-tokenless
+PASS self-test: release.yml (dry-run) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (if-guard) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (legacy-token-env) — tampered workflow rejected by release-npm-tokenless
+PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+PASS self-test: release.yml (job-if-disabled) — tampered workflow rejected by release-job-if-disabled
+PASS self-test: release.yml (second-publish-step) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (publish-arbitrary-env) — tampered workflow rejected by release-npm-tokenless
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 37/37 fixtures behaved
+
+===== 3. adversarial matrix (real gate; clean copy and 18 copies) =====
+Copies under reviewer scratch .tmp/review-hardening-20261030T070605Z/cases/; real .github/** never written.
+PASS|clean|exit=0|expected=0|rule=-|want=-
+PASS|job-if-false|exit=1|expected=1|rule=release-job-if-disabled|want=release-job-if-disabled
+PASS|job-if-string-false|exit=1|expected=1|rule=release-job-if-disabled|want=release-job-if-disabled
+PASS|job-if-expression|exit=1|expected=1|rule=release-job-if-disabled|want=release-job-if-disabled
+PASS|job-if-padded|exit=1|expected=1|rule=release-job-if-disabled|want=release-job-if-disabled
+PASS|job-if-uppercase|exit=1|expected=1|rule=release-job-if-disabled|want=release-job-if-disabled
+PASS|job-if-legit|exit=0|expected=0|rule=-|want=-
+PASS|second-publish-step|exit=1|expected=1|rule=release-npm-publish|want=release-npm-publish
+PASS|publish-arbitrary-env|exit=1|expected=1|rule=release-npm-tokenless|want=release-npm-tokenless
+PASS|publish-missing|exit=1|expected=1|rule=release-npm-publish|want=release-npm-publish
+PASS|publish-dry-run|exit=1|expected=1|rule=release-npm-publish|want=release-npm-publish
+PASS|id-token-removed|exit=1|expected=1|rule=release-id-token|want=release-id-token
+PASS|token-step|exit=1|expected=1|rule=release-npm-publish/release-npm-tokenless|want=release-npm-tokenless
+PASS|publish-after-release|exit=1|expected=1|rule=release-npm-publish-order|want=release-npm-publish-order
+PASS|job-if-zero|exit=0|expected=None|rule=-|want=-
+PASS|job-if-empty-string|exit=0|expected=None|rule=-|want=-
+PASS|job-if-null|exit=0|expected=None|rule=-|want=-
+PASS|job-if-expr-zero|exit=0|expected=None|rule=-|want=-
+PASS|job-if-expr-not-true|exit=0|expected=None|rule=-|want=-
+REAL_FILES_IDENTICAL=True
+MATRIX_PASSED=19
+
+matrix detail (case -> exit, matched rules, expected):
+  clean: exit=0 rules=[] expectedExit=0 expectedRule=None ok=True
+  job-if-false: exit=1 rules=['release-job-if-disabled'] expectedExit=1 expectedRule=release-job-if-disabled ok=True
+  job-if-string-false: exit=1 rules=['release-job-if-disabled'] expectedExit=1 expectedRule=release-job-if-disabled ok=True
+  job-if-expression: exit=1 rules=['release-job-if-disabled'] expectedExit=1 expectedRule=release-job-if-disabled ok=True
+  job-if-padded: exit=1 rules=['release-job-if-disabled'] expectedExit=1 expectedRule=release-job-if-disabled ok=True
+  job-if-uppercase: exit=1 rules=['release-job-if-disabled'] expectedExit=1 expectedRule=release-job-if-disabled ok=True
+  job-if-legit: exit=0 rules=[] expectedExit=0 expectedRule=None ok=True
+  second-publish-step: exit=1 rules=['release-npm-publish'] expectedExit=1 expectedRule=release-npm-publish ok=True
+  publish-arbitrary-env: exit=1 rules=['release-npm-tokenless'] expectedExit=1 expectedRule=release-npm-tokenless ok=True
+  publish-missing: exit=1 rules=['release-npm-publish'] expectedExit=1 expectedRule=release-npm-publish ok=True
+  publish-dry-run: exit=1 rules=['release-npm-publish'] expectedExit=1 expectedRule=release-npm-publish ok=True
+  id-token-removed: exit=1 rules=['release-id-token'] expectedExit=1 expectedRule=release-id-token ok=True
+  token-step: exit=1 rules=['release-npm-publish', 'release-npm-tokenless'] expectedExit=1 expectedRule=release-npm-tokenless ok=True
+  publish-after-release: exit=1 rules=['release-npm-publish-order'] expectedExit=1 expectedRule=release-npm-publish-order ok=True
+  job-if-zero: exit=0 rules=[] expectedExit=None expectedRule=None ok=True
+  job-if-empty-string: exit=0 rules=[] expectedExit=None expectedRule=None ok=True
+  job-if-null: exit=0 rules=[] expectedExit=None expectedRule=None ok=True
+  job-if-expr-zero: exit=0 rules=[] expectedExit=None expectedRule=None ok=True
+  job-if-expr-not-true: exit=0 rules=[] expectedExit=None expectedRule=None ok=True
+  realFilesIdentical=True
+
+===== 4. falsifiability mutants (COPY of gate, real gate untouched) =====
+=== mutation diffs ===
+no-job-rule: removed 11 line(s)
+  -    // A literal disabling condition on a release job makes npm publish, the GitHub Release and
+  -    // the GHCR push no-ops while the run still reports success, so release.yml refuses one. A
+  -    // condition that can legitimately be true is untouched: only an always-false value counts.
+  -    for (const [jobId, job] of jobs) {
+  -      if (isMap(job) && isDisabledCondition(job.if)) {
+  -        add(
+  -          "release-job-if-disabled",
+  -          `release.yml jobs.${jobId}.if is always false (${JSON.stringify(job.if)}); the release would be skipped while the run still reports success`,
+  -        )
+  -      }
+  -    }
+no-one-publish-rule: removed 3 line(s)
+  -      if (publishSteps.length > 1) {
+  -        add("release-npm-publish", `release.yml must publish from exactly one step; ${publishSteps.length} steps mention npm publish`)
+  -      }
+no-token-keys-rule: removed 3 line(s)
+  -      for (const key of NPM_PUBLISH_TOKEN_KEYS) {
+  -        if (publishStep[key] !== undefined) add("release-npm-tokenless", `release.yml npm publish step must not set ${key}; Trusted Publishing supplies its own short-lived OIDC token`)
+  -      }
+=== mutant runs ===
+--- real gate on if:false copy: exit=1
+  FAIL .tmp/review-hardening-20261030T070605Z/cases/job-if-false/release.yml
+    [release-job-if-disabled] release.yml jobs.release.if is always false (false); the release would be skipped while the run still reports success
+--- mutant(no job rule) on if:false copy: exit=0
+--- mutant(no job rule) on clean copy: exit=0
+FALSIFIABILITY_JOB_RULE=PASS
+=== self-test mutations (mutant; real gate is 37/37) ===
+--- self-test no-job-rule: exit=1
+  PASS self-test: release.yml (dry-run) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (if-guard) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (legacy-token-env) — tampered workflow rejected by release-npm-tokenless
+  PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+  FAIL self-test: release.yml (job-if-disabled) — tampered workflow rejected by release-job-if-disabled
+  PASS self-test: release.yml (second-publish-step) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (publish-arbitrary-env) — tampered workflow rejected by release-npm-tokenless
+  verify-github-workflows self-test: 36/37 fixtures behaved
+--- self-test no-one-publish-rule: exit=1
+  PASS self-test: release.yml (dry-run) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (if-guard) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (legacy-token-env) — tampered workflow rejected by release-npm-tokenless
+  PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+  PASS self-test: release.yml (job-if-disabled) — tampered workflow rejected by release-job-if-disabled
+  FAIL self-test: release.yml (second-publish-step) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (publish-arbitrary-env) — tampered workflow rejected by release-npm-tokenless
+  verify-github-workflows self-test: 36/37 fixtures behaved
+--- self-test no-token-keys-rule: exit=1
+  PASS self-test: release.yml (dry-run) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (if-guard) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish
+  PASS self-test: release.yml (legacy-token-env) — tampered workflow rejected by release-npm-tokenless
+  PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+  PASS self-test: release.yml (job-if-disabled) — tampered workflow rejected by release-job-if-disabled
+  PASS self-test: release.yml (second-publish-step) — tampered workflow rejected by release-npm-publish
+  FAIL self-test: release.yml (publish-arbitrary-env) — tampered workflow rejected by release-npm-tokenless
+  verify-github-workflows self-test: 36/37 fixtures behaved
+SELFTEST_MUTATION={'no-job-rule': 1, 'no-one-publish-rule': 1, 'no-token-keys-rule': 1}
+
+===== 5. branch-control mutation (COPY: isDisabledCondition -> return value === false) =====
+boolean-only mutant self-test exit: 0
+verify-github-workflows self-test: 37/37 fixtures behaved
+boolean-only mutant on job-if-string-false: exit=0
+boolean-only mutant on job-if-expression: exit=0
+boolean-only mutant on job-if-false: exit=1
+
+===== 6. bun + Bun.YAML.parse oracle cross-check (python3 shimmed to fail) =====
+BUN|clean|exit=0|rule=none
+BUN|job-if-false|exit=1|rule=[release-job-if-disabled]
+BUN|job-if-string-false|exit=1|rule=[release-job-if-disabled]
+BUN|job-if-expression|exit=1|rule=[release-job-if-disabled]
+BUN|job-if-legit|exit=0|rule=none
+BUN|second-publish-step|exit=1|rule=[release-npm-publish]
+BUN|publish-arbitrary-env|exit=1|rule=[release-npm-tokenless]
+
+===== 7. full AGENTS.md §3 chain (11 commands) =====
+EXIT 0 | 0s | typecheck | node scripts/typecheck.mjs --require
+EXIT 0 | 1s | tests | bun test packages/
+EXIT 0 | 0s | corpus | node scripts/verify-corpus.mjs
+EXIT 0 | 0s | rows | node scripts/verify-rows-disjoint.mjs
+EXIT 0 | 0s | lsp | node scripts/build-lsp.mjs --check
+EXIT 0 | 0s | packer-selftest | node scripts/pack-silicon.mjs --self-test
+EXIT 0 | 0s | workflow-gate | node scripts/verify-github-workflows.mjs
+EXIT 0 | 0s | packer-check | node scripts/pack-silicon.mjs --check
+EXIT 0 | 0s | pack | node scripts/pack-silicon.mjs
+EXIT 0 | 0s | package-selftest | node scripts/verify-package-files.mjs --self-test
+EXIT 0 | 0s | package-verify | node scripts/verify-package-files.mjs
+-- tests summary --
+Ran 326 tests across 25 files. [778.00ms]
+-- packer check tail --
+[pack-silicon] check PASS: every committed file is readable by a non-root consumer
+-- package self-test tail --
+verify-package-files self-test PASS: control group: a package without its license file is rejected
+verify-package-files self-test: PASS (copy passes; rename, dropped docs tree, dropped files entry, broad allowlist, empty patch and a missing license file each fail)
+-- package verify tail --
+verify-package-files: PASS (every required file and tree present and covered, 2 patch insert row(s), allowlist excludes src/test/evidence/state)
+
+===== 8. secret scan =====
+-- high-risk patterns in git diff HEAD --
+NO_MATCH
+-- .npmrc / .credentials* files --
+-- secrets references in release.yml --
+91:          password: ${{ secrets.GITHUB_TOKEN }}
+-- only token-shaped added text is a fixture placeholder (name/reference, no value): --
+97:// `_password`/`//registry.npmjs.org/:` rows cover a shell-written legacy `.npmrc`.
+105:  "_password",
+807:          LEGACY_PUBLISH_SECRET: \${{ secrets.LEGACY_PUBLISH_SECRET }}
+809:          npm config set //registry.npmjs.org/:_password "$LEGACY_PUBLISH_SECRET"
+
+===== 9. scope and hashes =====
+-- git status --porcelain --untracked-files=all --
+ M .github/PULL_REQUEST_TEMPLATE.md
+ M .github/workflows/release.yml
+ M AGENT.md
+ M AGENTS.md
+ M CHANGELOG.md
+ M CONTRIBUTING.md
+ M CONTRIBUTING.zh-CN.md
+ M README.md
+ M README.zh-CN.md
+ M scripts/verify-github-workflows.mjs
+?? evidence/verification/npm-publish/20261030T063501Z/result.json
+?? evidence/verification/npm-publish/20261030T065457Z/output.txt
+?? evidence/verification/npm-publish/20261030T065457Z/result.json
+-- diff stat --
+ .github/PULL_REQUEST_TEMPLATE.md    |   4 +-
+ .github/workflows/release.yml       |   9 ++
+ AGENT.md                            |   3 +-
+ AGENTS.md                           |  21 ++--
+ CHANGELOG.md                        |  11 +++
+ CONTRIBUTING.md                     |  29 +++---
+ CONTRIBUTING.zh-CN.md               |  12 +--
+ README.md                           |  43 +++++----
+ README.zh-CN.md                     |  19 ++--
+ scripts/verify-github-workflows.mjs | 188 +++++++++++++++++++++++++++++++++++-
+ 10 files changed, 283 insertions(+), 56 deletions(-)
+-- changed files sha256 --
+33fed15b4f0078003af7dbb8698f290c49d37be49d6e9e3545057b01d187a9ae  .github/PULL_REQUEST_TEMPLATE.md
+7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  .github/workflows/release.yml
+5b854047a7d51ba666259e17db66fe6f02a92565d675855d5c842606fdffea50  AGENT.md
+024f315560c178e4528cc66976535a1cfa50d08fe7434b59969898d53ec0d6b7  AGENTS.md
+6424f4d197abcf58ff130bd4eef606666b83e7bad3e63aeb1bbdfaa526a971a3  CHANGELOG.md
+a54ba86259aadaa614ad7a1b8492fea1d9cc9a4493509d5005dcbdb1c07fa783  CONTRIBUTING.md
+18f34d17f31f6a3a3a1c7b9f9ae790f628bbe425d8a1e52ddc2144bebe817c78  CONTRIBUTING.zh-CN.md
+441062bc0c16e30af16f8637c3dc69c6bb97ca1d3a4d0f5ea4d2f11064ca1cb9  README.md
+bd28f1087320f886b2cbdfbb99de5383a89bf06b9c3c1ea0341fda0cc93147d2  README.zh-CN.md
+1263312c27da7aea0f35bd8df3fe95578def2139170c6dd4cdc8eca483531c7c  scripts/verify-github-workflows.mjs
+-- real workflows sha256 --
+684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed  .github/workflows/boot-e2e.yml
+18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac  .github/workflows/ci.yml
+e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f  .github/workflows/docker-verify.yml
+7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  .github/workflows/release.yml
+-- prior evidence records sha256 (before this record) --
+9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92  evidence/verification/npm-publish/20261030T063501Z/output.log
+0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f  evidence/verification/npm-publish/20261030T063501Z/result.json
+a478d8eca0ebd5566019d1a30d4f34fc6a41ead0cd21fb10a77badd358b4b215  evidence/verification/npm-publish/20261030T065457Z/output.txt
+437b1ed00ae407933eb8a276968627e6177929515af0832305cfd4e482e0a4d0  evidence/verification/npm-publish/20261030T065457Z/result.json
+-- gate script sha256 and mtime --
+1263312c27da7aea0f35bd8df3fe95578def2139170c6dd4cdc8eca483531c7c  scripts/verify-github-workflows.mjs
+2026-10-30 15:01:41.018586740 +0800
+-- other nine changed files mtimes (all before this delta) --
+2026-10-30 14:32:17.949951317 +0800 .github/PULL_REQUEST_TEMPLATE.md
+2026-10-30 14:26:42.440617692 +0800 .github/workflows/release.yml
+2026-10-30 14:32:17.877112530 +0800 AGENT.md
+2026-10-30 14:27:37.493347167 +0800 AGENTS.md
+2026-10-30 14:43:35.284520340 +0800 CHANGELOG.md
+2026-10-30 14:43:47.728410474 +0800 CONTRIBUTING.md
+2026-10-30 14:43:53.892709486 +0800 CONTRIBUTING.zh-CN.md
+2026-10-30 14:28:54.788096515 +0800 README.md
+2026-10-30 14:27:11.542106126 +0800 README.zh-CN.md
+-- prior record files mtime --
+2026-10-30 14:57:08.652660163 +0800 evidence/verification/npm-publish/20261030T065457Z/output.txt
+2026-10-30 14:57:17.192834306 +0800 evidence/verification/npm-publish/20261030T065457Z/result.json
+
+===== 10. npm registry facts (external, read-only) =====
+{
+  "version": "0.7.0",
+  "dist.shasum": "01c5775d4559b6c452d3784da6b252ac81f651cb",
+  "dist.fileCount": 86,
+  "dist.tarball": "https://registry.npmjs.org/@mpd-dsh/silicon/-/silicon-0.7.0.tgz"
+}
+
+===== 11. reviewed source excerpts (new rule + new fixtures) =====
+/**
+ * A job condition that is literally false: the job never runs, yet the workflow run still
+ * reports success. `false` (YAML boolean), 'false', '${{ false }}' (with any spacing) and a
+ * padded 'false ' all mean the same thing. A condition that can be true (startsWith,
+ * needs.*.result) is not matched, so legitimate job-level conditions stay allowed.
+ */
+function isDisabledCondition(value) {
+  if (value === false) return true
+  if (typeof value !== "string") return false
+  const condition = value.trim().toLowerCase().replace(/\s+/g, "")
+  return condition === "false" || condition === "${{false}}"
+}
+    // A literal disabling condition on a release job makes npm publish, the GitHub Release and
+    // the GHCR push no-ops while the run still reports success, so release.yml refuses one. A
+    // condition that can legitimately be true is untouched: only an always-false value counts.
+    for (const [jobId, job] of jobs) {
+      if (isMap(job) && isDisabledCondition(job.if)) {
+        add(
+          "release-job-if-disabled",
+          `release.yml jobs.${jobId}.if is always false (${JSON.stringify(job.if)}); the release would be skipped while the run still reports success`,
+        )
+      }
+    }
+      // F1: a literally disabled release job skips the whole release behind a green run.
+      {
+        file: "release.yml",
+        label: "job-if-disabled",
+        content: RELEASE_FIXTURE.replace("    runs-on: ubuntu-24.04\n", "    if: false\n    runs-on: ubuntu-24.04\n"),
+        expected: "release-job-if-disabled",
+      },
+      // F2: the two publish-rule clauses that had no independent control.
+      {
+        file: "release.yml",
+        label: "second-publish-step",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_STEP + NPM_SECOND_PUBLISH_STEP),
+        expected: "release-npm-publish",
+      },
+      {
+        file: "release.yml",
+        label: "publish-arbitrary-env",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_ARBITRARY_ENV_STEP),
+        expected: "release-npm-tokenless",
+      },
+
+===== bounds =====
+The real GitHub Actions tag run is UNPROVEN: no OIDC exchange, no npm provenance attestation, no v0.7.1 publish (no tag, no credentials).
+The npmjs trusted-publisher binding is UNPROVEN (not exposed anonymously).
+docker-verify.yml and boot-e2e.yml were not run (out of scope).
+Adversarial copies lived under gitignored .tmp/ and were removed after this record; the real .github/** was never written (sha256 identical before/after).

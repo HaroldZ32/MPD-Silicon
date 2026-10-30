@@ -2,6 +2,7 @@
 
 [![CI — static gates](https://github.com/HaroldZ32/MPD-Silicon/actions/workflows/ci.yml/badge.svg)](https://github.com/HaroldZ32/MPD-Silicon/actions/workflows/ci.yml)
 [![CI — docker real-machine verification](https://github.com/HaroldZ32/MPD-Silicon/actions/workflows/docker-verify.yml/badge.svg)](https://github.com/HaroldZ32/MPD-Silicon/actions/workflows/docker-verify.yml)
+[![npm version](https://img.shields.io/npm/v/@mpd-dsh/silicon)](https://www.npmjs.com/package/@mpd-dsh/silicon)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 
 [中文](./README.zh-CN.md)
@@ -107,15 +108,17 @@ Prerequisites:
 A silicon-only install is not enough: silicon's rows need the `mpdDsh` service, and an mpd
 installed **transitively** is not auto-activated. Install **both bundles in one command**.
 
-From the registry (once `0.7.0` is published — `npm publish` is a manual step, see
-*CI and release*):
+From the registry — `@mpd-dsh/silicon@0.7.0` **is published** (measured 2026-10-30:
+`npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
+`01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files):
 
 ```bash
 dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@0.7.0
 ```
 
-The registry form `@mpd-dsh/silicon@0.7.0` is **not measured — 0.7.0 is not published
-(`npm view` returns 404)**. The measured form is the tarball command below.
+The registry **install** command above has not been re-measured on this host; the measured form
+is the tarball command below. Later versions are published by `release.yml` on a `v*` tag through
+npm Trusted Publishing (GitHub OIDC, provenance, no token).
 
 From a tarball built in this repository (works without a publish):
 
@@ -157,8 +160,8 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon
 ```
 
 The registry form `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` is
-**not measured — 0.7.0 is not published (`npm view` returns 404)**, so the registry path is
-untested here.
+**published from `0.7.0` onward**, but the registry *install* path was not re-measured on this
+host — the tarball path above is the measured one.
 
 Keep the mpd version at `0.15.1` unless this bundle's pin moves with it — the two are
 released together.
@@ -409,17 +412,23 @@ CI runs on **GitHub Actions** (`.github/workflows/`), four workflows:
 - `boot-e2e.yml` — the two real boots (coexist and no-mpd refusal) on path-filtered pushes to
   `main`, plus manual dispatch.
 - `release.yml` — a `v*` tag asserts the tag version equals `package.json.version`, runs the gates,
-  produces the `npm pack` tarball plus `dist/silicon-package.tar.gz`, publishes a **GitHub Release**,
-  and pushes the verification image to **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and
-  `:latest`).
+  produces the `npm pack` tarball plus `dist/silicon-package.tar.gz`, **publishes
+  `@mpd-dsh/silicon` to npm** with `npm publish --access public --provenance` through **npm
+  Trusted Publishing**, publishes a **GitHub Release**, and pushes the verification image to
+  **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`).
 
-CI does **not** publish to npm; its release artifacts are the packed bundle and the container
-image. The manifest itself is publishable (`files`, `engines`, `license`, `repository`,
-`publishConfig.access: public`, and the `prepack` guard), so `npm publish` from the package
-root is a deliberate manual step after the gates pass — it was not performed here because
-this environment has no registry credentials. Branch model: `main` is the trunk and the only
-pull-request target; `feature/*` / `fix/*` are short-lived; `release/vX.Y.Z` carries the release
-bump (the annotated `vX.Y.Z` tag is cut on `main`). See
+npm Trusted Publishing uses the **GitHub OIDC token**: the workflow grants `id-token: write`, npm
+exchanges that short-lived token with the registry itself, and the trusted publisher is bound to
+this repository plus the `release.yml` filename — so there is **no `NPM_TOKEN` secret and no
+`.npmrc`**. The publish step runs after the version assert and the whole gate chain, so a tag that
+does not match `package.json.version` never reaches the registry, and `--provenance` attaches a
+signed build attestation. The manifest is publishable by design (`files`, `engines`, `license`,
+`repository`, `publishConfig.access: public`, and the `prepack` guard). `0.7.0` is on the registry
+(measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
+`01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files); it was published before the OIDC step
+landed, and every later version publishes from `release.yml`. Branch model: `main` is the trunk
+and the only pull-request target; `feature/*` / `fix/*` are short-lived; `release/vX.Y.Z` carries
+the release bump (the annotated `vX.Y.Z` tag is cut on `main`). See
 [`CONTRIBUTING.md`](./CONTRIBUTING.md), the PR template at
 `.github/PULL_REQUEST_TEMPLATE.md`, [`CHANGELOG.md`](./CHANGELOG.md), and
 [`docs/toolchain.md`](./docs/toolchain.md). `CONTRIBUTING.md`, `.github/`, `AGENTS.md` and the

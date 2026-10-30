@@ -1,0 +1,345 @@
+npm Trusted Publishing REPAIR re-verification — raw output
+producedAtUtc 2026-10-30T06:54:57Z
+HEAD 3d4d1284dfbc7230c87de5407e2509895dfdcdde
+git diff sha256 b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5
+
+
+== 1. real workflow gate (python3 + PyYAML) ==
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+
+
+== 2. gate self-test (python3 + PyYAML) — first/last lines + count ==
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+...
+PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 34/34 fixtures behaved
+
+== 3. adversarial matrix (28 copies) ==
+| case | exit | issues named | expected | verdict |
+|---|---|---|---|---|
+| clean | 0 | - | (must pass) | PASS |
+| h1-dry-run | 1 | release-npm-publish | release-npm-publish | PASS |
+| h1-if-false | 1 | release-npm-publish | release-npm-publish | PASS |
+| h1-continue-on-error | 1 | release-npm-publish | release-npm-publish | PASS |
+| h1-echo | 1 | release-npm-publish | release-npm-publish | PASS |
+| h1-or-chain | 1 | release-npm-publish | release-npm-publish | PASS |
+| h1-second-publish | 1 | release-npm-publish | release-npm-publish | PASS |
+| m1-legacy-on-publish | 1 | release-npm-publish, release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-legacy-around | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-npm-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-node-auth-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-auth-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-npmrc | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-auth | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-password | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-registry-scope | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-probe-npm-config-set | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-arbitrary-env-on-publish | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| m1-comment-only | 0 | - | (must pass) | PASS |
+| x-job-if-false | 0 | - | release-npm-publish | OBSERVE |
+| x-order-after-release | 1 | release-npm-publish-order | release-npm-publish-order | PASS |
+| x-order-before-pack | 1 | release-npm-publish-order | release-npm-publish-order | PASS |
+| x-uses-instead | 1 | release-npm-publish | release-npm-publish | PASS |
+| x-working-directory | 0 | - | (must pass) | OBSERVE |
+| x-job-env-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+| x-if-always | 1 | release-npm-publish | release-npm-publish | PASS |
+| x-second-publish-double-space | 0 | - | release-npm-publish | OBSERVE |
+| x-with-key | 1 | release-npm-tokenless | release-npm-tokenless | PASS |
+
+== 4. key per-case gate output ==
+
+
+--- clean ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/clean
+PASS .tmp/adv/clean (required set)
+PASS .tmp/adv/clean/boot-e2e.yml
+PASS .tmp/adv/clean/ci.yml
+PASS .tmp/adv/clean/docker-verify.yml
+PASS .tmp/adv/clean/release.yml
+
+
+--- h1-dry-run ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-dry-run
+PASS .tmp/adv/h1-dry-run (required set)
+PASS .tmp/adv/h1-dry-run/boot-e2e.yml
+PASS .tmp/adv/h1-dry-run/ci.yml
+PASS .tmp/adv/h1-dry-run/docker-verify.yml
+FAIL .tmp/adv/h1-dry-run/release.yml
+  [release-npm-publish] release.yml npm publish step must run exactly "npm publish --access public --provenance" — no --dry-run, echo, if-guard or || chain; got "npm publish --access public --provenance --dry-run"
+
+
+--- h1-if-false ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-if-false
+PASS .tmp/adv/h1-if-false (required set)
+PASS .tmp/adv/h1-if-false/boot-e2e.yml
+PASS .tmp/adv/h1-if-false/ci.yml
+PASS .tmp/adv/h1-if-false/docker-verify.yml
+FAIL .tmp/adv/h1-if-false/release.yml
+  [release-npm-publish] release.yml npm publish step must not set if; the publish itself must be unconditional
+
+
+--- h1-continue-on-error ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-continue-on-error
+PASS .tmp/adv/h1-continue-on-error (required set)
+PASS .tmp/adv/h1-continue-on-error/boot-e2e.yml
+PASS .tmp/adv/h1-continue-on-error/ci.yml
+PASS .tmp/adv/h1-continue-on-error/docker-verify.yml
+FAIL .tmp/adv/h1-continue-on-error/release.yml
+  [release-npm-publish] release.yml npm publish step must not set continue-on-error; the publish itself must be unconditional
+
+
+--- h1-echo ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-echo
+PASS .tmp/adv/h1-echo (required set)
+PASS .tmp/adv/h1-echo/boot-e2e.yml
+PASS .tmp/adv/h1-echo/ci.yml
+PASS .tmp/adv/h1-echo/docker-verify.yml
+FAIL .tmp/adv/h1-echo/release.yml
+  [release-npm-publish] release.yml npm publish step must run exactly "npm publish --access public --provenance" — no --dry-run, echo, if-guard or || chain; got "echo \"npm publish --access public --provenance\""
+
+
+--- h1-or-chain ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-or-chain
+PASS .tmp/adv/h1-or-chain (required set)
+PASS .tmp/adv/h1-or-chain/boot-e2e.yml
+PASS .tmp/adv/h1-or-chain/ci.yml
+PASS .tmp/adv/h1-or-chain/docker-verify.yml
+FAIL .tmp/adv/h1-or-chain/release.yml
+  [release-npm-publish] release.yml npm publish step must run exactly "npm publish --access public --provenance" — no --dry-run, echo, if-guard or || chain; got "true || npm publish --access public --provenance"
+
+
+--- h1-second-publish ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/h1-second-publish
+PASS .tmp/adv/h1-second-publish (required set)
+PASS .tmp/adv/h1-second-publish/boot-e2e.yml
+PASS .tmp/adv/h1-second-publish/ci.yml
+PASS .tmp/adv/h1-second-publish/docker-verify.yml
+FAIL .tmp/adv/h1-second-publish/release.yml
+  [release-npm-publish] release.yml must publish from exactly one step; 2 steps mention npm publish
+
+
+--- m1-legacy-on-publish ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/m1-legacy-on-publish
+PASS .tmp/adv/m1-legacy-on-publish (required set)
+PASS .tmp/adv/m1-legacy-on-publish/boot-e2e.yml
+PASS .tmp/adv/m1-legacy-on-publish/ci.yml
+PASS .tmp/adv/m1-legacy-on-publish/docker-verify.yml
+FAIL .tmp/adv/m1-legacy-on-publish/release.yml
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "npm config set" in a workflow value (not a comment)
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "_password" in a workflow value (not a comment)
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "//registry.npmjs.org/:" in a workflow value (not a comment)
+  [release-npm-publish] release.yml npm publish step must run exactly "npm publish --access public --provenance" — no --dry-run, echo, if-guard or || chain; got "npm config set //registry.npmjs.org/:_password \"$LEGACY_PUBLISH_SECRET\"\nnpm publish --access public --provenance"
+  [release-npm-tokenless] release.yml npm publish step must not set env; Trusted Publishing supplies its own short-lived OIDC token
+
+
+--- m1-legacy-around ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/m1-legacy-around
+PASS .tmp/adv/m1-legacy-around (required set)
+PASS .tmp/adv/m1-legacy-around/boot-e2e.yml
+PASS .tmp/adv/m1-legacy-around/ci.yml
+PASS .tmp/adv/m1-legacy-around/docker-verify.yml
+FAIL .tmp/adv/m1-legacy-around/release.yml
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "npm config set" in a workflow value (not a comment)
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "_password" in a workflow value (not a comment)
+  [release-npm-tokenless] release.yml must stay tokenless for Trusted Publishing; found "//registry.npmjs.org/:" in a workflow value (not a comment)
+
+
+--- m1-arbitrary-env-on-publish ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/m1-arbitrary-env-on-publish
+PASS .tmp/adv/m1-arbitrary-env-on-publish (required set)
+PASS .tmp/adv/m1-arbitrary-env-on-publish/boot-e2e.yml
+PASS .tmp/adv/m1-arbitrary-env-on-publish/ci.yml
+PASS .tmp/adv/m1-arbitrary-env-on-publish/docker-verify.yml
+FAIL .tmp/adv/m1-arbitrary-env-on-publish/release.yml
+  [release-npm-tokenless] release.yml npm publish step must not set env; Trusted Publishing supplies its own short-lived OIDC token
+
+
+--- m1-comment-only ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/m1-comment-only
+PASS .tmp/adv/m1-comment-only (required set)
+PASS .tmp/adv/m1-comment-only/boot-e2e.yml
+PASS .tmp/adv/m1-comment-only/ci.yml
+PASS .tmp/adv/m1-comment-only/docker-verify.yml
+PASS .tmp/adv/m1-comment-only/release.yml
+
+
+--- x-job-if-false ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/x-job-if-false
+PASS .tmp/adv/x-job-if-false (required set)
+PASS .tmp/adv/x-job-if-false/boot-e2e.yml
+PASS .tmp/adv/x-job-if-false/ci.yml
+PASS .tmp/adv/x-job-if-false/docker-verify.yml
+PASS .tmp/adv/x-job-if-false/release.yml
+
+
+--- x-second-publish-double-space ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/adv/x-second-publish-double-space
+PASS .tmp/adv/x-second-publish-double-space (required set)
+PASS .tmp/adv/x-second-publish-double-space/boot-e2e.yml
+PASS .tmp/adv/x-second-publish-double-space/ci.yml
+PASS .tmp/adv/x-second-publish-double-space/docker-verify.yml
+PASS .tmp/adv/x-second-publish-double-space/release.yml
+
+
+== 5. self-test mutation matrix (copies of the gate script) ==
+| mutation of a COPY of the gate | self-test exit | printed count | failed controls |
+|---|---|---|---|
+| baseline | 0 | 34/34 | (none) |
+| order-rule-renamed | 1 | 33/34 | release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order |
+| exact-run-disabled | 1 | 33/34 | release.yml (dry-run) — tampered workflow rejected by release-npm-publish |
+| shape-keys-emptied | 1 | 32/34 | release.yml (if-guard) — tampered workflow rejected by release-npm-publish; release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish |
+| count-check-disabled | 0 | 34/34 | (none) |
+| env-with-keys-emptied | 0 | 34/34 | (none) |
+| denylist-emptied | 1 | 33/34 | release.yml — tampered workflow rejected by release-npm-tokenless |
+
+== 6. bun + Bun.YAML.parse oracle ==
+verify-github-workflows: oracle bun + Bun.YAML.parse
+...
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 34/34 fixtures behaved
+
+== 7. independent PyYAML assertions on release.yml ==
+PASS trigger_is_push_tags_v*
+PASS permissions_contents_write
+PASS permissions_packages_write
+PASS permissions_id_token_write
+PASS exactly_one_publish_step
+PASS publish_run_exact
+PASS publish_step_has_no_if_coe_env_with
+PASS publish_after_pack
+PASS publish_after_archive
+PASS publish_before_github_release
+PASS version_assert_before_first_gate
+PASS version_assert_before_publish
+PASS gate_chain_present_and_ordered
+PASS semantic_tokenless_no_deny_needle
+PASS secrets_refs_only_GITHUB_TOKEN
+PASS comment_names_npm_token_and_npmrc
+gate_positions [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+version_assert [4] publish [18] pack [16] archive [17] release [23]
+RESULT=PASS
+=== fixture count ===
+fixtures entries: 33 + 1 missing-workflow control = 34
+
+
+== 8. full AGENTS.md §3 chain ==
+=== CMD1: node scripts/typecheck.mjs --require
+CMD1_EXIT=0
+=== CMD2: bun test packages/
+CMD2_EXIT=0
+=== CMD3: node scripts/verify-corpus.mjs
+CMD3_EXIT=0
+=== CMD4: node scripts/verify-rows-disjoint.mjs
+CMD4_EXIT=0
+=== CMD5: node scripts/build-lsp.mjs --check
+CMD5_EXIT=0
+=== CMD6: node scripts/pack-silicon.mjs --self-test
+CMD6_EXIT=0
+=== CMD7: node scripts/verify-github-workflows.mjs
+CMD7_EXIT=0
+=== CMD8: node scripts/pack-silicon.mjs --check
+CMD8_EXIT=0
+=== CMD9: node scripts/pack-silicon.mjs
+CMD9_EXIT=0
+=== CMD10: node scripts/verify-package-files.mjs --self-test
+CMD10_EXIT=0
+=== CMD11: node scripts/verify-package-files.mjs
+CMD11_EXIT=0
+CHAIN_DONE
+
+1 tests skipped:
+(skip) shipped RTL corpus > cross-check: byte-identical to the source checkout at /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills (0/3 trees present)
+ 325 pass
+ 1 skip
+ 0 fail
+Ran 326 tests across 25 files. [810.00ms]
+
+== 9. hashes / scope / previous record ==
+BASELINE (before adversarial work)
+684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed  .github/workflows/boot-e2e.yml
+18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac  .github/workflows/ci.yml
+e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f  .github/workflows/docker-verify.yml
+7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  .github/workflows/release.yml
+b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5  git diff
+
+FINAL (after adversarial work)
+684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed  .github/workflows/boot-e2e.yml
+18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac  .github/workflows/ci.yml
+e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f  .github/workflows/docker-verify.yml
+7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  .github/workflows/release.yml
+b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5  -
+
+PREVIOUS RECORD (untouched)
+0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f  evidence/verification/npm-publish/20261030T063501Z/result.json
+9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92  evidence/verification/npm-publish/20261030T063501Z/output.log
+
+GIT STATUS -uall
+ M .github/PULL_REQUEST_TEMPLATE.md
+ M .github/workflows/release.yml
+ M AGENT.md
+ M AGENTS.md
+ M CHANGELOG.md
+ M CONTRIBUTING.md
+ M CONTRIBUTING.zh-CN.md
+ M README.md
+ M README.zh-CN.md
+ M scripts/verify-github-workflows.mjs
+?? evidence/verification/npm-publish/20261030T063501Z/result.json
+
+== 10. final state after removing reviewer scratch (this record present) ==
+NOTE the first draft of this section recorded exit 1 from reviewer scratch files under .tmp/ at
+mode 600 (the packer walks the whole tree). All scratch was made readable, then removed; the
+change set's own ten files are all mode 644.
+COMMAND node scripts/pack-silicon.mjs --check
+EXIT 0
+[pack-silicon] check PASS: every committed file is readable by a non-root consumer
+
+COMMAND node scripts/verify-github-workflows.mjs
+EXIT 0
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+
+COMMAND node scripts/verify-github-workflows.mjs --self-test
+EXIT 0
+verify-github-workflows self-test: 34/34 fixtures behaved
+
+== 11. final tree state (after this record was written) ==
+HEAD 3d4d1284dfbc7230c87de5407e2509895dfdcdde
+workflow sha256 (identical to section 9):
+  684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed  boot-e2e.yml
+  18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac  ci.yml
+  e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f  docker-verify.yml
+  7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0  release.yml
+git diff sha256 b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5
+previous record sha256 (unchanged):
+  0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f  result.json
+  9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92  output.log
+git status -uall: the ten modified files, plus ?? 20261030T063501Z/result.json,
+?? 20261030T065457Z/result.json and ?? 20261030T065457Z/output.txt
+file modes: result.json 644, output.txt 644

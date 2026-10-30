@@ -1,0 +1,496 @@
+{
+ "record": "npm Trusted Publishing residual hardening re-verification (independent reviewer)",
+ "producedAtUtc": "2026-10-30T07:13:42Z (directory stamp 2026-10-30T07:10:55Z; measurements 07:06Z-07:13Z)",
+ "reviewer": "Reviewer (findings-only; no implementation file edited; nothing committed, tagged or published)",
+ "relationshipToPreviousRecord": "Re-verifies the two residuals left by evidence/verification/npm-publish/20261030T065457Z (verdict PASS): Medium job-level `if: false`; Nit two publish-rule clauses without independent self-test controls. That record and 20261030T063501Z were not modified: sha256 identical before and after this review.",
+ "requirementFrozen": {
+  "publishRule": "REQUIRE exactly one npm publish step whose run.trim() equals `npm publish --access public --provenance`; reject step-level if / continue-on-error / env / with; publish after the pack/archive steps and before the GitHub Release.",
+  "workflow": "release.yml: push.tags v*; permissions contents/packages/id-token all write; version assert before the 11-command AGENTS.md §3 chain; GitHub Release + GHCR retained; no token-based npm auth.",
+  "gateScript": "Existing rules and self-tests must not be weakened; the self-test count may grow; every guard needs a falsifiable negative control.",
+  "residualsUnderReview": [
+   "Medium gate-job-level-if-disables-release: a job-level `if: false` on release.yml skipped the entire release while the gate stayed green.",
+   "Nit selftest-two-publish-branches-uncontrolled: the exactly-one-publish-step clause and the publish-step env/with clause had no independent self-test control."
+  ]
+ },
+ "basis": {
+  "gitHead": "3d4d1284dfbc7230c87de5407e2509895dfdcdde",
+  "workTreeDiffSha256": "08428ee791e1441003ac6ce1aaa2ed2a311da4fa0797683094029d66a822cced",
+  "gitDiffStat": "10 files changed, 283 insertions(+), 56 deletions(-)",
+  "changedFiles": [
+   ".github/PULL_REQUEST_TEMPLATE.md",
+   ".github/workflows/release.yml",
+   "AGENT.md",
+   "AGENTS.md",
+   "CHANGELOG.md",
+   "CONTRIBUTING.md",
+   "CONTRIBUTING.zh-CN.md",
+   "README.md",
+   "README.zh-CN.md",
+   "scripts/verify-github-workflows.mjs"
+  ],
+  "deltaSincePreviousPass": {
+   "priorRecordWorkTreeDiffSha256": "b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5",
+   "priorRecordGitDiffStat": "10 files changed, 226 insertions(+), 56 deletions(-)",
+   "currentGitDiffStat": "10 files changed, 283 insertions(+), 56 deletions(-)",
+   "delta": "+57 insertions / +0 deletions; only scripts/verify-github-workflows.mjs has an mtime after the prior record's files (gate 2026-10-30 15:01:41 +0800 vs prior record 14:57:17 +0800); the other nine changed files are 14:43:53 or earlier; all four workflow sha256 values match the prior record's realFileHashes.",
+   "gateScriptSha256": "1263312c27da7aea0f35bd8df3fe95578def2139170c6dd4cdc8eca483531c7c",
+   "gateScriptMtime": "2026-10-30 15:01:41.018586740 +0800"
+  },
+  "realFileHashes": {
+   "workflows": {
+    "boot-e2e.yml": "684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed",
+    "ci.yml": "18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac",
+    "docker-verify.yml": "e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f",
+    "release.yml": "7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0"
+   },
+   "gateScript": "1263312c27da7aea0f35bd8df3fe95578def2139170c6dd4cdc8eca483531c7c"
+  },
+  "priorRecordHashes": {
+   "before": {
+    "evidence/verification/npm-publish/20261030T063501Z/output.log": "9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92",
+    "evidence/verification/npm-publish/20261030T063501Z/result.json": "0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f",
+    "evidence/verification/npm-publish/20261030T065457Z/output.txt": "a478d8eca0ebd5566019d1a30d4f34fc6a41ead0cd21fb10a77badd358b4b215",
+    "evidence/verification/npm-publish/20261030T065457Z/result.json": "437b1ed00ae407933eb8a276968627e6177929515af0832305cfd4e482e0a4d0"
+   },
+   "after": {
+    "evidence/verification/npm-publish/20261030T063501Z/output.log": "9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92",
+    "evidence/verification/npm-publish/20261030T063501Z/result.json": "0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f",
+    "evidence/verification/npm-publish/20261030T065457Z/output.txt": "a478d8eca0ebd5566019d1a30d4f34fc6a41ead0cd21fb10a77badd358b4b215",
+    "evidence/verification/npm-publish/20261030T065457Z/result.json": "437b1ed00ae407933eb8a276968627e6177929515af0832305cfd4e482e0a4d0"
+   },
+   "identical": true
+  },
+  "npmRegistry": {
+   "package": "@mpd-dsh/silicon@0.7.0",
+   "version": "0.7.0",
+   "shasum": "01c5775d4559b6c452d3784da6b252ac81f651cb",
+   "fileCount": 86,
+   "tarball": "https://registry.npmjs.org/@mpd-dsh/silicon/-/silicon-0.7.0.tgz",
+   "matchesDocumentedClaims": true
+  },
+  "environment": {
+   "os": "Linux x86_64",
+   "node": "v24.21.0",
+   "bun": "1.4.2",
+   "npm": "11.19.0",
+   "python": "3.14.4",
+   "pyyaml": "6.0.3"
+  },
+  "reviewerScratch": ".tmp/review-hardening-20261030T070605Z/ (copies, mutants and logs); removed after this record. No tracked file was written, committed, tagged or published."
+ },
+ "closure": [
+  {
+   "id": "gate-job-level-if-disables-release",
+   "previousSeverity": "Medium",
+   "status": "CLOSED",
+   "claim": "Reject a literal job-level `if: false` on release.yml (boolean, 'false', '${{ false }}') without banning a condition that can be true, and ship a load-bearing self-test control.",
+   "observed": "Real gate on copies: `if: false`, `if: 'false'`, `if: '${{ false }}'`, `if: ' false '` and `if: 'FALSE'` each exit 1 and name release-job-if-disabled; `if: startsWith(github.ref, 'refs/tags/')` exits 0; a clean copy exits 0. Self-test is 37/37 and release.yml (job-if-disabled) -> release-job-if-disabled. A COPY with only the 11-line job block removed accepts the if:false copy (exit 0) while the real gate rejects it (exit 1); that mutant's self-test drops to 36/37 with job-if-disabled failing. Real workflows and the gate script are sha256-identical before and after every copy run.",
+   "evidence": [
+    "matrix: clean, job-if-false, job-if-string-false, job-if-expression, job-if-padded, job-if-uppercase, job-if-legit (output.txt section 3)",
+    "falsifiability mutant no-job-rule: real gate exit 1, mutant exit 0, mutant self-test 36/37 (output.txt section 4)",
+    "self-test 37/37 both oracles (output.txt section 2)"
+   ],
+   "note": "The rule's matcher is deliberately literal, not a general expression evaluator; its remaining finite-spelling gap is recorded as Nit R1 below. This does not reopen the named Medium."
+  },
+  {
+   "id": "selftest-two-publish-branches-uncontrolled",
+   "previousSeverity": "Nit",
+   "status": "CLOSED",
+   "claim": "The exactly-one-publish-step clause and the publish-step env/with clause must gain fixtures that are the reason a fixture fails, so the clauses are load-bearing in the shipped self-test.",
+   "observed": "New fixtures release.yml (second-publish-step) -> release-npm-publish and (publish-arbitrary-env) -> release-npm-tokenless. Removing the `publishSteps.length > 1` block from a COPY makes --self-test 36/37 with second-publish-step failing; removing the NPM_PUBLISH_TOKEN_KEYS loop makes it 36/37 with publish-arbitrary-env failing; legacy-token-env remains caught by the denylist. The count grew 34/34 -> 37/37 (three fixtures: the two clauses plus the new job rule).",
+   "evidence": [
+    "self-test fixtures and labels (scripts/verify-github-workflows.mjs runSelfTest; output.txt section 2)",
+    "mutation matrix no-one-publish-rule and no-token-keys-rule -> 36/37 (output.txt section 4)",
+    "matrix second-publish-step -> release-npm-publish, publish-arbitrary-env -> release-npm-tokenless (output.txt section 3)"
+   ]
+  }
+ ],
+ "selfTest": {
+  "printedCount": "37/37 fixtures behaved",
+  "fixtureEntries": 36,
+  "plusMissingWorkflowControl": 1,
+  "honesty": "The printed total equals fixtures.length + 1 and all 37 printed lines are PASS; the harness asserts passed === total, so a broken fixture fails the gate.",
+  "oracles": {
+   "python3 + PyYAML 6.0.3": "real tree 4/4 PASS, self-test 37/37, exit 0",
+   "bun 1.4.2 + Bun.YAML.parse": "real tree 4/4 PASS, self-test 37/37, exit 0 (python3 shimmed to exit 1 to force the fallback)"
+  },
+  "newFixtures": [
+   {
+    "fixture": "release.yml (job-if-disabled)",
+    "tamper": "insert `if: false` under jobs.release",
+    "expectedRule": "release-job-if-disabled"
+   },
+   {
+    "fixture": "release.yml (second-publish-step)",
+    "tamper": "append a second step running the exact publish command",
+    "expectedRule": "release-npm-publish"
+   },
+   {
+    "fixture": "release.yml (publish-arbitrary-env)",
+    "tamper": "add `env: SOME_RANDOM_NAME: value` to the publish step",
+    "expectedRule": "release-npm-tokenless"
+   }
+  ],
+  "mutationEvidence": [
+   {
+    "mutant": "no-job-rule (11 lines removed)",
+    "selfTest": "36/37",
+    "failingFixture": "release.yml (job-if-disabled)"
+   },
+   {
+    "mutant": "no-one-publish-rule (3 lines removed)",
+    "selfTest": "36/37",
+    "failingFixture": "release.yml (second-publish-step)"
+   },
+   {
+    "mutant": "no-token-keys-rule (3 lines removed)",
+    "selfTest": "36/37",
+    "failingFixture": "release.yml (publish-arbitrary-env)"
+   },
+   {
+    "mutant": "boolean-only isDisabledCondition (return value === false)",
+    "selfTest": "37/37",
+    "failingFixture": "none — recorded as Nit R2"
+   }
+  ]
+ },
+ "adversarialMatrix": {
+  "method": "One shell invocation created per-case copies of all four real workflows under gitignored .tmp/, mutated only the copy's release.yml, ran the real gate with --dir, and re-hashed the real files before/after. The real .github/** was never written.",
+  "realFilesIdenticalBeforeAfter": true,
+  "requiredRows": [
+   {
+    "case": "clean",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": 0,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "job-if-false",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-job-if-disabled",
+    "ok": true
+   },
+   {
+    "case": "job-if-string-false",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-job-if-disabled",
+    "ok": true
+   },
+   {
+    "case": "job-if-expression",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-job-if-disabled",
+    "ok": true
+   },
+   {
+    "case": "job-if-padded",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-job-if-disabled",
+    "ok": true
+   },
+   {
+    "case": "job-if-uppercase",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-job-if-disabled",
+    "ok": true
+   },
+   {
+    "case": "job-if-legit",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": 0,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "second-publish-step",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-publish",
+    "ok": true
+   },
+   {
+    "case": "publish-arbitrary-env",
+    "exit": 1,
+    "rules": [
+     "release-npm-tokenless"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-tokenless",
+    "ok": true
+   },
+   {
+    "case": "publish-missing",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-publish",
+    "ok": true
+   },
+   {
+    "case": "publish-dry-run",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-publish",
+    "ok": true
+   },
+   {
+    "case": "id-token-removed",
+    "exit": 1,
+    "rules": [
+     "release-id-token"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-id-token",
+    "ok": true
+   },
+   {
+    "case": "token-step",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish",
+     "release-npm-tokenless"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-tokenless",
+    "ok": true
+   },
+   {
+    "case": "publish-after-release",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish-order"
+    ],
+    "expectedExit": 1,
+    "expectedRule": "release-npm-publish-order",
+    "ok": true
+   }
+  ],
+  "exploratoryRows": [
+   {
+    "case": "job-if-zero",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": null,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "job-if-empty-string",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": null,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "job-if-null",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": null,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "job-if-expr-zero",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": null,
+    "expectedRule": null,
+    "ok": true
+   },
+   {
+    "case": "job-if-expr-not-true",
+    "exit": 0,
+    "rules": [],
+    "expectedExit": null,
+    "expectedRule": null,
+    "ok": true
+   }
+  ],
+  "bunOracleRequiredRows": [
+   {
+    "case": "clean",
+    "exit": 0,
+    "rules": []
+   },
+   {
+    "case": "job-if-false",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ]
+   },
+   {
+    "case": "job-if-string-false",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ]
+   },
+   {
+    "case": "job-if-expression",
+    "exit": 1,
+    "rules": [
+     "release-job-if-disabled"
+    ]
+   },
+   {
+    "case": "job-if-legit",
+    "exit": 0,
+    "rules": []
+   },
+   {
+    "case": "second-publish-step",
+    "exit": 1,
+    "rules": [
+     "release-npm-publish"
+    ]
+   },
+   {
+    "case": "publish-arbitrary-env",
+    "exit": 1,
+    "rules": [
+     "release-npm-tokenless"
+    ]
+   }
+  ],
+  "falsifiability": {
+   "mutant": "COPY of scripts/verify-github-workflows.mjs with only the 11-line release-job-if-disabled block removed (diff shows exactly those lines removed)",
+   "realGateOnIfFalseCopy": {
+    "exit": 1,
+    "rule": "release-job-if-disabled"
+   },
+   "mutantOnIfFalseCopy": {
+    "exit": 0
+   },
+   "mutantOnCleanCopy": {
+    "exit": 0
+   },
+   "mutantSelfTest": {
+    "result": "36/37",
+    "failure": "release.yml (job-if-disabled)"
+   },
+   "conclusion": "The new rule is falsifiable: removing it lets the disabled release through, while the real gate rejects it and the real workflows are unchanged."
+  }
+ },
+ "regression": {
+  "workflowGate": "4/4 PASS, exit 0 with python3 + PyYAML 6.0.3 and with bun + Bun.YAML.parse",
+  "gateChain": "11/11 commands exit 0: EXIT 0 | 0s | typecheck | node scripts/typecheck.mjs --require; EXIT 0 | 1s | tests | bun test packages/; EXIT 0 | 0s | corpus | node scripts/verify-corpus.mjs; EXIT 0 | 0s | rows | node scripts/verify-rows-disjoint.mjs; EXIT 0 | 0s | lsp | node scripts/build-lsp.mjs --check; EXIT 0 | 0s | packer-selftest | node scripts/pack-silicon.mjs --self-test; EXIT 0 | 0s | workflow-gate | node scripts/verify-github-workflows.mjs; EXIT 0 | 0s | packer-check | node scripts/pack-silicon.mjs --check; EXIT 0 | 0s | pack | node scripts/pack-silicon.mjs; EXIT 0 | 0s | package-selftest | node scripts/verify-package-files.mjs --self-test; EXIT 0 | 0s | package-verify | node scripts/verify-package-files.mjs",
+  "tests": "326 tests across 25 files: 325 pass / 1 skip / 0 fail (3336 expect() calls; 778 ms)",
+  "fivePriorControls": [
+   {
+    "control": "publish step missing",
+    "observed": "exit 1",
+    "rules": [
+     "release-npm-publish"
+    ]
+   },
+   {
+    "control": "publish --dry-run",
+    "observed": "exit 1",
+    "rules": [
+     "release-npm-publish"
+    ]
+   },
+   {
+    "control": "permissions.id-token removed",
+    "observed": "exit 1",
+    "rules": [
+     "release-id-token"
+    ]
+   },
+   {
+    "control": "legacy token step (env + npm config set //registry.npmjs.org/:_password)",
+    "observed": "exit 1",
+    "rules": [
+     "release-npm-publish",
+     "release-npm-tokenless"
+    ]
+   },
+   {
+    "control": "publish moved after the GitHub Release",
+    "observed": "exit 1",
+    "rules": [
+     "release-npm-publish-order"
+    ]
+   }
+  ],
+  "secrets": "No high-risk credential pattern in `git diff HEAD` (ghp_/github_pat_/npm_/AKIA/private-key/sk-/xox prefixes); no .npmrc or .credentials* file in the worktree; release.yml references only `secrets.GITHUB_TOKEN`; the only token-shaped added text is the shipped self-test placeholder `${{ secrets.LEGACY_PUBLISH_SECRET }}` / `$LEGACY_PUBLISH_SECRET` (names/references, no value).",
+  "scope": "`git status --porcelain --untracked-files=all` lists exactly the 10 named modified files; untracked content is the two prior evidence records and this new record. No tracked file changed during the review. `git diff --check` is clean.",
+  "priorRecordsUntouched": "20261030T063501Z and 20261030T065457Z sha256 identical before and after: {\"evidence/verification/npm-publish/20261030T063501Z/output.log\": \"9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92\", \"evidence/verification/npm-publish/20261030T063501Z/result.json\": \"0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f\", \"evidence/verification/npm-publish/20261030T065457Z/output.txt\": \"a478d8eca0ebd5566019d1a30d4f34fc6a41ead0cd21fb10a77badd358b4b215\", \"evidence/verification/npm-publish/20261030T065457Z/result.json\": \"437b1ed00ae407933eb8a276968627e6177929515af0832305cfd4e482e0a4d0\"}",
+  "registryFacts": "@mpd-dsh/silicon@0.7.0: version 0.7.0, dist shasum 01c5775d4559b6c452d3784da6b252ac81f651cb, 86 files — matches README/AGENTS/CHANGELOG. npm view is external read-only data; no publish attempted.",
+  "docsNotRereviewed": "The other nine changed files are unchanged since the prior PASS (mtimes 14:43:53 or earlier; the four workflow hashes match the prior record). Their prose was not re-read line-by-line in this focused delta pass."
+ },
+ "findings": [
+  {
+   "severity": "Nit",
+   "id": "job-if-rule-matches-only-literal-spellings",
+   "title": "release-job-if-disabled matches three literal spellings; other always-false conditions still pass",
+   "where": "scripts/verify-github-workflows.mjs — isDisabledCondition() and the release-job-if-disabled loop in validateWorkflow()",
+   "why": "Adversarial copies with `if: 0`, `if: ''`, `if: null`, `if: '${{ 0 }}'` and `if: '${{ ! true }}'` all exit 0 with no issue. At least `${{ 0 }}` and `${{ ! true }}` are always-false expressions under GitHub's expression coercion, so the code comment 'only an always-false value counts' is broader than what is enforced. A maintainer who disables the release with `if: '${{ 0 }}'` gets a green gate and a skipped release — the same failure mode as the closed Medium, though a less likely trigger.",
+   "direction": "Either extend the finite matcher to the other literal falsy forms (numeric 0, empty string, null, and the obvious constant expressions) with one fixture each, or narrow the comment/doc to the exactly matched spellings. Do not attempt general expression evaluation.",
+   "scope": "new Nit, outside the frozen direction; the named Medium is CLOSED, not reopened."
+  },
+  {
+   "severity": "Nit",
+   "id": "job-if-string-branches-uncontrolled",
+   "title": "The new rule's string/expression branches have no shipped self-test control",
+   "where": "scripts/verify-github-workflows.mjs — runSelfTest() fixtures and isDisabledCondition()",
+   "why": "The only job-if fixture uses the YAML boolean `false`. A COPY whose isDisabledCondition() is reduced to `return value === false` still prints 37/37 and accepts the `'false'` and `'${{ false }}'` copies, so a future refactor could drop the string branches without the gate's own self-test noticing. The real gate rejects them today (adversarial matrix), so this is a falsifiability/maintainability gap, not a current runtime hole.",
+   "direction": "Add fixtures for `if: 'false'` and `if: '${{ false }}'` expecting release-job-if-disabled (or table-drive the three spellings); the count would grow from 37 to 39.",
+   "scope": "new Nit; the rule itself remains falsifiable (removing the whole block drops the self-test to 36/37)."
+  }
+ ],
+ "declinedToJudge": [
+  "General evaluation of arbitrary always-false expressions (e.g. `${{ 1 == 2 }}`) — undecidable offline; only the finite literal gap is reported as Nit R1.",
+  "GitHub's live runtime treatment of `if: null` / an empty `if:` — not measured on a real Actions run; the gate accepts it; outside the named forms.",
+  "Step-level `if: false` on non-publish steps (e.g. the pack/archive step) — not the residual, and the publish-step shape already constrains the publish step; not judged.",
+  "The prior record's producedAtUtc vs file mtime discrepancy — provenance of an earlier record, not this delta; its content/hashes were used as the baseline and left untouched.",
+  "The other nine changed files' bilingual prose and registry claims — unchanged since the prior PASS and spot-checked via sha256/mtime plus the npm view fact, not re-reviewed line-by-line.",
+  "The npmjs trusted-publisher binding and the real OIDC exchange — not observable without a tag run and credentials; recorded as a bound.",
+  "A registry install of 0.7.0 end-to-end — needs a writable HOME/dsh profile; out of scope for this delta."
+ ],
+ "bounds": [
+  "The real GitHub Actions tag run is UNPROVEN: no OIDC token exchange, no npm provenance attestation, no actual v0.7.1 publish (no tag, no credentials). Only the workflow definition, the offline gate, and adversarial copies were measured.",
+  "The npmjs trusted-publisher binding is UNPROVEN: not exposed anonymously.",
+  "Did not run docker-verify.yml or boot-e2e.yml (Docker image build, real harness boots); out of scope for this change set.",
+  "Did not run the registry install path end to end (needs a writable HOME/dsh profile).",
+  "Adversarial copies and mutants lived under gitignored .tmp/review-hardening-20261030T070605Z/ and were removed after the record was written; the real .github/** was never written (sha256 identical before/after).",
+  "Read the new rule, the release validator, all three new fixtures, the self-test runner and the call path; did not re-read every untouched line of the 1111-line gate script or the full docs diff.",
+  "The bun-oracle run used a python3 shim that exits 1 to force Bun.YAML.parse; both oracles agree on the real tree and the required adversarial cases.",
+  "The exploratory falsy forms (`if: 0`, `if: ''`, `if: null`, `${{ 0 }}`, `${{ ! true }}`) were measured against the gate, not against a live GitHub Actions run; their runtime skip semantics are inferred from GitHub's documented expression coercion."
+ ],
+ "verdict": "PASS",
+ "verdictJustification": "Both residual findings are CLOSED with observed evidence — the real gate rejects the boolean, string and expression job-level `if: false` forms while a mutant with only the new block removed accepts them, every new self-test fixture is load-bearing (mutation drops 37/37 to 36/37), the prior five controls still fire, --self-test is 37/37, and the full §3 chain is 11/11 with 325 pass / 1 skip / 0 fail and no secret values — while the two new observations are non-blocking Nits about the matcher's finite spelling scope and the string/expression self-test branches; the real OIDC publish remains unproven until the v0.7.1 tag."
+}

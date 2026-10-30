@@ -1,0 +1,615 @@
+{
+  "record": "npm Trusted Publishing change-set REPAIR re-verification (independent reviewer)",
+  "producedAtUtc": "2026-10-30T07:01:00Z (directory stamp 06:54:57Z; measurements run 2026-10-30T06:47Z-07:01Z)",
+  "reviewer": "Reviewer (findings-only; no implementation file was edited, nothing committed, tagged or published)",
+  "relationshipToPreviousRecord": "Re-verifies the five findings of evidence/verification/npm-publish/20261030T063501Z (verdict REQUEST CHANGES) against the repaired change set. That record was not modified: result.json 0d28a31732dac6e258fb316f63f6dea82798436e74949f4378bdbcfa9ba4b74f, output.log 9abced96564c91f9e64c4caace103e4bf81aae76e0e44cc75ae2f0292a474c92 before and after this review.",
+  "requirementFrozen": {
+    "publishRule": "REQUIRE exactly one npm publish step whose run.trim() equals `npm publish --access public --provenance`; reject step-level if / continue-on-error / env / with; publish after the pack/archive steps and before the GitHub Release; keep permissions id-token: write.",
+    "tokenless": "FORBID token-based npm auth: legacy `_password`/`_auth`/`_authToken`/`.npmrc`/`//registry.npmjs.org/:`/NPM_TOKEN/NODE_AUTH_TOKEN, while comments that merely mention tokens stay legal.",
+    "selfTest": "Ship falsifiable negative controls for the order rule, the exact-shape publish rule and the tokenless hardening; print an honest count.",
+    "docs": "CHANGELOG Unreleased supersedes the real 0.7.0 claim without rewriting history; CONTRIBUTING pair says only vX.Y.Z triggers the release and stays in sync.",
+    "regression": "gate 4/4 PASS; full AGENTS.md \u00a73 chain 11/11 exit 0 (325 pass / 1 skip / 0 fail); no secret values; bilingual twins intact; release.yml keeps id-token: write, the exact publish step after pack and before the GitHub Release, and no token step; the change set is exactly the named files plus evidence."
+  },
+  "basis": {
+    "gitHead": "3d4d1284dfbc7230c87de5407e2509895dfdcdde",
+    "workTreeDiffSha256": "b31f08600f0aad6698b091eead13c2184c8e418bf8bc05db63b3bd0a47cb95d5",
+    "gitDiffStat": "10 files changed, 226 insertions(+), 56 deletions(-)",
+    "changedFiles": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      ".github/workflows/release.yml",
+      "AGENT.md",
+      "AGENTS.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "CONTRIBUTING.zh-CN.md",
+      "README.md",
+      "README.zh-CN.md",
+      "scripts/verify-github-workflows.mjs"
+    ],
+    "untrackedAddedByReview": "evidence/verification/npm-publish/20261030T065457Z/ (this record); reviewer scratch under the gitignored .tmp/ and .npm-cache/ was used and then removed; the previous record under evidence/verification/npm-publish/20261030T063501Z/ stays untracked and untouched. No tracked file was modified; nothing committed, tagged or published.",
+    "realFileHashes": {
+      "before_and_after_identical": true,
+      "boot-e2e.yml": "684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed",
+      "ci.yml": "18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac",
+      "docker-verify.yml": "e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f",
+      "release.yml": "7d0af3e810d066616c410df3fe05a6c91302e0b1903ea6d56cd8ad7b6bc12ba0"
+    },
+    "environment": {
+      "os": "Linux x86_64",
+      "node": "v24.21.0",
+      "bun": "1.4.2",
+      "npm": "11.19.0",
+      "python": "3.14.4",
+      "pyyaml": "6.0.3"
+    }
+  },
+  "closure": [
+    {
+      "id": "H1 gate-publish-text-not-effect",
+      "previousSeverity": "High",
+      "status": "CLOSED",
+      "claim": "The publish rule requires exactly one step whose run.trim() equals `npm publish --access public --provenance` and rejects step-level if/continue-on-error/env/with.",
+      "observed": "Six adversarial copies of the real release.yml each exit 1 and name release-npm-publish: --dry-run, if: false, continue-on-error: true, echo \"npm publish ...\", `true || npm publish ...`, and a second publish step. A verbatim copy exits 0. The real .github/workflows/*.yml sha256 set is identical before and after every copy run (release.yml 7d0af3e8...bc12ba0).",
+      "evidence": [
+        "matrix: clean, h1-dry-run, h1-if-false, h1-continue-on-error, h1-echo, h1-or-chain, h1-second-publish",
+        "hashes: .tmp/05-hashes.txt"
+      ]
+    },
+    {
+      "id": "M1 gate-tokenless-denylist",
+      "previousSeverity": "Medium",
+      "status": "CLOSED",
+      "claim": "A legacy token-auth publish (arbitrary secret name, `_password`, `_auth`, `_authToken`, `.npmrc`, `//registry.npmjs.org/:`, NPM_TOKEN/NODE_AUTH_TOKEN) is rejected by a named tokenless rule, while the real release.yml (whose comment names the legacy tokens) still passes.",
+      "observed": "The legacy env + `npm config set //registry.npmjs.org/:_password ...` shape exits 1: as the publish step it names release-npm-tokenless (plus the exact-run rule), and as a separate step around a clean publish it names release-npm-tokenless alone. Each of the eight denylist needles exits 1 with release-npm-tokenless. An arbitrary non-token-shaped env var on the publish step (`HARMLESS_NAME: ${{ secrets.SOME_SECRET }}`) is rejected by the step-shape clause with release-npm-tokenless. A comment-only token mention exits 0, and the real release.yml passes 4/4.",
+      "evidence": [
+        "matrix: m1-legacy-on-publish, m1-legacy-around, m1-probe-*, m1-arbitrary-env-on-publish, m1-comment-only",
+        "real gate exit 0 (4/4), PyYAML semantic scan clean"
+      ]
+    },
+    {
+      "id": "selftest-missing-order-control",
+      "previousSeverity": "Medium",
+      "status": "CLOSED",
+      "claim": "`--self-test` prints an honest count and ships controls for release-npm-publish-order, the exact-shape publish rule and the tokenless hardening, and those controls are load-bearing.",
+      "observed": "--self-test exits 0 with `34/34 fixtures behaved` (33 fixture entries + 1 missing-workflow control; source count matches). Controls present: release.yml (publish-after-release) -> release-npm-publish-order; (dry-run)/(if-guard)/(continue-on-error) -> release-npm-publish; the `_authToken`/`.npmrc`/NPM_TOKEN fixture and (legacy-token-env) -> release-npm-tokenless. Rule-disabling mutations of a COPY of the gate make those controls fail (order 33/34, exact-run 33/34, shape keys 32/34, denylist 33/34), so they are not decorative.",
+      "evidence": [
+        "self-test output 34/34 (python and bun oracles)",
+        "mutation matrix",
+        "fixture count from source: 33 + 1"
+      ],
+      "residual": "Two branches remain without an independent control (finding F1): the exactly-one-publish-step clause and the publish-step env/with clause. Disabling either leaves --self-test at 34/34."
+    },
+    {
+      "id": "changelog-supersession-wording",
+      "previousSeverity": "Nit",
+      "status": "CLOSED",
+      "claim": "The Unreleased supersession sentence names the real 0.7.0 claim, and the historical 0.7.0 entry is untouched.",
+      "observed": "CHANGELOG.md Unreleased now says it supersedes the 0.7.0 note that the registry form was `not measured \u2014 0.7.0 is not published (`npm view` returns 404)`, which is verbatim the sentence still present in the 0.7.0 section. `git diff -U0 -- CHANGELOG.md` has a single hunk `@@ -9,0 +10,11 @@` \u2014 a pure insertion in Unreleased; no historical line changed.",
+      "evidence": [
+        "CHANGELOG.md Unreleased > Changed",
+        "CHANGELOG.md 0.7.0 > Added",
+        "git diff hunks"
+      ]
+    },
+    {
+      "id": "contributing-tag-form-claim",
+      "previousSeverity": "Nit",
+      "status": "CLOSED",
+      "claim": "CONTRIBUTING.md and CONTRIBUTING.zh-CN.md no longer claim an `X.Y.Z` tag triggers the release, and the pair stays in sync.",
+      "observed": "Both workflow-table rows now say only `vX.Y.Z` (EN: 'only `vX.Y.Z`: the trigger is `v*`'; ZH: '\u4ec5\u63a5\u53d7 `vX.Y.Z`\uff1a\u89e6\u53d1\u5668\u662f `v*`'), and both release-procedure step 4 says only `v*` tags trigger. The remaining `X.Y.Z` occurrences are branch names (`release/vX.Y.Z`), the annotated tag command (`vX.Y.Z`), and a dependency-bump commit example \u2014 none claims a release trigger. Pair: 13 headings each, language-switch links present, corresponding hunks updated.",
+      "evidence": [
+        "CONTRIBUTING.md",
+        "CONTRIBUTING.zh-CN.md",
+        "git diff hunk headers"
+      ]
+    }
+  ],
+  "commandsAndExits": [
+    {
+      "command": "node scripts/verify-github-workflows.mjs",
+      "exit": 0,
+      "observed": "4/4 workflows PASS (python3 + PyYAML oracle)"
+    },
+    {
+      "command": "node scripts/verify-github-workflows.mjs --self-test",
+      "exit": 0,
+      "observed": "34/34 fixtures behaved"
+    },
+    {
+      "command": "PATH=<python3 shim first> node scripts/verify-github-workflows.mjs",
+      "exit": 0,
+      "observed": "4/4 PASS under the bun + Bun.YAML.parse fallback"
+    },
+    {
+      "command": "PATH=<python3 shim first> node scripts/verify-github-workflows.mjs --self-test",
+      "exit": 0,
+      "observed": "34/34 under the bun oracle"
+    },
+    {
+      "command": "python3 .tmp/adv_matrix.py (28 copies: 4 real workflows each, release.yml mutated)",
+      "exit": 0,
+      "observed": "28/28 behaved: 24 must-fail cases, 1 clean must-pass case, 3 observe-only probes"
+    },
+    {
+      "command": "python3 .tmp/mutate_selftest.py (7 mutations of a COPY of the gate)",
+      "exit": 0,
+      "observed": "baseline 34/34; order 33/34; exact-run 33/34; shape 32/34; count 34/34; env/with 34/34; denylist 33/34"
+    },
+    {
+      "command": "node scripts/typecheck.mjs --require",
+      "exit": 0,
+      "observed": "types clean"
+    },
+    {
+      "command": "bun test packages/",
+      "exit": 0,
+      "observed": "326 tests across 25 files: 325 pass / 1 skip / 0 fail"
+    },
+    {
+      "command": "node scripts/verify-corpus.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verify-rows-disjoint.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/build-lsp.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/pack-silicon.mjs --self-test",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verify-github-workflows.mjs (chain)",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/pack-silicon.mjs --check",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/pack-silicon.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verify-package-files.mjs --self-test",
+      "exit": 0
+    },
+    {
+      "command": "node scripts/verify-package-files.mjs",
+      "exit": 0
+    },
+    {
+      "command": "python3 PyYAML assertion script on release.yml",
+      "exit": 0,
+      "observed": "16/16 checks PASS (trigger, permissions, single/exact/unmodified publish step, order, tokenless, secrets, gate chain, version assert)"
+    }
+  ],
+  "adversarialMatrix": [
+    {
+      "id": "clean",
+      "description": "real release.yml copied verbatim",
+      "expected": null,
+      "mode": "must",
+      "exit": 0,
+      "rules": [],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-dry-run",
+      "description": "publish run carries --dry-run",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-if-false",
+      "description": "step-level if: false on the publish step",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-continue-on-error",
+      "description": "step-level continue-on-error: true on the publish step",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-echo",
+      "description": "publish run is only echo \"npm publish ...\"",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-or-chain",
+      "description": "publish run is `true || npm publish ...`",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "h1-second-publish",
+      "description": "a second publish step after a clean one",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-legacy-on-publish",
+      "description": "legacy token env + npm config set _password on the publish step",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish",
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-legacy-around",
+      "description": "legacy token env + npm config set in a separate step before a clean publish",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-npm-token",
+      "description": "denylist probe: npm-token",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-node-auth-token",
+      "description": "denylist probe: node-auth-token",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-auth-token",
+      "description": "denylist probe: auth-token",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-npmrc",
+      "description": "denylist probe: npmrc",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-auth",
+      "description": "denylist probe: auth",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-password",
+      "description": "denylist probe: password",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-registry-scope",
+      "description": "denylist probe: registry-scope",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-probe-npm-config-set",
+      "description": "denylist probe: npm-config-set",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-arbitrary-env-on-publish",
+      "description": "publish step carries an env var with a non-token-shaped name (only the env-key clause closes this)",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "m1-comment-only",
+      "description": "token names in a comment only (must stay green)",
+      "expected": null,
+      "mode": "must",
+      "exit": 0,
+      "rules": [],
+      "status": "PASS"
+    },
+    {
+      "id": "x-job-if-false",
+      "description": "job-level if: false disables the whole release job",
+      "expected": "release-npm-publish",
+      "mode": "observe",
+      "exit": 0,
+      "rules": [],
+      "status": "OBSERVE"
+    },
+    {
+      "id": "x-order-after-release",
+      "description": "publish step moved after the GitHub Release",
+      "expected": "release-npm-publish-order",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish-order"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "x-order-before-pack",
+      "description": "publish step moved before npm pack",
+      "expected": "release-npm-publish-order",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish-order"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "x-uses-instead",
+      "description": "publish step replaced by an action (no run)",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "x-working-directory",
+      "description": "publish step carries working-directory",
+      "expected": null,
+      "mode": "observe",
+      "exit": 0,
+      "rules": [],
+      "status": "OBSERVE"
+    },
+    {
+      "id": "x-job-env-token",
+      "description": "job-level env carries NPM_TOKEN",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "x-if-always",
+      "description": "publish step guarded by if: always()",
+      "expected": "release-npm-publish",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-publish"
+      ],
+      "status": "PASS"
+    },
+    {
+      "id": "x-second-publish-double-space",
+      "description": "second publish step written with a double space (not the literal 'npm publish')",
+      "expected": "release-npm-publish",
+      "mode": "observe",
+      "exit": 0,
+      "rules": [],
+      "status": "OBSERVE"
+    },
+    {
+      "id": "x-with-key",
+      "description": "publish step carries a with: key",
+      "expected": "release-npm-tokenless",
+      "mode": "must",
+      "exit": 1,
+      "rules": [
+        "release-npm-tokenless"
+      ],
+      "status": "PASS"
+    }
+  ],
+  "adversarialMatrixTable": "| case | exit | issues named | expected | verdict |\n|---|---|---|---|---|\n| clean | 0 | - | (must pass) | PASS |\n| h1-dry-run | 1 | release-npm-publish | release-npm-publish | PASS |\n| h1-if-false | 1 | release-npm-publish | release-npm-publish | PASS |\n| h1-continue-on-error | 1 | release-npm-publish | release-npm-publish | PASS |\n| h1-echo | 1 | release-npm-publish | release-npm-publish | PASS |\n| h1-or-chain | 1 | release-npm-publish | release-npm-publish | PASS |\n| h1-second-publish | 1 | release-npm-publish | release-npm-publish | PASS |\n| m1-legacy-on-publish | 1 | release-npm-publish, release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-legacy-around | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-npm-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-node-auth-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-auth-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-npmrc | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-auth | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-password | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-registry-scope | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-probe-npm-config-set | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-arbitrary-env-on-publish | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| m1-comment-only | 0 | - | (must pass) | PASS |\n| x-job-if-false | 0 | - | release-npm-publish | OBSERVE |\n| x-order-after-release | 1 | release-npm-publish-order | release-npm-publish-order | PASS |\n| x-order-before-pack | 1 | release-npm-publish-order | release-npm-publish-order | PASS |\n| x-uses-instead | 1 | release-npm-publish | release-npm-publish | PASS |\n| x-working-directory | 0 | - | (must pass) | OBSERVE |\n| x-job-env-token | 1 | release-npm-tokenless | release-npm-tokenless | PASS |\n| x-if-always | 1 | release-npm-publish | release-npm-publish | PASS |\n| x-second-publish-double-space | 0 | - | release-npm-publish | OBSERVE |\n| x-with-key | 1 | release-npm-tokenless | release-npm-tokenless | PASS |",
+  "selfTest": {
+    "printedCount": "34/34 fixtures behaved",
+    "fixtureEntries": 33,
+    "plusMissingWorkflowControl": 1,
+    "controlsForRequiredAreas": {
+      "release-npm-publish-order": "release.yml (publish-after-release) -> release-npm-publish-order",
+      "exact-shape publish rule": "release.yml (dry-run), (if-guard), (continue-on-error) -> release-npm-publish",
+      "tokenless hardening": "release.yml `_authToken`/.npmrc/NPM_TOKEN fixture -> release-npm-tokenless; release.yml (legacy-token-env) -> release-npm-tokenless"
+    },
+    "honesty": "The printed total equals fixtures.length + 1 and all 34 lines are PASS; the count was cross-checked against the fixture source. The harness asserts passed === total, not a minimum, so deleting a fixture lowers the printed count instead of failing \u2014 the rule-disabling mutation below is the meaningful falsifiability proof."
+  },
+  "mutationMatrix": [
+    {
+      "case": "baseline",
+      "exit": 0,
+      "count": "34/34",
+      "fails": []
+    },
+    {
+      "case": "order-rule-renamed",
+      "exit": 1,
+      "count": "33/34",
+      "fails": [
+        "FAIL self-test: release.yml (publish-after-release) \u2014 tampered workflow rejected by release-npm-publish-order"
+      ]
+    },
+    {
+      "case": "exact-run-disabled",
+      "exit": 1,
+      "count": "33/34",
+      "fails": [
+        "FAIL self-test: release.yml (dry-run) \u2014 tampered workflow rejected by release-npm-publish"
+      ]
+    },
+    {
+      "case": "shape-keys-emptied",
+      "exit": 1,
+      "count": "32/34",
+      "fails": [
+        "FAIL self-test: release.yml (if-guard) \u2014 tampered workflow rejected by release-npm-publish",
+        "FAIL self-test: release.yml (continue-on-error) \u2014 tampered workflow rejected by release-npm-publish"
+      ]
+    },
+    {
+      "case": "count-check-disabled",
+      "exit": 0,
+      "count": "34/34",
+      "fails": []
+    },
+    {
+      "case": "env-with-keys-emptied",
+      "exit": 0,
+      "count": "34/34",
+      "fails": []
+    },
+    {
+      "case": "denylist-emptied",
+      "exit": 1,
+      "count": "33/34",
+      "fails": [
+        "FAIL self-test: release.yml \u2014 tampered workflow rejected by release-npm-tokenless"
+      ]
+    }
+  ],
+  "mutationMatrixTable": "| mutation of a COPY of the gate | self-test exit | printed count | failed controls |\n|---|---|---|---|\n| baseline | 0 | 34/34 | (none) |\n| order-rule-renamed | 1 | 33/34 | release.yml (publish-after-release) \u2014 tampered workflow rejected by release-npm-publish-order |\n| exact-run-disabled | 1 | 33/34 | release.yml (dry-run) \u2014 tampered workflow rejected by release-npm-publish |\n| shape-keys-emptied | 1 | 32/34 | release.yml (if-guard) \u2014 tampered workflow rejected by release-npm-publish; release.yml (continue-on-error) \u2014 tampered workflow rejected by release-npm-publish |\n| count-check-disabled | 0 | 34/34 | (none) |\n| env-with-keys-emptied | 0 | 34/34 | (none) |\n| denylist-emptied | 1 | 33/34 | release.yml \u2014 tampered workflow rejected by release-npm-tokenless |",
+  "regression": {
+    "workflowGate": "4/4 PASS, exit 0 (python3 + PyYAML); 4/4 PASS, exit 0 (bun + Bun.YAML.parse fallback)",
+    "gateChain": "11/11 commands exit 0: typecheck --require, bun test packages/, verify-corpus, verify-rows-disjoint, build-lsp --check, pack-silicon --self-test, verify-github-workflows, pack-silicon --check, pack-silicon, verify-package-files --self-test, verify-package-files",
+    "tests": "326 tests across 25 files: 325 pass / 1 skip / 0 fail",
+    "releaseWorkflowProperties": "permissions contents/packages/id-token all write; push.tags contains v*; exactly one publish step, run exactly `npm publish --access public --provenance`, no if/continue-on-error/env/with; publish index 18 after npm pack (16) and archive (17), before softprops/action-gh-release (23); version assert (4) before the first gate (5); the 11 gate commands present and ordered; semantic tree tokenless; only secrets.GITHUB_TOKEN referenced; no .npmrc in the tree",
+    "secrets": "No credential values in the diff. The only token-shaped added line is the shipped self-test fixture placeholder `npm config set //registry.npmjs.org/:_password \"$LEGACY_PUBLISH_SECRET\"` (variable reference, no value). No `secrets.NPM*` / `secrets.NODE_AUTH*`; no committed .npmrc.",
+    "bilingual": "README.md / README.zh-CN.md 20 headings each; CONTRIBUTING.md / CONTRIBUTING.zh-CN.md 13 headings each; language-switch links present in all four; the repaired claims are present in both languages and the remaining X.Y.Z mentions are branch/tag/bump examples, not trigger claims",
+    "scope": "git status lists exactly the 10 named modified files plus untracked evidence; no tracked file changed during the review (workflow sha256 and git diff sha256 identical before and after)",
+    "reviewerScratchNote": "The first chain attempt exited 1 at `pack-silicon.mjs --check` because reviewer-written scratch files under .tmp/ landed at mode 600 and the packer walks the whole tree. After `chmod -R a+rX .tmp` (reviewer scratch only, no change-set file touched) the same chain ran 11/11; the scratch was then removed and the final `pack-silicon --check` with this record present exits 0. The change set's own ten files are all mode 644."
+  },
+  "findings": [
+    {
+      "severity": "Medium",
+      "id": "gate-job-level-if-disables-release",
+      "title": "A job-level `if: false` on the release job skips the whole release (npm publish, GitHub Release, GHCR) while the gate stays green",
+      "where": "scripts/verify-github-workflows.mjs, validateWorkflow() release.yml branch \u2014 only step keys are restricted (STEP_KEYS / NPM_PUBLISH_SHAPE_KEYS); job keys are not inspected, so `jobs.release.if` is accepted",
+      "why": "A copy adding `if: false` under `jobs.release` exits 0 with no issue; at runtime the job is skipped and the workflow run concludes success, which is the same silent-stoppage class the H1 finding was about \u2014 one line, no red CI. It is outside the frozen step-level direction (which the repair meets), so it does not reopen H1, but the gate's own purpose ('the release must be effective') is not met at job scope.",
+      "direction": "Reject a literal `if: false` on the release job (or assert the release job carries no `if`) without banning legitimate job conditions; ship one self-test fixture for it.",
+      "scope": "residual, outside the frozen closure; recommended follow-up before the v0.7.1 tag"
+    },
+    {
+      "severity": "Nit",
+      "id": "selftest-two-publish-branches-uncontrolled",
+      "title": "Two clauses of the repaired publish rule have no independent self-test control",
+      "where": "scripts/verify-github-workflows.mjs, runSelfTest() fixtures \u2014 no fixture adds a second publish step, and the legacy-token-env fixture is also caught by the denylist, so the env/with clause is never the reason a fixture fails",
+      "why": "Mutation of a COPY: disabling the `publishSteps.length > 1` check leaves --self-test at 34/34, and emptying NPM_PUBLISH_TOKEN_KEYS (= []) also leaves 34/34. Both clauses work when exercised by my adversarial copies (second publish step -> release-npm-publish; `HARMLESS_NAME: ${{ secrets.SOME_SECRET }}` env -> release-npm-tokenless), but the shipped self-test would not notice their removal \u2014 contrary to this repository's 'a green gate must be falsifiable' discipline.",
+      "direction": "Add one fixture with a second publish step (expect release-npm-publish) and one with an arbitrary-name env on the publish step (expect release-npm-tokenless). 34 -> 36 fixtures.",
+      "scope": "residual, does not reopen M2: the named controls (order, exact shape, tokenless rule) exist and are load-bearing"
+    }
+  ],
+  "declinedToJudge": [
+    "npmjs Trusted Publisher binding (repo + release.yml filename) \u2014 not observable anonymously; recorded INCONCLUSIVE, not a finding.",
+    "A real OIDC publish, the signed provenance attestation and the actual v0.7.1 tag \u2014 unproven until a real tag run; no tag, credential or publish was performed.",
+    "Registry *install* path (`dsh plugin add ... @mpd-dsh/silicon@0.7.0`) \u2014 not re-measured; the docs state this bound; it needs a writable HOME/dsh profile.",
+    "docker-verify.yml / boot-e2e.yml \u2014 unchanged and not re-run; outside this change set.",
+    "Legitimate job-level conditions other than a literal `if: false` (e.g. a repository-owner guard) \u2014 not judged; banning generic job conditions would be over-strict, so F2 proposes only the literal no-op.",
+    "Publish step carrying `working-directory` or `timeout-minutes` \u2014 gate accepts it, but the step then fails loudly at runtime (no package.json / timeout); not a silent stoppage.",
+    "A second publish step spelled `npm  publish` (double space) \u2014 not counted as a publish step, but the duplicate version makes one of the two publishes fail loudly (EEXIST); cannot silently stop publishing.",
+    "A multi-job restructure that puts publish in a sibling job \u2014 not judged: `collectSteps` flattens jobs, so order could be bypassed only by a visible structural rewrite, not a one-line drift.",
+    "Comment lines in release.yml naming NPM_TOKEN/.npmrc \u2014 correctly ignored (comments are not semantic values); the real tree passes.",
+    "Denylist false-positive risk from the `_auth` substring \u2014 no legitimate value currently contains it; a future false positive fails closed and loudly.",
+    "Deliberate obfuscation (base64-written .npmrc, NPM_CONFIG_USERCONFIG) \u2014 outside the drift threat model; a structural gate cannot prove absence against an adversary.",
+    "Historical CHANGELOG lines that say 'no npm publish' for older releases \u2014 history, not a current claim; only the 0.7.0 supersession sentence was in scope and it is now accurate.",
+    "Self-test harness asserts passed === total, not a minimum count \u2014 deleting a fixture lowers the printed count but keeps exit 0; pre-existing design, which is why the rule-disabling mutation was used as the falsifiability proof.",
+    "The previous record's output.log is gitignored (`*.log`), so it cannot be committed as-is; that record was deliberately left untouched and this record uses `output.txt`.",
+    "pack-silicon walks the whole tree including gitignored scratch \u2014 reviewer scratch at mode 600 tripped `--check` once; pre-existing packer behaviour, not a change-set defect."
+  ],
+  "bounds": [
+    "The real GitHub Actions tag run is UNPROVEN: no OIDC token exchange, no npm provenance attestation, no actual v0.7.1 publish (no tag, no credentials). Only the workflow definition, the offline gate and adversarial copies were measured.",
+    "The npmjs trusted-publisher binding is UNPROVEN: not exposed anonymously.",
+    "Did not run docker-verify.yml or boot-e2e.yml (Docker image build, real harness boots); out of scope for this change set.",
+    "Did not run the registry install path end to end (needs a writable HOME/dsh profile).",
+    "The adversarial copies live under gitignored .tmp/ and were removed from the verdict evidence; only the recorded outputs are kept. The real .github/** was never written (sha256 identical before/after).",
+    "Read the repair diff, the full changed regions of scripts/verify-github-workflows.mjs (constants, release validator, fixtures, self-test runner), release.yml, CHANGELOG.md, both CONTRIBUTING files and the README/AGENTS/AGENT/PR-template hunks; did not re-read every untouched line of the 1054-line gate script.",
+    "The bun-oracle run used a python3 shim that exits 1 to force the Bun.YAML.parse fallback; both oracles agree (4/4 and 34/34)."
+  ],
+  "verdict": "PASS",
+  "verdictJustification": "All five findings are closed with observed evidence on adversarial copies \u2014 the six publish-shape holes now fail with release-npm-publish while a clean copy passes, legacy token shapes and all eight denylist needles fail with release-npm-tokenless, --self-test is 34/34 with load-bearing controls for order/exact-shape/tokenless, the Unreleased sentence names the real 0.7.0 claim without touching history, and both CONTRIBUTING files say only vX.Y.Z \u2014 and the full \u00a73 chain is green; the two remaining findings (job-level `if`, two self-test branches) are non-blocking residuals outside the frozen closure."
+}

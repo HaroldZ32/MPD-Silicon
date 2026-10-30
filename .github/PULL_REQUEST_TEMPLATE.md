@@ -33,9 +33,9 @@ Record the observed exit code, not "it passed". / 记录实际观察到的退出
 
 The GitHub Actions runs mirror this table: `ci.yml` (static gates), `docker-verify.yml` (the same
 gates plus a real EDA smoke in a container), `boot-e2e.yml` (two real boots) and `release.yml`
-(tag → GitHub Release + GHCR). / GitHub Actions 与上表对应：`ci.yml`（静态闸门）、
+(tag → npm publish via Trusted Publishing (OIDC, provenance) + GitHub Release + GHCR). / GitHub Actions 与上表对应：`ci.yml`（静态闸门）、
 `docker-verify.yml`（相同闸门 + 容器内真实 EDA 冒烟）、`boot-e2e.yml`（两次真实启动）与
-`release.yml`（标签 → GitHub Release + GHCR）。
+`release.yml`（标签 → 经 Trusted Publishing（OIDC、provenance）发布 npm + GitHub Release + GHCR）。
 
 Boot detail (required for any row, preset, patch or dependency change) / 启动细节（任何 row、preset、patch 或依赖变更都必需）：
 

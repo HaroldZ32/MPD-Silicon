@@ -13,7 +13,10 @@
 //   the AGENTS.md §3 gate sequence, in order, in ci.yml and release.yml
 //   ci.yml is read-only and uploads the staged package
 //   docker-verify.yml builds the repository Dockerfile and runs the image
-//   release.yml asserts tag == package version, creates a Release and pushes to GHCR
+//   release.yml asserts tag == package version, publishes to npm with Trusted Publishing
+//   (OIDC + provenance, tokenless: the step's run is exactly the publish command and the
+//   step carries no if/env/with/continue-on-error), keeps every release job unconditionally
+//   enabled (no literal `if: false`), creates a Release and pushes to GHCR
 //   no tabs | every referenced scripts/*.mjs exists | no retired CI references
 //
 // YAML parsing is delegated to a real parser, never re-implemented:
@@ -82,6 +85,27 @@ const STEP_KEYS = new Set([
 ])
 const PUBLISH_ACTIONS = ["docker/login-action", "docker/build-push-action", "softprops/action-gh-release"]
 
+// Trusted Publishing must be EFFECTIVE, not merely mentioned. The publish step's run is
+// compared to this command after trim(), so `--dry-run`, an echo, an `if:` guard and a
+// `true || npm publish` chain all stop being a publish at once; the step itself may carry
+// no modifier that disables it (if/continue-on-error) or injects a credential (env/with).
+const NPM_PUBLISH_COMMAND = "npm publish --access public --provenance"
+const NPM_PUBLISH_SHAPE_KEYS = ["if", "continue-on-error"]
+const NPM_PUBLISH_TOKEN_KEYS = ["env", "with"]
+// Semantic values only (the parse drops comments), so release.yml's explanatory comment may
+// name the legacy tokens without tripping the gate. `_auth` covers `_authToken` and the
+// `_password`/`//registry.npmjs.org/:` rows cover a shell-written legacy `.npmrc`.
+const NPM_TOKENLESS_DENY = [
+  "NPM_TOKEN",
+  "NODE_AUTH_TOKEN",
+  "_authToken",
+  ".npmrc",
+  "npm config set",
+  "_auth",
+  "_password",
+  "//registry.npmjs.org/:",
+]
+
 // The retired provider/registry/directory tokens are assembled from fragments on
 // purpose: this repository bans those literals from scripts/**, and this gate is the
 // thing that enforces the ban. Keeping the fragments apart means the gate's own source
@@ -125,6 +149,19 @@ function nonEmptyString(value) {
 
 function nonEmptyStringArray(value) {
   return Array.isArray(value) && value.length > 0 && value.every(nonEmptyString)
+}
+
+/**
+ * A job condition that is literally false: the job never runs, yet the workflow run still
+ * reports success. `false` (YAML boolean), 'false', '${{ false }}' (with any spacing) and a
+ * padded 'false ' all mean the same thing. A condition that can be true (startsWith,
+ * needs.*.result) is not matched, so legitimate job-level conditions stay allowed.
+ */
+function isDisabledCondition(value) {
+  if (value === false) return true
+  if (typeof value !== "string") return false
+  const condition = value.trim().toLowerCase().replace(/\s+/g, "")
+  return condition === "false" || condition === "${{false}}"
 }
 
 function escapeRegExp(value) {
@@ -464,6 +501,28 @@ function validateWorkflow(file, data) {
     const permissions = isMap(data.permissions) ? data.permissions : {}
     if (permissions.contents !== "write") add("release-permissions", "release.yml needs permissions.contents: write for the GitHub Release")
     if (permissions.packages !== "write") add("release-permissions", "release.yml needs permissions.packages: write for the GHCR push")
+    if (permissions["id-token"] !== "write") {
+      add("release-id-token", "release.yml needs permissions.id-token: write so npm Trusted Publishing can exchange a GitHub OIDC token")
+    }
+    // A literal disabling condition on a release job makes npm publish, the GitHub Release and
+    // the GHCR push no-ops while the run still reports success, so release.yml refuses one. A
+    // condition that can legitimately be true is untouched: only an always-false value counts.
+    for (const [jobId, job] of jobs) {
+      if (isMap(job) && isDisabledCondition(job.if)) {
+        add(
+          "release-job-if-disabled",
+          `release.yml jobs.${jobId}.if is always false (${JSON.stringify(job.if)}); the release would be skipped while the run still reports success`,
+        )
+      }
+    }
+    // Trusted Publishing is tokenless. The parsed tree carries no comments, so release.yml's
+    // explanatory comment (which names these tokens) is not scanned — only semantic values are.
+    const semantic = JSON.stringify(data)
+    for (const token of NPM_TOKENLESS_DENY) {
+      if (semantic.includes(token)) {
+        add("release-npm-tokenless", `release.yml must stay tokenless for Trusted Publishing; found ${JSON.stringify(token)} in a workflow value (not a comment)`)
+      }
+    }
     const checkout = findStep(steps, "actions/checkout")
     if (checkout === undefined) {
       add("release-checkout-depth", "release.yml must check out the repository")
@@ -496,6 +555,40 @@ function validateWorkflow(file, data) {
       if (!files.includes("dist/*.tgz")) add("release-assets", "release.yml release files must include dist/*.tgz")
       if (!files.includes("dist/silicon-package.tar.gz")) add("release-assets", "release.yml release files must include dist/silicon-package.tar.gz")
       if (input.generate_release_notes !== true) add("release-assets", "release.yml must set generate_release_notes: true")
+    }
+    const publishSteps = steps.filter(({ step }) => nonEmptyString(step.run) && step.run.includes("npm publish"))
+    if (publishSteps.length === 0) {
+      add("release-npm-publish", `release.yml must publish to npm with a step whose run is exactly ${JSON.stringify(NPM_PUBLISH_COMMAND)} (Trusted Publishing)`)
+    } else {
+      const publishEntry = publishSteps[0]
+      const publishIndex = steps.indexOf(publishEntry)
+      const publishStep = publishEntry.step
+      if (publishSteps.length > 1) {
+        add("release-npm-publish", `release.yml must publish from exactly one step; ${publishSteps.length} steps mention npm publish`)
+      }
+      const publishRun = publishStep.run.trim()
+      if (publishRun !== NPM_PUBLISH_COMMAND) {
+        add(
+          "release-npm-publish",
+          `release.yml npm publish step must run exactly ${JSON.stringify(NPM_PUBLISH_COMMAND)} — no --dry-run, echo, if-guard or || chain; got ${JSON.stringify(publishRun)}`,
+        )
+      }
+      for (const key of NPM_PUBLISH_SHAPE_KEYS) {
+        if (publishStep[key] !== undefined) add("release-npm-publish", `release.yml npm publish step must not set ${key}; the publish itself must be unconditional`)
+      }
+      for (const key of NPM_PUBLISH_TOKEN_KEYS) {
+        if (publishStep[key] !== undefined) add("release-npm-tokenless", `release.yml npm publish step must not set ${key}; Trusted Publishing supplies its own short-lived OIDC token`)
+      }
+      const artifactIndex = steps.reduce(
+        (found, { step }, index) => (nonEmptyString(step.run) && /npm pack|silicon-package\.tar\.gz/.test(step.run) ? index : found),
+        -1,
+      )
+      if (artifactIndex !== -1 && publishIndex < artifactIndex) {
+        add("release-npm-publish-order", "release.yml must publish to npm after the pack/archive steps")
+      }
+      if (releaseStep !== undefined && publishIndex > steps.indexOf(releaseStep)) {
+        add("release-npm-publish-order", "release.yml must publish to npm before creating the GitHub Release")
+      }
     }
     const login = findStep(steps, "docker/login-action")
     if (login === undefined) {
@@ -689,6 +782,46 @@ const RELEASE_ASSERT_STEP = `      - name: Assert the tag matches the package ve
           fi
 `
 
+const NPM_PUBLISH_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        run: npm publish --access public --provenance
+`
+
+// Adversarial copies of the publish step. Each one carries the exact command text (or a
+// prefix of it) yet must not count as an effective publish.
+const NPM_PUBLISH_DRY_RUN_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        run: npm publish --access public --provenance --dry-run
+`
+
+const NPM_PUBLISH_GUARDED_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        if: false
+        run: npm publish --access public --provenance
+`
+
+const NPM_PUBLISH_CONTINUE_ON_ERROR_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        continue-on-error: true
+        run: npm publish --access public --provenance
+`
+
+const NPM_PUBLISH_LEGACY_TOKEN_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        env:
+          LEGACY_PUBLISH_SECRET: \${{ secrets.LEGACY_PUBLISH_SECRET }}
+        run: |
+          npm config set //registry.npmjs.org/:_password "$LEGACY_PUBLISH_SECRET"
+          npm publish --access public --provenance
+`
+
+// Independent controls for the two publish-rule clauses that had none: "exactly one publish
+// step" and "the publish step carries no env, whatever the variable is named".
+const NPM_SECOND_PUBLISH_STEP = `      - name: Publish to npm again
+        run: npm publish --access public --provenance
+`
+
+const NPM_PUBLISH_ARBITRARY_ENV_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+        env:
+          SOME_RANDOM_NAME: value
+        run: npm publish --access public --provenance
+`
+
 const DOCKER_FIXTURE = `name: CI — docker real-machine verification
 on:
   push:
@@ -721,6 +854,7 @@ on:
     tags: ['v*']
 permissions:
   contents: write
+  id-token: write
   packages: write
 jobs:
   release:
@@ -740,7 +874,7 @@ jobs:
 ${RELEASE_ASSERT_STEP}${RELEASE_GATE_STEPS}
       - name: Pack the npm tarball
         run: npm pack --pack-destination dist
-      - uses: docker/setup-buildx-action@v3
+${NPM_PUBLISH_STEP}      - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -838,6 +972,54 @@ function runSelfTest(oracle) {
       { file: "release.yml", content: RELEASE_FIXTURE, expected: null },
       { file: "release.yml", content: RELEASE_FIXTURE.replace(RELEASE_ASSERT_STEP, ""), expected: "release-version-assert" },
       { file: "release.yml", content: RELEASE_FIXTURE.replace("registry: ghcr.io", "registry: registry.example.com"), expected: "release-ghcr" },
+      { file: "release.yml", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, ""), expected: "release-npm-publish" },
+      { file: "release.yml", content: RELEASE_FIXTURE.replace("  id-token: write\n", ""), expected: "release-id-token" },
+      {
+        file: "release.yml",
+        content: RELEASE_FIXTURE.replace(
+          NPM_PUBLISH_STEP,
+          `      - name: Publish to npm\n        run: |\n          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc\n          npm publish --access public --provenance\n`,
+        ),
+        expected: "release-npm-tokenless",
+      },
+      // H1: a publish step must be EFFECTIVE, not merely mention the command.
+      { file: "release.yml", label: "dry-run", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_DRY_RUN_STEP), expected: "release-npm-publish" },
+      { file: "release.yml", label: "if-guard", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_GUARDED_STEP), expected: "release-npm-publish" },
+      {
+        file: "release.yml",
+        label: "continue-on-error",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_CONTINUE_ON_ERROR_STEP),
+        expected: "release-npm-publish",
+      },
+      // M1: tokenless is asserted positively (exact run, no env/with) and by value.
+      { file: "release.yml", label: "legacy-token-env", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_LEGACY_TOKEN_STEP), expected: "release-npm-tokenless" },
+      // M2: a publish step moved after the GitHub Release must be named by the order rule.
+      {
+        file: "release.yml",
+        label: "publish-after-release",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, "") + NPM_PUBLISH_STEP,
+        expected: "release-npm-publish-order",
+      },
+      // F1: a literally disabled release job skips the whole release behind a green run.
+      {
+        file: "release.yml",
+        label: "job-if-disabled",
+        content: RELEASE_FIXTURE.replace("    runs-on: ubuntu-24.04\n", "    if: false\n    runs-on: ubuntu-24.04\n"),
+        expected: "release-job-if-disabled",
+      },
+      // F2: the two publish-rule clauses that had no independent control.
+      {
+        file: "release.yml",
+        label: "second-publish-step",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_STEP + NPM_SECOND_PUBLISH_STEP),
+        expected: "release-npm-publish",
+      },
+      {
+        file: "release.yml",
+        label: "publish-arbitrary-env",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_ARBITRARY_ENV_STEP),
+        expected: "release-npm-tokenless",
+      },
     ]
     let passed = 0
     for (const [index, fixture] of fixtures.entries()) {
@@ -849,7 +1031,7 @@ function runSelfTest(oracle) {
       const label = fixture.expected === null ? "valid workflow accepted" : `tampered workflow rejected by ${fixture.expected}`
       const ok = fixture.expected === null ? issues.length === 0 : issues.some((issue) => issue.rule === fixture.expected)
       if (ok) passed += 1
-      console.log(`${ok ? "PASS" : "FAIL"} self-test: ${fixture.file} — ${label}`)
+      console.log(`${ok ? "PASS" : "FAIL"} self-test: ${fixture.file}${fixture.label === undefined ? "" : ` (${fixture.label})`} — ${label}`)
       if (!ok) for (const issue of issues) console.log(`  [${issue.rule}] ${issue.message}`)
     }
 
