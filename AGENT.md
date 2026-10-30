@@ -40,8 +40,9 @@ This project's real commands (the full binding gate table is `AGENTS.md` §4):
 CI runs on **GitHub Actions** (`.github/workflows/`): `ci.yml` (static gates), `docker-verify.yml`
 (the same gates plus a real EDA smoke in a container), `boot-e2e.yml` (two real harness boots) and
 `release.yml` (a `v*` tag asserts the version, then stages the npm package via Trusted Publishing
-(OIDC, provenance); a maintainer approves the staged version with 2FA before it becomes live, then
-the GitHub Release is created and the GHCR image pushed).
+(OIDC, provenance), creates the GitHub Release and pushes the GHCR image in that same run; a
+maintainer **then** approves the staged version with 2FA, and only after that approval does it
+become live).
 `node scripts/verify-github-workflows.mjs` is the workflow gate.
 
 ## 5. Verification
