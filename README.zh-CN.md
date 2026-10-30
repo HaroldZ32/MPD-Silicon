@@ -80,7 +80,8 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@
 ```
 
 上面的注册表**安装**命令尚未在本机复测；已实测的是下面的 tarball 形式。后续版本由 `release.yml`
-在 `v*` 标签上通过 npm Trusted Publishing（GitHub OIDC、provenance、无 token）发布。
+在 `v*` 标签上通过 npm Trusted Publishing（GitHub OIDC、provenance、无 token）**暂存发布**，
+随后由维护者用 2FA 批准暂存版本，才会正式上线。
 
 用本仓库打出的 tarball 安装（无需先发布）：
 
@@ -116,8 +117,9 @@ npm pack
 dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon-<new-version>.tgz
 ```
 
-注册表形式 `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` **自 `0.7.0`
-起已发布**，但注册表**安装**路径未在本机复测 —— 上面那条 tarball 路径才是已实测的形式。
+注册表形式 `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` 的 **`0.7.0`
+已发布**；后续版本先暂存，经维护者批准后才会上线。注册表**安装**路径未在本机复测 —— 上面那条
+tarball 路径才是已实测的形式。
 
 除非本 bundle 的钉子随之移动，mpd 保持在 `0.15.1` —— 两者配套发布。
 
@@ -266,9 +268,9 @@ CI 跑在 **GitHub Actions**（`.github/workflows/`），共四个工作流：
 - `ci.yml` —— 在 `main` 上（push 与 pull request）跑**静态门禁**：类型、测试、语料、行 id、LSP 资产、打包器自检、workflow 检查、`--self-test`/`--check`（`--fix` 只在本地）、pack、包自检与包校验；并把 `dist/silicon-package` 作为 `silicon-package` 产物上传。
 - `docker-verify.yml` —— **docker 真机验证**：构建仓库 `Dockerfile`（Node 24 + bun `1.4.3` 上的真实 iverilog、verilator 与 yosys），跑完整门禁与 EDA 冒烟，期望 `DOCKER-VERIFY: PASS`，并把 `docker-verify.log` 运行日志作为 `docker-verify-log` 产物上传。
 - `boot-e2e.yml` —— 在命中路径的 `main` push 与手动触发上跑两个真实启动（共存与无 mpd 拒绝）。
-- `release.yml` —— `v*` 标签先断言标签版本等于 `package.json.version`，跑门禁，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm publish --access public --provenance` 通过 **npm Trusted Publishing** 把 `@mpd-dsh/silicon` **发布到 npm**，发布 **GitHub Release**，并把验证镜像推送到 **GHCR**（`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest`）。
+- `release.yml` —— `v*` 标签先断言标签版本等于 `package.json.version`，跑门禁，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm stage publish --access public --provenance` 通过 **npm Trusted Publishing** 把 `@mpd-dsh/silicon` **暂存到 npm**（维护者用 2FA 批准后才上线），发布 **GitHub Release**，并把验证镜像推送到 **GHCR**（`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest`）。
 
-npm Trusted Publishing 使用 **GitHub OIDC token**：工作流授予 `id-token: write`，npm 自己用这枚短时 token 与注册表交换凭据，可信发布者绑定到本仓库加 `release.yml` 这个文件名 —— 因此**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**。发布步骤排在版本断言与整条门禁链之后，所以与 `package.json.version` 不匹配的标签永远到不了注册表，`--provenance` 还会附上签名的构建证明。manifest 本身可发布（`files`、`engines`、`license`、`repository`、`publishConfig.access: public` 与 `prepack` 守卫）。`0.7.0` 已在注册表上（2026-10-30 实测：`npm view @mpd-dsh/silicon@0.7.0` 返回 `0.7.0`，dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`，86 个文件）；它是在 OIDC 步骤落地之前发布的，此后每个版本都由 `release.yml` 发布。分支模型：`main` 是主干，也是唯一的 PR 目标；`feature/*` / `fix/*` 为短分支；`release/vX.Y.Z` 承载发布版本递增（annotated `vX.Y.Z` 标签打在 `main` 上）。参见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)、PR 模板 `.github/PULL_REQUEST_TEMPLATE.md`、[`CHANGELOG.md`](./CHANGELOG.md) 与 [`docs/toolchain.md`](./docs/toolchain.md)。其中 `CONTRIBUTING.md`、`.github/`、`AGENTS.md` 与 `evidence/` 记录**仅仓库**——不在 npm tarball 中。
+npm Trusted Publishing 使用 **GitHub OIDC token**：工作流授予 `id-token: write`，npm 自己用这枚短时 token 与注册表交换凭据，可信发布者绑定到本仓库加 `release.yml` 这个文件名 —— 因此**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**。对可信发布者而言暂存发布始终被允许，而直接的 `npm publish` 需要 `--allow-publish`，在 `v0.7.1` 尝试中因 `E403` 失败（run `41019623710`）。暂存步骤排在版本断言与整条门禁链之后，所以与 `package.json.version` 不匹配的标签永远到不了注册表，`--provenance` 还会附上签名的构建证明；随后维护者用 2FA 批准暂存版本，才会正式上线。`v0.7.1` 标签是保留为历史的失败尝试。manifest 本身可发布（`files`、`engines`、`license`、`repository`、`publishConfig.access: public` 与 `prepack` 守卫）。`0.7.0` 已在注册表上（2026-10-30 实测：`npm view @mpd-dsh/silicon@0.7.0` 返回 `0.7.0`，dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`，86 个文件）；它是在 OIDC 步骤落地之前发布的，此后每个版本都由 `release.yml` 暂存，并在批准后上线。分支模型：`main` 是主干，也是唯一的 PR 目标；`feature/*` / `fix/*` 为短分支；`release/vX.Y.Z` 承载发布版本递增（annotated `vX.Y.Z` 标签打在 `main` 上）。参见 [`CONTRIBUTING.md`](./CONTRIBUTING.md)、PR 模板 `.github/PULL_REQUEST_TEMPLATE.md`、[`CHANGELOG.md`](./CHANGELOG.md) 与 [`docs/toolchain.md`](./docs/toolchain.md)。其中 `CONTRIBUTING.md`、`.github/`、`AGENTS.md` 与 `evidence/` 记录**仅仓库**——不在 npm tarball 中。
 
 ## 许可
 

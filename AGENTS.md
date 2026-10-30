@@ -37,9 +37,10 @@ its own repository so the RTL surface lives in one place and `@mpd-dsh/mpd` no l
   (`@mpd-dsh/silicon@0.7.0`) or the tarball built by `npm pack`
   (`./mpd-dsh-silicon-0.7.0.tgz`); the tarball is the measured form. **0.7.0 is published**:
   measured 2026-10-30, `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files. Future versions publish from
+  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files. Future versions are **STAGED** by
   `.github/workflows/release.yml` on a `v*` tag via npm Trusted Publishing (GitHub OIDC, no
-  token). `dsh plugin add` reconciles `dsh.profile.bundles` itself, so no manifest edit is needed.
+  token); each one becomes live only after a maintainer approves the staged version with 2FA.
+  `dsh plugin add` reconciles `dsh.profile.bundles` itself, so no manifest edit is needed.
   Measured 2026-10-23 (pnpm 9.15.9); §9 carries the environment bounds.
 - **What ships**: the `mpd-verif` plugin (**10** `mpd_verif_*` tools: venv/backends/compile/
   lint/sim/coverage/uvm/regress plus `mpd_verif_toolchain` and `mpd_verif_librelane`), the
@@ -139,7 +140,7 @@ Three layout constraints are load-bearing:
 | LSP assets | `node scripts/build-lsp.mjs --check` (`--self-test`) | every `packages/mpd-mcp-lsp/**` change |
 | Modes | `node scripts/pack-silicon.mjs --fix` then `--check` | before every commit |
 | Packer guards | `node scripts/pack-silicon.mjs --self-test` | every packer change |
-| Pack | `node scripts/pack-silicon.mjs` then `node scripts/verify-package-files.mjs` (the `prepack` guard; `--self-test` has 6 controls) | before release, and before any `npm pack`/`npm publish` |
+| Pack | `node scripts/pack-silicon.mjs` then `node scripts/verify-package-files.mjs` (the `prepack` guard; `--self-test` has 6 controls) | before release, and before any `npm pack`/`npm stage publish` |
 | CI workflows | `node scripts/verify-github-workflows.mjs` | every `.github/**` or manifest-script change; GitHub Actions (`.github/workflows/{ci,docker-verify,boot-e2e,release}.yml`) is the CI |
 | Boot check (MOUNT) | two boots that really apply the rows in an isolated `DSH_HOME`: **coexist** (mpd + silicon; must stay alive and log `[mpd-silicon-bootstrap] skill corpus served`) and **no-mpd refusal** (silicon only; must exit 1 with the guard message). `scripts/ci-boot.mjs --require` is the CI wrapper | any patch/preset/row change, and **required** for any tool-schema change |
 | QA real cases | the two RTL probes live in the `@mpd-dsh/mpd` repo (`skills/dsh-qa/scripts/rtl-verif.mjs`, `rtl-ip-profile.mjs`) and are repointed at this bundle — run them with `MPD_SILICON_ROOT=<this repo>`. `rtl-ip-profile.mjs` now reports the carrier as retired (an evidenced skip), not as pending | runtime-behaviour changes |
@@ -339,9 +340,9 @@ never rebased or force-pushed.
   (`./mpd-dsh-silicon-0.7.0.tgz`; that tarball form is the measured one — the registry *install*
   form was not re-measured). The registry **package** is published: measured 2026-10-30,
   `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files; future versions publish from
+  `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files; future versions are **STAGED** by
   `.github/workflows/release.yml` on a `v*` tag via npm Trusted Publishing (GitHub OIDC, no
-  token). The resulting boot logs
+  token), then approved by a maintainer with 2FA before they become live. The resulting boot logs
   `[mpd-silicon-bootstrap] skill corpus served`; a silicon-only profile installs and then exits 1
   with the `silicon-require-mpd` guard message. `remove` drops both the dependency and the bundle
   entry (measured in the same record). Evidence:

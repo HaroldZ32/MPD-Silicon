@@ -4,7 +4,7 @@
 
 ## 概述
 
-`@mpd-dsh/silicon` 是 DeepSeek Harness 的 RTL 能力 bundle：RTL 验证工具链、RTL skill 语料、HDL 语言服务行，以及把 `@mpd-dsh/mpd` 变为硬依赖的启动守卫。本仓库托管在 **GitHub**（`HaroldZ32/MPD-Silicon`），流水线使用 **GitHub Actions**；源仓库没有镜像，发布版本由 release 工作流通过 Trusted Publishing 推送到 npm。
+`@mpd-dsh/silicon` 是 DeepSeek Harness 的 RTL 能力 bundle：RTL 验证工具链、RTL skill 语料、HDL 语言服务行，以及把 `@mpd-dsh/mpd` 变为硬依赖的启动守卫。本仓库托管在 **GitHub**（`HaroldZ32/MPD-Silicon`），流水线使用 **GitHub Actions**；源仓库没有镜像，发布版本由 release 工作流通过 Trusted Publishing 暂存到 npm，再由维护者用 2FA 批准后上线。
 
 **兼容基线：** DeepSeek Harness `0.2.1-rc.2`、`@mpd-dsh/mpd` `0.15.1`、bun `1.4.3`、CI 中的 Node `24`。
 
@@ -84,9 +84,9 @@ harness **不**调用 `dsh plugin add`。它在全新的临时沙箱中写入 `$
 | `.github/workflows/ci.yml` | 推送到 `main`；到 `main` 的 PR；手动触发 | 安装 bun `1.4.3` 与 Node 24，按顺序运行下面的静态闸门，暂存 `dist/silicon-package` | `silicon-package` |
 | `.github/workflows/docker-verify.yml` | 推送到 `main`；到 `main` 的 PR；手动触发 | 构建仓库 `Dockerfile`（真实 iverilog/verilator/yosys），跑完整闸门与 EDA 冒烟，期望 `DOCKER-VERIFY: PASS`；非 PR 运行推送 `ghcr.io/haroldz32/mpd-silicon:edge` | `docker-verify-log` |
 | `.github/workflows/boot-e2e.yml` | 推送到 `main` 且命中 `packages/**`、`scripts/**`、`package.json`、`bun.lock` 或 `packages/mpd-bundle/cordis.patch.yml`；手动触发 | 安装 bun `1.4.3` 和 dsh `0.2.1-rc.2`，用 `--require` 运行两种启动模式 | `ci-boot-logs` |
-| `.github/workflows/release.yml` | 匹配 `v*` 的标签推送 | 断言标签等于 `package.json.version`（仅接受 `vX.Y.Z`：触发器是 `v*`），运行相同闸门，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm publish --access public --provenance` 把 `@mpd-dsh/silicon@<version>` 发布到 npm（GitHub OIDC 上的 Trusted Publishing，无 token），发布 GitHub Release 并把镜像推送到 GHCR | npm 包 + GitHub Release 资产 + GHCR 镜像 |
+| `.github/workflows/release.yml` | 匹配 `v*` 的标签推送 | 断言标签等于 `package.json.version`（仅接受 `vX.Y.Z`：触发器是 `v*`），运行相同闸门，产出 `npm pack` tarball 与 `dist/silicon-package.tar.gz`，用 `npm stage publish --access public --provenance` 把 `@mpd-dsh/silicon@<version>` 暂存到 npm（GitHub OIDC 上的 Trusted Publishing，无 token；维护者用 2FA 批准后才上线），发布 GitHub Release 并把镜像推送到 GHCR | 暂存的 npm 包 + GitHub Release 资产 + GHCR 镜像 |
 
-`ci.yml` 与 `docker-verify.yml` 从不发布版本；发布属于 release 工作流。`release.yml` 用仓库级 `GITHUB_TOKEN` 完成 GitHub Release 与 GHCR 推送，并用**短时 GitHub OIDC token** 向 npm 认证（`id-token: write`，由 npm CLI 在 npm Trusted Publishing 下交换）。**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**；npmjs 上的可信发布者绑定到仓库 `HaroldZ32/MPD-Silicon` **以及 `release.yml` 这个文件名**，因此不要重命名该文件。
+`ci.yml` 与 `docker-verify.yml` 从不发布版本；发布属于 release 工作流。`release.yml` 用仓库级 `GITHUB_TOKEN` 完成 GitHub Release 与 GHCR 推送，并用**短时 GitHub OIDC token** 向 npm 认证（`id-token: write`，由 npm CLI 在 npm Trusted Publishing 下交换）。对可信发布者而言暂存发布始终被允许；直接的 `npm publish` 需要 `--allow-publish`，在 `v0.7.1` 尝试中因 `E403` 失败，因此工作流改为暂存，并由维护者用 2FA 批准后才上线。**没有 `NPM_TOKEN` secret，也没有 `.npmrc`**；npmjs 上的可信发布者绑定到仓库 `HaroldZ32/MPD-Silicon` **以及 `release.yml` 这个文件名**，因此不要重命名该文件。
 
 release 工作流从 `GITHUB_REF_NAME` 读取标签，并断言 `${GITHUB_REF_NAME#v}` 等于 `node -p "require('./package.json').version"`。不匹配会在任何闸门运行前失败；标签为空时同样大声失败。不要在 `release.yml` 中硬编码版本。
 
@@ -139,8 +139,8 @@ release 工作流从 `GITHUB_REF_NAME` 读取标签，并断言 `${GITHUB_REF_NA
    ```
 
 4. `.github/workflows/release.yml` 运行。它的首条实际断言先去掉 `GITHUB_REF_NAME` 的前导 `v`（只有 `v*` 标签会触发，因此接受形式是 `vX.Y.Z`），再与 `package.json.version` 比较；不匹配会在任何闸门运行前失败。
-5. 版本断言（第 4 步）与整条闸门链通过后，工作流用 `npm publish --access public --provenance` 把 `@mpd-dsh/silicon@<version>` 发布到 npm。npm CLI 自己交换 GitHub OIDC token（`id-token: write`）；不保存任何 token，且发布步骤排在断言之后，版本不匹配的标签永远到不了注册表。
-6. 同一次运行还构建 `npm pack` tarball `mpd-dsh-silicon-<version>.tgz` 与 `dist/silicon-package.tar.gz`，以生成的发布说明把它们作为 **GitHub Release 资产**发布，并把验证镜像以 `ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest` 推送到 **GHCR**。npm 包、GitHub Release 资产与 GHCR 镜像就是分发渠道。
+5. 版本断言（第 4 步）与整条闸门链通过后，工作流用 `npm stage publish --access public --provenance` 把 `@mpd-dsh/silicon@<version>` 暂存到 npm。npm CLI 自己交换 GitHub OIDC token（`id-token: write`）；不保存任何 token，且暂存步骤排在断言之后，版本不匹配的标签永远到不了注册表。对可信发布者而言暂存发布始终被允许；随后维护者用 2FA 批准暂存版本，才会正式上线。
+6. 同一次运行还构建 `npm pack` tarball `mpd-dsh-silicon-<version>.tgz` 与 `dist/silicon-package.tar.gz`，以生成的发布说明把它们作为 **GitHub Release 资产**发布，并把验证镜像以 `ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` 与 `:latest` 推送到 **GHCR**。暂存并获批的 npm 包、GitHub Release 资产与 GHCR 镜像就是分发渠道。
 
 如果标签发布时版本错误，不要静默移动或删除共享标签；切一个新的补丁版本并重新打标签。流水线的版本断言是刻意大声的。
 

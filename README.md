@@ -117,8 +117,9 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@
 ```
 
 The registry **install** command above has not been re-measured on this host; the measured form
-is the tarball command below. Later versions are published by `release.yml` on a `v*` tag through
-npm Trusted Publishing (GitHub OIDC, provenance, no token).
+is the tarball command below. Later versions are **staged** by `release.yml` on a `v*` tag through
+npm Trusted Publishing (GitHub OIDC, provenance, no token), then a maintainer approves the staged
+version with 2FA before it becomes live.
 
 From a tarball built in this repository (works without a publish):
 
@@ -160,8 +161,9 @@ dsh plugin --profile <your-profile> add -w @mpd-dsh/mpd@0.15.1 ./mpd-dsh-silicon
 ```
 
 The registry form `dsh plugin … add -w @mpd-dsh/mpd@0.15.1 @mpd-dsh/silicon@<new-version>` is
-**published from `0.7.0` onward**, but the registry *install* path was not re-measured on this
-host — the tarball path above is the measured one.
+**published for `0.7.0`**; later versions are staged and appear only after a maintainer approves
+them. The registry *install* path was not re-measured on this host — the tarball path above is the
+measured one.
 
 Keep the mpd version at `0.15.1` unless this bundle's pin moves with it — the two are
 released together.
@@ -412,21 +414,26 @@ CI runs on **GitHub Actions** (`.github/workflows/`), four workflows:
 - `boot-e2e.yml` — the two real boots (coexist and no-mpd refusal) on path-filtered pushes to
   `main`, plus manual dispatch.
 - `release.yml` — a `v*` tag asserts the tag version equals `package.json.version`, runs the gates,
-  produces the `npm pack` tarball plus `dist/silicon-package.tar.gz`, **publishes
-  `@mpd-dsh/silicon` to npm** with `npm publish --access public --provenance` through **npm
-  Trusted Publishing**, publishes a **GitHub Release**, and pushes the verification image to
-  **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`).
+  produces the `npm pack` tarball plus `dist/silicon-package.tar.gz`, **stages
+  `@mpd-dsh/silicon` for npm** with `npm stage publish --access public --provenance` through
+  **npm Trusted Publishing**, publishes a **GitHub Release**, and pushes the verification image to
+  **GHCR** (`ghcr.io/haroldz32/mpd-silicon:vX.Y.Z` and `:latest`). A maintainer approves the
+  staged version with 2FA before it becomes live.
 
 npm Trusted Publishing uses the **GitHub OIDC token**: the workflow grants `id-token: write`, npm
 exchanges that short-lived token with the registry itself, and the trusted publisher is bound to
 this repository plus the `release.yml` filename — so there is **no `NPM_TOKEN` secret and no
-`.npmrc`**. The publish step runs after the version assert and the whole gate chain, so a tag that
-does not match `package.json.version` never reaches the registry, and `--provenance` attaches a
-signed build attestation. The manifest is publishable by design (`files`, `engines`, `license`,
-`repository`, `publishConfig.access: public`, and the `prepack` guard). `0.7.0` is on the registry
-(measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns `0.7.0`, dist shasum
-`01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files); it was published before the OIDC step
-landed, and every later version publishes from `release.yml`. Branch model: `main` is the trunk
+`.npmrc`**. Staging is always allowed for that trusted publisher, while a direct `npm publish`
+needs `--allow-publish` and failed with `E403` on the `v0.7.1` attempt (run `41019623710`). The
+stage step runs after the version assert and the whole gate chain, so a tag that does not match
+`package.json.version` never reaches the registry, and `--provenance` attaches a signed build
+attestation. A maintainer then approves the staged version with 2FA before it becomes live. The
+`v0.7.1` tag is a failed attempt retained as history. The manifest is publishable by design
+(`files`, `engines`, `license`, `repository`, `publishConfig.access: public`, and the `prepack`
+guard). `0.7.0` is on the registry (measured 2026-10-30: `npm view @mpd-dsh/silicon@0.7.0` returns
+`0.7.0`, dist shasum `01c5775d4559b6c452d3784da6b252ac81f651cb`, 86 files); it was published
+before the OIDC step landed, and every later version is staged from `release.yml` and becomes live
+only after approval. Branch model: `main` is the trunk
 and the only pull-request target; `feature/*` / `fix/*` are short-lived; `release/vX.Y.Z` carries
 the release bump (the annotated `vX.Y.Z` tag is cut on `main`). See
 [`CONTRIBUTING.md`](./CONTRIBUTING.md), the PR template at

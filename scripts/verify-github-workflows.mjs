@@ -13,10 +13,10 @@
 //   the AGENTS.md §3 gate sequence, in order, in ci.yml and release.yml
 //   ci.yml is read-only and uploads the staged package
 //   docker-verify.yml builds the repository Dockerfile and runs the image
-//   release.yml asserts tag == package version, publishes to npm with Trusted Publishing
-//   (OIDC + provenance, tokenless: the step's run is exactly the publish command and the
-//   step carries no if/env/with/continue-on-error), keeps every release job unconditionally
-//   enabled (no literal `if: false`), creates a Release and pushes to GHCR
+//   release.yml asserts tag == package version, stages the npm publish with Trusted
+//   Publishing (OIDC + provenance, tokenless: the step's run is exactly the staged command
+//   and the step carries no if/env/with/continue-on-error), keeps every release job
+//   unconditionally enabled (no literal `if: false`), creates a Release and pushes to GHCR
 //   no tabs | every referenced scripts/*.mjs exists | no retired CI references
 //
 // YAML parsing is delegated to a real parser, never re-implemented:
@@ -85,11 +85,13 @@ const STEP_KEYS = new Set([
 ])
 const PUBLISH_ACTIONS = ["docker/login-action", "docker/build-push-action", "softprops/action-gh-release"]
 
-// Trusted Publishing must be EFFECTIVE, not merely mentioned. The publish step's run is
-// compared to this command after trim(), so `--dry-run`, an echo, an `if:` guard and a
+// Trusted Publishing must be EFFECTIVE and STAGED, not merely mentioned. The publish step's
+// run is compared to the staged command after trim(), so a plain `npm publish` (a direct
+// publish, which the trusted publisher denies), `--dry-run`, an echo, an `if:` guard and a
 // `true || npm publish` chain all stop being a publish at once; the step itself may carry
 // no modifier that disables it (if/continue-on-error) or injects a credential (env/with).
-const NPM_PUBLISH_COMMAND = "npm publish --access public --provenance"
+const NPM_STAGE_PUBLISH_COMMAND = "npm stage publish --access public --provenance"
+const NPM_PUBLISH_PATTERN = /\bnpm\s+(?:stage\s+)?publish\b/
 const NPM_PUBLISH_SHAPE_KEYS = ["if", "continue-on-error"]
 const NPM_PUBLISH_TOKEN_KEYS = ["env", "with"]
 // Semantic values only (the parse drops comments), so release.yml's explanatory comment may
@@ -556,28 +558,31 @@ function validateWorkflow(file, data) {
       if (!files.includes("dist/silicon-package.tar.gz")) add("release-assets", "release.yml release files must include dist/silicon-package.tar.gz")
       if (input.generate_release_notes !== true) add("release-assets", "release.yml must set generate_release_notes: true")
     }
-    const publishSteps = steps.filter(({ step }) => nonEmptyString(step.run) && step.run.includes("npm publish"))
+    const publishSteps = steps.filter(({ step }) => nonEmptyString(step.run) && NPM_PUBLISH_PATTERN.test(step.run))
     if (publishSteps.length === 0) {
-      add("release-npm-publish", `release.yml must publish to npm with a step whose run is exactly ${JSON.stringify(NPM_PUBLISH_COMMAND)} (Trusted Publishing)`)
+      add("release-npm-publish", `release.yml must stage the npm publish with a step whose run is exactly ${JSON.stringify(NPM_STAGE_PUBLISH_COMMAND)} (Trusted Publishing)`)
     } else {
       const publishEntry = publishSteps[0]
       const publishIndex = steps.indexOf(publishEntry)
       const publishStep = publishEntry.step
       if (publishSteps.length > 1) {
-        add("release-npm-publish", `release.yml must publish from exactly one step; ${publishSteps.length} steps mention npm publish`)
+        add("release-npm-publish", `release.yml must stage the npm publish from exactly one step; ${publishSteps.length} steps mention npm publish`)
       }
       const publishRun = publishStep.run.trim()
-      if (publishRun !== NPM_PUBLISH_COMMAND) {
+      if (publishRun !== NPM_STAGE_PUBLISH_COMMAND) {
+        const plainPublish = /\bnpm\s+publish\b/.test(publishRun)
         add(
           "release-npm-publish",
-          `release.yml npm publish step must run exactly ${JSON.stringify(NPM_PUBLISH_COMMAND)} — no --dry-run, echo, if-guard or || chain; got ${JSON.stringify(publishRun)}`,
+          plainPublish
+            ? `release.yml must use staged publishing (${JSON.stringify(NPM_STAGE_PUBLISH_COMMAND)}), not a plain \`npm publish\`; got ${JSON.stringify(publishRun)}`
+            : `release.yml npm staging step must run exactly ${JSON.stringify(NPM_STAGE_PUBLISH_COMMAND)} — no --dry-run, echo, if-guard or || chain; got ${JSON.stringify(publishRun)}`,
         )
       }
       for (const key of NPM_PUBLISH_SHAPE_KEYS) {
-        if (publishStep[key] !== undefined) add("release-npm-publish", `release.yml npm publish step must not set ${key}; the publish itself must be unconditional`)
+        if (publishStep[key] !== undefined) add("release-npm-publish", `release.yml npm staging step must not set ${key}; the staged publish itself must be unconditional`)
       }
       for (const key of NPM_PUBLISH_TOKEN_KEYS) {
-        if (publishStep[key] !== undefined) add("release-npm-tokenless", `release.yml npm publish step must not set ${key}; Trusted Publishing supplies its own short-lived OIDC token`)
+        if (publishStep[key] !== undefined) add("release-npm-tokenless", `release.yml npm staging step must not set ${key}; Trusted Publishing supplies its own short-lived OIDC token`)
       }
       const artifactIndex = steps.reduce(
         (found, { step }, index) => (nonEmptyString(step.run) && /npm pack|silicon-package\.tar\.gz/.test(step.run) ? index : found),
@@ -782,44 +787,48 @@ const RELEASE_ASSERT_STEP = `      - name: Assert the tag matches the package ve
           fi
 `
 
-const NPM_PUBLISH_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
-        run: npm publish --access public --provenance
+const NPM_PUBLISH_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
+        run: npm stage publish --access public --provenance
 `
 
 // Adversarial copies of the publish step. Each one carries the exact command text (or a
-// prefix of it) yet must not count as an effective publish.
-const NPM_PUBLISH_DRY_RUN_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
-        run: npm publish --access public --provenance --dry-run
+// prefix of it) yet must not count as an effective staged publish.
+const NPM_PLAIN_PUBLISH_STEP = `      - name: Publish to npm directly
+        run: npm publish --access public --provenance
 `
 
-const NPM_PUBLISH_GUARDED_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+const NPM_PUBLISH_DRY_RUN_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
+        run: npm stage publish --access public --provenance --dry-run
+`
+
+const NPM_PUBLISH_GUARDED_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
         if: false
-        run: npm publish --access public --provenance
+        run: npm stage publish --access public --provenance
 `
 
-const NPM_PUBLISH_CONTINUE_ON_ERROR_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+const NPM_PUBLISH_CONTINUE_ON_ERROR_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
         continue-on-error: true
-        run: npm publish --access public --provenance
+        run: npm stage publish --access public --provenance
 `
 
-const NPM_PUBLISH_LEGACY_TOKEN_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+const NPM_PUBLISH_LEGACY_TOKEN_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
         env:
           LEGACY_PUBLISH_SECRET: \${{ secrets.LEGACY_PUBLISH_SECRET }}
         run: |
           npm config set //registry.npmjs.org/:_password "$LEGACY_PUBLISH_SECRET"
-          npm publish --access public --provenance
+          npm stage publish --access public --provenance
 `
 
 // Independent controls for the two publish-rule clauses that had none: "exactly one publish
 // step" and "the publish step carries no env, whatever the variable is named".
-const NPM_SECOND_PUBLISH_STEP = `      - name: Publish to npm again
-        run: npm publish --access public --provenance
+const NPM_SECOND_PUBLISH_STEP = `      - name: Stage the npm publish again
+        run: npm stage publish --access public --provenance
 `
 
-const NPM_PUBLISH_ARBITRARY_ENV_STEP = `      - name: Publish to npm (Trusted Publishing / OIDC)
+const NPM_PUBLISH_ARBITRARY_ENV_STEP = `      - name: Stage the npm publish (Trusted Publishing / OIDC)
         env:
           SOME_RANDOM_NAME: value
-        run: npm publish --access public --provenance
+        run: npm stage publish --access public --provenance
 `
 
 const DOCKER_FIXTURE = `name: CI — docker real-machine verification
@@ -978,12 +987,20 @@ function runSelfTest(oracle) {
         file: "release.yml",
         content: RELEASE_FIXTURE.replace(
           NPM_PUBLISH_STEP,
-          `      - name: Publish to npm\n        run: |\n          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc\n          npm publish --access public --provenance\n`,
+          `      - name: Publish to npm\n        run: |\n          echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" > .npmrc\n          npm stage publish --access public --provenance\n`,
         ),
         expected: "release-npm-tokenless",
       },
       // H1: a publish step must be EFFECTIVE, not merely mention the command.
       { file: "release.yml", label: "dry-run", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_DRY_RUN_STEP), expected: "release-npm-publish" },
+      // Staged publishing is required: a plain `npm publish` is a direct publish, which the
+      // trusted publisher denies (the v0.7.1 E403), so it must not pass this gate.
+      {
+        file: "release.yml",
+        label: "plain-publish (non-stage)",
+        content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PLAIN_PUBLISH_STEP),
+        expected: "release-npm-publish",
+      },
       { file: "release.yml", label: "if-guard", content: RELEASE_FIXTURE.replace(NPM_PUBLISH_STEP, NPM_PUBLISH_GUARDED_STEP), expected: "release-npm-publish" },
       {
         file: "release.yml",

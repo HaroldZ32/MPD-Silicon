@@ -1,0 +1,182 @@
+{
+ "record": "npm staged-publish change-set verification (independent reviewer, run-it-yourself)",
+ "producedAtUtc": "2026-10-30T07:41:37Z (directory stamp); measurements 2026-10-30T07:32Z-07:43Z",
+ "reviewer": "Reviewer (findings-only; no reviewed file was edited; nothing committed, tagged or published; the only write is this evidence directory)",
+ "requirementFrozen": {
+  "releaseWorkflow": "release.yml: exact step run `npm stage publish --access public --provenance`, after pack/archive and before GitHub Release/GHCR; workflow permissions contents/packages/id-token write; no NPM_TOKEN/NODE_AUTH_TOKEN/.npmrc/token step; filename release.yml; triggers v*; version assert + full AGENTS.md §3 gate order intact.",
+  "workflowGate": "requires exactly one staged publish step with the exact run; rejects plain `npm publish` (non-stage); rejects if/continue-on-error/env/with; rejects a duplicate publish step; keeps tokenless + id-token + publish-order + release-job-if rules; self-test honest count (author says 38/38) with load-bearing controls.",
+  "docs": "bilingual (README pair, CONTRIBUTING pair, AGENTS.md §1/§9, AGENT.md, PR template): future versions are STAGED via Trusted Publishing/OIDC and a maintainer approves with 2FA before live; no claim that 0.7.2 is published; CHANGELOG Unreleased records the switch and keeps 0.7.1 history.",
+  "scope": "no implementation/test code change; exactly the 10 named files (+ evidence written by this review)."
+ },
+ "basis": {
+  "gitHead": "528d5a7e30dd7fd5933c57f2514406151b52568a",
+  "branch": "main",
+  "workTreeDiffSha256": "13bbf330ca7688ef85cd9eca67a886fffe7f532b9f3734930244fa840918139b",
+  "gitDiffStat": "10 files changed, 127 insertions(+), 80 deletions(-)",
+  "changedFiles": [
+   ".github/PULL_REQUEST_TEMPLATE.md",
+   ".github/workflows/release.yml",
+   "AGENT.md",
+   "AGENTS.md",
+   "CHANGELOG.md",
+   "CONTRIBUTING.md",
+   "CONTRIBUTING.zh-CN.md",
+   "README.md",
+   "README.zh-CN.md",
+   "scripts/verify-github-workflows.mjs"
+  ],
+  "noModeOnlyOrExtraChanges": "git diff --summary is empty and git status --porcelain listed exactly the 10 ' M' entries before this evidence directory was created",
+  "realFileHashes": {
+   "workflows": {
+    "boot-e2e.yml": "684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed",
+    "ci.yml": "18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac",
+    "docker-verify.yml": "e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f",
+    "release.yml": "2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a"
+   },
+   "changedFiles": {
+    ".github/PULL_REQUEST_TEMPLATE.md": "c4ec1a69e98e24f87e833b572ccb4540171272e5bd7f15aeff23fc6addb2e591",
+    ".github/workflows/release.yml": "2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a",
+    "AGENT.md": "3700e312a7408556b7693147f6cbb311ed697a2e3a7340cb6bcf3d0e017f8e72",
+    "AGENTS.md": "c2ab6d35ff5a56ecce9b166bdb26cf439c365704baba895609c3a11ae79cd3e0",
+    "CHANGELOG.md": "d99a7eac53d31e7c0b8ff896471fa18b7357bdee54e1382b4f26be338b39ffab",
+    "CONTRIBUTING.md": "fe9749d56f034666d532d16d045b1ddb38699e45bab44e231f9eb82a9f2bece8",
+    "CONTRIBUTING.zh-CN.md": "895a9bea35f4dbb7bfcb442de71ea14291b1b345e59826bfce73877838e267fc",
+    "README.md": "e8e006ae2a147025c56dea89d9661cbd8eefecc9bd55761268292e9ecc29280c",
+    "README.zh-CN.md": "c1e9d038e9f51303afbb69a722ca3934b75104dc0d22927f63ad3d6b8b0c125b",
+    "scripts/verify-github-workflows.mjs": "bd88a3742930936b383337b2ac06e1c4599d482051d7c479c03ab6fb870c3b4e"
+   }
+  },
+  "note": "The diff hash covers the tracked 10-file delta only; the evidence directory is untracked and not part of it."
+ },
+ "environment": {
+  "os": "Linux x86_64",
+  "node": "v24.21.0",
+  "npm": "11.19.0",
+  "bun": "1.4.2 (local; CI pins 1.4.3 and the gate asserts that pin)",
+  "python": "3.14.4",
+  "pyyaml": "6.0.3",
+  "sandbox": "HOME read-only; TMPDIR=$PWD/.tmp; npm_config_cache=$PWD/.npm-cache"
+ },
+ "items": [
+  {"id": "scope-10-files", "requirement": "exactly the 10 named files, no implementation/test change", "observed": "git status --porcelain: exactly 10 ' M' entries, matching the named set; no packages/ or tests/ change; no untracked files before the evidence write; git diff --summary empty (no mode-only change)", "exit": 0, "status": "PASS"},
+  {"id": "release-exact-run", "requirement": "release.yml has an exact step run `npm stage publish --access public --provenance`", "observed": "PyYAML safe_load: exactly one step whose run matches npm (stage )?publish; run.strip() === 'npm stage publish --access public --provenance'", "exit": 0, "status": "PASS"},
+  {"id": "release-order", "requirement": "staged step after pack/archive and before GitHub Release/GHCR", "observed": "publish index > last pack/archive step index; publish index < docker/login-action, docker/build-push-action and softprops/action-gh-release indices", "exit": 0, "status": "PASS"},
+  {"id": "release-permissions", "requirement": "contents/packages/id-token write", "observed": "permissions.contents=write, permissions.packages=write, permissions['id-token']=write", "exit": 0, "status": "PASS"},
+  {"id": "release-tokenless", "requirement": "no NPM_TOKEN/NODE_AUTH_TOKEN/.npmrc/token step", "observed": "publish step has no env/with/if/continue-on-error/uses; no deny token in the parsed semantics (comments that document the absence are not scanned by the gate, by design); the step's run is exactly the staged command", "exit": 0, "status": "PASS"},
+  {"id": "release-name-trigger", "requirement": "filename release.yml; trigger v*", "observed": ".github/workflows/release.yml; on.push.tags == ['v*']; required-workflow set contains release.yml", "exit": 0, "status": "PASS"},
+  {"id": "release-assert-gates", "requirement": "version assert + full §3 gate order intact", "observed": "version assert exists and fails on mismatch, is before the gates; all 11 GATE_COMMANDS present exactly once, contiguous and in order; staged step after the whole chain", "exit": 0, "status": "PASS"},
+  {"id": "gate-4-of-4", "requirement": "workflow gate passes the real tree", "observed": "'PASS .github/workflows (required set)' plus PASS for boot-e2e.yml, ci.yml, docker-verify.yml, release.yml", "exit": 0, "status": "PASS"},
+  {"id": "gate-reject-plain", "requirement": "gate rejects plain (non-stage) npm publish", "observed": "copy with `run: npm publish --access public --provenance` -> exit 1, rule release-npm-publish ('must use staged publishing ... not a plain npm publish')", "exit": 1, "status": "PASS"},
+  {"id": "gate-reject-modifiers", "requirement": "gate rejects --dry-run, if, continue-on-error", "observed": "three copies -> exit 1, rule release-npm-publish each", "exit": 1, "status": "PASS"},
+  {"id": "gate-reject-env-with", "requirement": "gate rejects env/with on the publish step", "observed": "env NPM_TOKEN, env arbitrary name and with block -> exit 1, rule release-npm-tokenless each", "exit": 1, "status": "PASS"},
+  {"id": "gate-reject-duplicate", "requirement": "gate rejects a duplicate publish step", "observed": "duplicate with a distinct name -> exit 1, rule release-npm-publish ('exactly one step; 2 steps mention npm publish'); duplicate with the same name additionally trips step-name-duplicate", "exit": 1, "status": "PASS"},
+  {"id": "gate-keeps-rules", "requirement": "keeps tokenless + id-token + publish-order + release-job-if", "observed": "id-token removed -> release-id-token; staged moved after the GitHub Release -> release-npm-publish-order; staged before pack/archive -> release-npm-publish-order; legacy _authToken/.npmrc run -> release-npm-tokenless; job-level if:false control still present in the self-test (release-job-if-disabled) and the rule code is untouched by the diff", "exit": 1, "status": "PASS"},
+  {"id": "selftest-38", "requirement": "self-test honest count 38/38 with load-bearing controls", "observed": "'verify-github-workflows self-test: 38/38 fixtures behaved', exit 0; 37 fixtures + 1 missing-workflow case; HEAD baseline is 36 fixtures -> 37/37 exit 0 (measured with the HEAD gate from a clean copy), so the count grew by exactly the one new plain-publish control; every negative fixture asserts a specific rule name, and the real-tree run is separate from the count", "exit": 0, "status": "PASS"},
+  {"id": "docs-bilingual-parity", "requirement": "README pair and CONTRIBUTING pair stay in sync", "observed": "README.md/README.zh-CN.md heading count 20 == 20; CONTRIBUTING.md/CONTRIBUTING.zh-CN.md 13 == 13; language switch links present in both directions in both pairs", "exit": 0, "status": "PASS"},
+  {"id": "docs-staged-2fa", "requirement": "docs say STAGED via Trusted Publishing/OIDC + maintainer 2FA approval before live", "observed": "all of README pair, CONTRIBUTING pair, AGENTS.md §1 and §9, AGENT.md and the PR template carry staged + 2FA language (zh twins carry 暂存 + 2FA); both pairs name the exact staged command and contain no leftover direct publish command", "exit": 0, "status": "PASS"},
+  {"id": "docs-no-072", "requirement": "no claim that 0.7.2 is published", "observed": "no '0.7.2' mention in any tracked markdown/agent-facing doc", "exit": 0, "status": "PASS"},
+  {"id": "changelog", "requirement": "Unreleased records the switch and keeps 0.7.1 history", "observed": "Unreleased records the staged command and the v0.7.1 failure; '## 0.7.1 — 2026-10-30' section retained", "exit": 0, "status": "PASS"},
+  {"id": "chain-11", "requirement": "full §3 chain 11/11 exit 0 (325 pass / 1 skip / 0 fail)", "observed": "typecheck --require 0, bun test packages/ 0 (326 tests / 25 files, 325 pass / 1 declared skip / 0 fail), corpus 0, rows 0, build-lsp --check 0, packer --self-test 0, workflow gate 0, pack --check 0, pack 0, package --self-test 0, package verify 0", "exit": 0, "status": "PASS"},
+  {"id": "secret-scan", "requirement": "no credential material in the change set or the tree", "observed": "token/private-key patterns: no matches; no tracked .npmrc; no NPM_TOKEN/NODE_AUTH_TOKEN reference in .github/workflows except the explanatory comment 'no NPM_TOKEN secret and no .npmrc are involved' (a comment, not a step)", "exit": 0, "status": "PASS"},
+  {"id": "npm-cli-probe", "requirement": "the exact staged command is real and runnable on the CI npm line", "observed": "npm 11.19.0 `npm stage --help` exposes publish/list/view/approve/reject/download; `npm stage publish --access public --provenance --dry-run` in the real package (cwd = repo root) exits 0, packs 86 files, shasum c0e72fcfcc9fb287a7f8947a845f1fa54ae13813, and prints 'Staging to https://registry.npmjs.org/ ... (dry-run)' — no package-spec and the two flags are accepted; a --dry-run stages nothing", "exit": 0, "status": "PASS"},
+  {"id": "artifact-identity", "requirement": "the Release artifact matches what would be staged", "observed": "npm pack of the same tree -> mpd-dsh-silicon-0.7.1.tgz, 86 files, sha1 c0e72fcfcc9fb287a7f8947a845f1fa54ae13813, identical to the staged dry-run shasum", "exit": 0, "status": "PASS"},
+  {"id": "registry-facts", "requirement": "docs' history claims are consistent with the registry", "observed": "npm view versions -> ['0.0.0-stage','0.7.0']; @0.7.1 is 404 (not published); the docs publish 0.7.0 and describe v0.7.1 as a failed attempt", "exit": 0, "status": "PASS"},
+  {"id": "v071-failure-claim", "requirement": "the cited v0.7.1 failure run exists and failed at the npm step", "observed": "GitHub API run 41019623710: name Release, event push, head_branch v0.7.1, conclusion failure; job 'Release artifacts and image' failed at step 20 'Publish to npm (Trusted Publishing / OIDC)'; steps 6, 12-19 succeeded", "exit": 0, "status": "PASS"}
+ ],
+ "adversarialMatrix": {
+  "method": "real .github/workflows copied to a gitignored temp dir, only release.yml mutated, gate run with --dir; the real tree's workflow sha256 values were byte-identical before and after (release.yml 2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a); one shell invocation drove every case",
+  "control": "staged-exact: exit 0, no rule",
+  "cases": [
+   {"case": "plain npm publish", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged --dry-run", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged if: false", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged if: ${{ false }}", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged continue-on-error: true", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged env NPM_TOKEN", "exit": 1, "rule": "release-npm-tokenless", "ok": true},
+   {"case": "staged env arbitrary name", "exit": 1, "rule": "release-npm-tokenless", "ok": true},
+   {"case": "staged with:", "exit": 1, "rule": "release-npm-tokenless", "ok": true},
+   {"case": "id-token removed", "exit": 1, "rule": "release-id-token", "ok": true},
+   {"case": "staged moved after GitHub Release", "exit": 1, "rule": "release-npm-publish-order", "ok": true},
+   {"case": "staged moved before pack/archive", "exit": 1, "rule": "release-npm-publish-order", "ok": true},
+   {"case": "duplicate staged step (distinct name)", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "duplicate staged step (same name)", "exit": 1, "rule": "release-npm-publish (+ step-name-duplicate)", "ok": true},
+   {"case": "staged in a `true ||` chain", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged only echoed", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "staged + an extra shell line", "exit": 1, "rule": "release-npm-publish", "ok": true},
+   {"case": "restored real release.yml", "exit": 0, "rule": "none", "ok": true}
+  ],
+  "result": "17/17 behaved as required; real files unchanged"
+ },
+ "gateSelfTest": {
+  "realTree": "4/4 workflow files PASS, exit 0",
+  "count": "38/38, exit 0",
+  "formula": "total = fixtures.length + 1 (the +1 is the separate missing-workflow control); passed increments only when the fixture's expected rule appears (or, for a valid fixture, when no issue is reported)",
+  "headBaseline": "HEAD gate in a clean copy: 36 fixtures -> 37/37, exit 0",
+  "newControl": "plain-publish (non-stage): RELEASE_FIXTURE with the staged step replaced by `npm publish --access public --provenance`, expected release-npm-publish",
+  "loadBearing": "the new fixture is the only added control (36 -> 37 fixtures, 37/37 -> 38/38); the valid fixture and the real tree both use the staged command, so reverting the command constant makes them fail; every negative fixture targets a named rule",
+  "coupling": {
+   "newGateOnOldWorkflow": "exit 1: [release-npm-publish] must use staged publishing ..., not a plain npm publish; got \"npm publish --access public --provenance\"",
+   "oldGateOnNewWorkflow": "exit 1: [release-npm-publish] must publish to npm with a step whose run is exactly \"npm publish --access public --provenance\""
+  }
+ },
+ "registryFacts": {
+  "package": "@mpd-dsh/silicon",
+  "versions": ["0.0.0-stage", "0.7.0"],
+  "version071OnRegistry": false,
+  "version072OnRegistry": false,
+  "failureRun": {"id": 41019623710, "conclusion": "failure", "headBranch": "v0.7.1", "failedStep": 20, "failedStepName": "Publish to npm (Trusted Publishing / OIDC)", "stepsBeforeSucceeded": "6 and 12-19 (version assert, packer self-test, pack --check, pack, package self-test, package verify, npm pack, archive)"}
+ },
+ "npmProbe": {
+  "cliVersion": "11.19.0",
+  "help": "npm stage publish <package-spec> accepts [--tag] [--access] [--dry-run] [--otp] [-w|--workspace] [--provenance|--provenance-file]; subcommands publish/list/view/approve/reject/download",
+  "dryRunRealPackage": {"command": "npm stage publish --access public --provenance --dry-run", "cwd": "repo root", "exit": 0, "fileCount": 86, "shasum": "c0e72fcfcc9fb287a7f8947a845f1fa54ae13813", "observedLine": "Staging to https://registry.npmjs.org/ with tag latest and public access (dry-run)"},
+  "packSha1": "c0e72fcfcc9fb287a7f8947a845f1fa54ae13813",
+  "packEqualsStagedContent": true,
+  "note": "Dry-run only. Nothing was published or staged for real; the real OIDC exchange and the 2FA approval are unproven."
+ },
+ "docsParity": {
+  "readme": "20 == 20 headings; switch links both ways; staged + 2FA in both; exact staged command in both; no leftover direct command",
+  "contributing": "13 == 13 headings; switch links both ways; staged + 2FA in both; exact staged command in both; no leftover direct command",
+  "agents": "§1 and §9 carry STAGED + 2FA",
+  "agentMdAndPrTemplate": "carry staged + 2FA language",
+  "changelog": "Unreleased records the switch and the v0.7.1 failure; 0.7.1 history retained",
+  "no072Claim": true
+ },
+ "secretScan": {
+  "patterns": ["npm_<36>", "ghp_<36>", "github_pat_", "AKIA<16>", "BEGIN ... PRIVATE KEY", "xox?-..."],
+  "matches": 0,
+  "trackedNpmrc": "none",
+  "workflowTokenRefs": "only the explanatory comment in .github/workflows/release.yml that states no NPM_TOKEN secret and no .npmrc are involved; no step env/with"
+ },
+ "findings": [
+  {
+   "id": "docs-approval-order-narrative",
+   "severity": "Nit",
+   "what": "AGENT.md §4 and .github/PULL_REQUEST_TEMPLATE.md (both language halves) place the maintainer's 2FA approval before the GitHub Release and GHCR in their sentence/arrow order, but the workflow creates the GitHub Release and pushes the GHCR image inside the same tag run, immediately after the stage step, with no human gate.",
+   "where": "AGENT.md §4 CI paragraph ('a maintainer approves the staged version with 2FA before it becomes live, then the GitHub Release is created and the GHCR image pushed'); .github/PULL_REQUEST_TEMPLATE.md release-mapping paragraph ('tag -> npm stage publish ... -> maintainer 2FA approval + GitHub Release + GHCR') and its Chinese twin",
+   "why": "A maintainer may expect the Release/GHCR to be gated on the approval, and may be surprised that a GitHub Release exists while the npm version is not live. The package becoming live IS correctly gated on 2FA; only the sequencing narrative is off.",
+   "direction": "Describe the approval as asynchronous and separate from the run: the same run stages the package, creates the GitHub Release and pushes the GHCR image; a maintainer then approves the staged version with 2FA before it becomes live. Keep both language halves in sync."
+  }
+ ],
+ "declinedToJudge": [
+  "Absolute wording 'Staging is always allowed for that trusted publisher' — read as a claim about the configured trusted publisher (npm's `npm trust ... --allow-stage-publish` is a per-relationship permission), consistent with the measured v0.7.1 denial; not a claim about npm globally.",
+  "Shorthand 'a direct npm publish needs --allow-publish' — `--allow-publish` is a real `npm trust <provider>` flag (verified in npm 11.19.0 docs); compressed but correct in context.",
+  "CHANGELOG keeps a '## 0.7.1 — 2026-10-30' section for a version that is not on the registry — the frozen requirement explicitly requires keeping 0.7.1 history, and Unreleased states the tag failed.",
+  "A re-run of the release workflow after a later GHCR/Release failure would try to stage the same version twice and hit the staged-version unique index — inherent to npm staged publishing, not introduced by this change, and not covered by the requirement.",
+  "The gate does not reject `working-directory` (or `shell`) on the publish step — the frozen gate contract enumerates the rejected modifiers, the current key allowlist is pre-existing, and the real workflow sets neither.",
+  "The GitHub Release is created before the npm version is live — the order is mandated by the frozen requirement (stage before Release), and the docs explain the approval.",
+  "The exact E403 log text quoted in CHANGELOG/README — the run metadata and the failed step are verified, the log body is not (logs API needs auth)."
+ ],
+ "bounds": [
+  "The real GitHub Actions v* tag run is UNPROVEN: no OIDC token exchange, no real staged publish, no provenance attestation and no 2FA approval were executed (no tag, no credentials, no maintainer approval). This remains unproven until the next tag run (v0.7.2) and its approval.",
+  "The exact E403 message in run 41019623710's log was not retrieved; only the run metadata and the failing step (step 20, 'Publish to npm (Trusted Publishing / OIDC)') were verified.",
+  "Did not run docker-verify.yml or boot-e2e.yml (Docker build, real harness boots); they are not in the §3 chain and this change set touches no plugin row or tool schema.",
+  "Did not measure the registry *install* path (needs a writable HOME/dsh profile).",
+  "The adversarial matrix and mutants lived under gitignored .tmp and were removed; the real .github/** was never written (workflow sha256 identical before and after).",
+  "Read the changed hunks, the release validator block, the self-test runner and all new fixtures, the PyYAML shape checks and the docs diffs; did not re-read every untouched line of the 1128-line gate script or the whole docs corpus.",
+  "The local bun is 1.4.2 while CI pins 1.4.3; tests passed locally and the workflow pin is unchanged and still asserted by the gate.",
+  "The copy-based old-gate cross-check used HEAD's gate script with symlinked scripts/ and Dockerfile; the new gate rejects the old release.yml and the old gate rejects the new one (both exit 1, release-npm-publish)."
+ ],
+ "verdict": "APPROVE",
+ "verdictJustification": "Every frozen requirement was observed by running it: the release workflow carries the exact staged step in the required position with the three write permissions and no token path, the gate passes 4/4 and rejects every adversarial variant (plain publish, --dry-run, if, continue-on-error, env, with, id-token removal, both order moves, duplicates, echo/||/extra-line) while its self-test is an honest 38/38 that grew by exactly the one new control, the §3 chain is 11/11 with 325 pass / 1 skip / 0 fail and no secret material, and the bilingual docs/CHANGELOG/PR template are in sync with no 0.7.2 claim; the only observation is one non-blocking Nit about approval/Release sequencing in AGENT.md and the PR template, and the real stage publish + 2FA approval remain a stated bound until the next tag run."
+}

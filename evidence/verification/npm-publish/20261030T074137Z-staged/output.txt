@@ -1,0 +1,362 @@
+npm staged-publish change-set verification — independent reviewer
+record: evidence/verification/npm-publish/20261030T074137Z-staged
+measured: 2026-10-30T07:32Z-07:43Z (UTC)  |  host: Linux x86_64
+node v24.21.0  npm 11.19.0  bun 1.4.2  python 3.14.4  PyYAML 6.0.3
+reviewer: findings-only; no reviewed file edited; nothing committed, tagged or published
+
+################################################################
+# 0. BASIS
+################################################################
+HEAD 528d5a7e30dd7fd5933c57f2514406151b52568a
+BRANCH main
+DIFF-SHA256 13bbf330ca7688ef85cd9eca67a886fffe7f532b9f3734930244fa840918139b
+DIFF-STAT  10 files changed, 127 insertions(+), 80 deletions(-)
+NAME-STATUS:
+ M .github/PULL_REQUEST_TEMPLATE.md
+ M .github/workflows/release.yml
+ M AGENT.md
+ M AGENTS.md
+ M CHANGELOG.md
+ M CONTRIBUTING.md
+ M CONTRIBUTING.zh-CN.md
+ M README.md
+ M README.zh-CN.md
+ M scripts/verify-github-workflows.mjs
+PER-FILE-SHA256:
+c4ec1a69e98e24f87e833b572ccb4540171272e5bd7f15aeff23fc6addb2e591  .github/PULL_REQUEST_TEMPLATE.md
+2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a  .github/workflows/release.yml
+3700e312a7408556b7693147f6cbb311ed697a2e3a7340cb6bcf3d0e017f8e72  AGENT.md
+c2ab6d35ff5a56ecce9b166bdb26cf439c365704baba895609c3a11ae79cd3e0  AGENTS.md
+d99a7eac53d31e7c0b8ff896471fa18b7357bdee54e1382b4f26be338b39ffab  CHANGELOG.md
+fe9749d56f034666d532d16d045b1ddb38699e45bab44e231f9eb82a9f2bece8  CONTRIBUTING.md
+895a9bea35f4dbb7bfcb442de71ea14291b1b345e59826bfce73877838e267fc  CONTRIBUTING.zh-CN.md
+e8e006ae2a147025c56dea89d9661cbd8eefecc9bd55761268292e9ecc29280c  README.md
+c1e9d038e9f51303afbb69a722ca3934b75104dc0d22927f63ad3d6b8b0c125b  README.zh-CN.md
+bd88a3742930936b383337b2ac06e1c4599d482051d7c479c03ab6fb870c3b4e  scripts/verify-github-workflows.mjs
+WORKFLOW-SHA256:
+684f4cd9e7af0d22d45e04fe1a2f450065734333e850368441e3e3c4393a0fed  .github/workflows/boot-e2e.yml
+18ddc80a230e95842956001c01a1694001873493006ff28240ddadc322579eac  .github/workflows/ci.yml
+e70ddba9f1a48c6454ef3fce39592f9128377fc6eaeafabf5c79e867cc75d10f  .github/workflows/docker-verify.yml
+2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a  .github/workflows/release.yml
+
+################################################################
+# 1. WORKFLOW GATE — 4/4 PASS + --self-test 38/38
+################################################################
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+--- self-test ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+PASS self-test: good.yml — valid workflow accepted
+PASS self-test: bad-name.yml — tampered workflow rejected by name
+PASS self-test: bad-on.yml — tampered workflow rejected by on
+PASS self-test: bad-permissions.yml — tampered workflow rejected by permissions
+PASS self-test: bad-jobs.yml — tampered workflow rejected by jobs
+PASS self-test: bad-runs-on.yml — tampered workflow rejected by runs-on
+PASS self-test: bad-steps.yml — tampered workflow rejected by steps
+PASS self-test: bad-step-body.yml — tampered workflow rejected by step-body
+PASS self-test: bad-tab.yml — tampered workflow rejected by no-tabs
+PASS self-test: bad-script.yml — tampered workflow rejected by script-ref
+PASS self-test: bad-provider.yml — tampered workflow rejected by provider-reference
+PASS self-test: bad-registry.yml — tampered workflow rejected by registry-reference
+PASS self-test: bad-pipeline-dir.yml — tampered workflow rejected by pipeline-dir-reference
+PASS self-test: bad-yaml.yml — tampered workflow rejected by yaml-parse
+PASS self-test: ci.yml — valid workflow accepted
+PASS self-test: ci.yml — tampered workflow rejected by gate-missing
+PASS self-test: ci.yml — tampered workflow rejected by gate-order
+PASS self-test: ci.yml — tampered workflow rejected by ci-no-publish
+PASS self-test: boot-e2e.yml — valid workflow accepted
+PASS self-test: boot-e2e.yml — tampered workflow rejected by boot-e2e-no-pr
+PASS self-test: docker-verify.yml — valid workflow accepted
+PASS self-test: docker-verify.yml — tampered workflow rejected by docker-verify-run
+PASS self-test: release.yml — valid workflow accepted
+PASS self-test: release.yml — tampered workflow rejected by release-version-assert
+PASS self-test: release.yml — tampered workflow rejected by release-ghcr
+PASS self-test: release.yml — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml — tampered workflow rejected by release-id-token
+PASS self-test: release.yml — tampered workflow rejected by release-npm-tokenless
+PASS self-test: release.yml (dry-run) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (plain-publish (non-stage)) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (if-guard) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (continue-on-error) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (legacy-token-env) — tampered workflow rejected by release-npm-tokenless
+PASS self-test: release.yml (publish-after-release) — tampered workflow rejected by release-npm-publish-order
+PASS self-test: release.yml (job-if-disabled) — tampered workflow rejected by release-job-if-disabled
+PASS self-test: release.yml (second-publish-step) — tampered workflow rejected by release-npm-publish
+PASS self-test: release.yml (publish-arbitrary-env) — tampered workflow rejected by release-npm-tokenless
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 38/38 fixtures behaved
+
+################################################################
+# 2. GATE/WORKFLOW COUPLING (both directions)
+################################################################
+--- old gate (HEAD 528d5a7) --self-test on HEAD workflows: baseline count ---
+PASS self-test: missing-workflow — a missing required workflow is rejected
+verify-github-workflows self-test: 37/37 fixtures behaved
+--- old gate (HEAD) against the NEW release.yml: must reject ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .github/workflows
+PASS .github/workflows (required set)
+PASS .github/workflows/boot-e2e.yml
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+FAIL .github/workflows/release.yml
+  [release-npm-publish] release.yml must publish to npm with a step whose run is exactly "npm publish --access public --provenance" (Trusted Publishing)
+--- new gate against the OLD release.yml (HEAD): must reject ---
+verify-github-workflows: oracle python3 + PyYAML 6.0.3
+verify-github-workflows: 4 workflow file(s) under .tmp/cross/newgate-oldflow
+PASS .tmp/cross/newgate-oldflow (required set)
+PASS .tmp/cross/newgate-oldflow/boot-e2e.yml
+PASS .tmp/cross/newgate-oldflow/ci.yml
+PASS .tmp/cross/newgate-oldflow/docker-verify.yml
+FAIL .tmp/cross/newgate-oldflow/release.yml
+  [release-npm-publish] release.yml must use staged publishing ("npm stage publish --access public --provenance"), not a plain `npm publish`; got "npm publish --access public --provenance"
+
+################################################################
+# 3. PyYAML safe_load SHAPE ASSERTIONS
+################################################################
+PASS file is release.yml
+PASS trigger push.tags == ['v*']
+PASS permissions contents=write
+PASS permissions packages=write
+PASS permissions id-token=write
+PASS exactly one publish step
+PASS publish run is EXACT staged command
+PASS publish step has no if
+PASS publish step has no continue-on-error
+PASS publish step has no env
+PASS publish step has no with
+PASS publish step has no uses
+PASS tokenless (no deny token in semantics)
+PASS pack/archive steps exist
+PASS publish after pack/archive
+PASS GitHub Release step exists
+PASS publish before GitHub Release
+PASS publish before GHCR login/push
+PASS version assert step exists
+PASS version assert fails on mismatch
+PASS gate present once: node scripts/typecheck.mjs --require
+PASS gate present once: bun test packages/
+PASS gate present once: node scripts/verify-corpus.mjs
+PASS gate present once: node scripts/verify-rows-disjoint.mjs
+PASS gate present once: node scripts/build-lsp.mjs --check
+PASS gate present once: node scripts/pack-silicon.mjs --self-test
+PASS gate present once: node scripts/verify-github-workflows.mjs
+PASS gate present once: node scripts/pack-silicon.mjs --check
+PASS gate present once: node scripts/pack-silicon.mjs
+PASS gate present once: node scripts/verify-package-files.mjs --self-test
+PASS gate present once: node scripts/verify-package-files.mjs
+PASS gates in §3 order and contiguous
+PASS version assert before gates
+PASS publish after whole gate chain
+PASS no literal id: false job
+SHAPE-RESULT PASS
+
+################################################################
+# 4. ADVERSARIAL MATRIX (copies of release.yml in a gitignored temp dir)
+################################################################
+PASS case=staged-exact (control) exit=0 rules=[] expected_exit=0 expected_rules=[]
+PASS case=plain npm publish (non-stage) exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged --dry-run exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged if: false exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged if: ${{ false }} exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged continue-on-error exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged env NPM_TOKEN exit=1 rules=['release-npm-tokenless'] expected_exit=1 expected_rules=['release-npm-tokenless']
+PASS case=staged env arbitrary name exit=1 rules=['release-npm-tokenless'] expected_exit=1 expected_rules=['release-npm-tokenless']
+PASS case=staged with block exit=1 rules=['release-npm-tokenless'] expected_exit=1 expected_rules=['release-npm-tokenless']
+PASS case=id-token removed exit=1 rules=['release-id-token'] expected_exit=1 expected_rules=['release-id-token']
+PASS case=publish moved after GitHub Release exit=1 rules=['release-npm-publish-order'] expected_exit=1 expected_rules=['release-npm-publish-order']
+PASS case=publish moved before pack/archive exit=1 rules=['release-npm-publish-order'] expected_exit=1 expected_rules=['release-npm-publish-order']
+PASS case=duplicate staged step (distinct name) exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=duplicate staged step (same name) exit=1 rules=['release-npm-publish', 'step-name-duplicate'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged in a || chain exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged only echoed exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=staged + extra shell line exit=1 rules=['release-npm-publish'] expected_exit=1 expected_rules=['release-npm-publish']
+PASS case=restored-real-release exit=0
+real-file sha256 unchanged: True
+release.yml sha256: 2e2631914defb442e1f709f22d3fa6fbe176c142099584e8af2e3a373876df5a
+MATRIX-RESULT PASS
+
+################################################################
+# 5. AGENTS.md §3 CHAIN — 11/11 exit 0
+################################################################
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+exit=0
+--- gate 1 (last 3 lines) ---
+[typecheck] PASS — no diagnostics (local tsgo)
+--- gate 2 (last 3 lines) ---
+ 0 fail
+ 3336 expect() calls
+Ran 326 tests across 25 files. [787.00ms]
+--- gate 3 (last 3 lines) ---
+  PASS  provider "silicon-bundle" loads all 3 skills: rtl-codestyle, rtl-ip-flow, rtl-verif
+  SKIP  fidelity cross-check: no source checkout at /home/haroldzhao/MyProj/DshProj/my-power-dsh/skills — the committed baseline above is authoritative (set MPD_SOURCE_ROOT or MPD_SOURCE_SKILLS to cross-check)
+[verify-corpus] PASS — 10 check(s) passed, 1 skipped
+--- gate 4 (last 3 lines) ---
+[rows-disjoint] silicon total: 5 row id(s) — insert 5, id-target 0, across 1 layer(s)
+[rows-disjoint] mpd total: 35 row id(s) — insert 35, id-target 0, across 2 layer(s)
+[rows-disjoint] PASS: silicon ∩ mpd = ∅
+--- gate 5 (last 3 lines) ---
+[build-lsp] check PASS: dist/cli.js sha256 04b49f8c192d03b5… (235271 bytes) matches BUILD.lock, both HDL registry entries present, overlay anchor present, 2 reference docs and 4 fixtures in place
+--- gate 6 (last 3 lines) ---
+[pack-silicon] self-test PASS: control group: the 600 fix is counted, not silently skipped
+[pack-silicon] self-test PASS: control group: no file stays unreadable after normalization
+[pack-silicon] self-test PASSED: package-set guards are falsifiable and mode normalization is proven (600 -> 644, 755 preserved)
+--- gate 7 (last 3 lines) ---
+PASS .github/workflows/ci.yml
+PASS .github/workflows/docker-verify.yml
+PASS .github/workflows/release.yml
+--- gate 8 (last 3 lines) ---
+[pack-silicon] check PASS: every committed file is readable by a non-root consumer
+--- gate 9 (last 3 lines) ---
+[pack-silicon] modes normalized: 56 files (chmod 644: 9, kept/forced 755: 1, already 644: 46)
+[pack-silicon] patch decoupled: 0 plugin path group(s) rewritten to @mpd-dsh/silicon/packages/...
+[pack-silicon] staged package -> /home/haroldzhao/MyProj/DshProj/MPD-Silicon/dist/silicon-package
+--- gate 10 (last 3 lines) ---
+verify-package-files: FAIL: missing required file LICENSE (license text referenced by package.json); the installed bundle cannot load it
+verify-package-files self-test PASS: control group: a package without its license file is rejected
+verify-package-files self-test: PASS (copy passes; rename, dropped docs tree, dropped files entry, broad allowlist, empty patch and a missing license file each fail)
+--- gate 11 (last 3 lines) ---
+verify-package-files: PASS (every required file and tree present and covered, 2 patch insert row(s), allowlist excludes src/test/evidence/state)
+
+################################################################
+# 6. npm CLI PROBE (dry-run only; nothing was published or staged for real)
+################################################################
+--- npm stage --help (subcommands) ---
+Stage packages for publishing, deferring proof-of-presence (2FA) to a later point in time
+
+Usage:
+npm stage
+npm stage publish <package-spec>
+npm stage list [<package-spec>]
+npm stage view <stage-id>
+npm stage approve <stage-id>
+
+=== npm stage publish --access public --provenance --dry-run (real package, cwd=repo root) ===
+npm notice name: @mpd-dsh/silicon
+npm notice version: 0.7.1
+npm notice filename: mpd-dsh-silicon-0.7.1.tgz
+npm notice package size: 334.0 kB
+npm notice unpacked size: 1.1 MB
+npm notice shasum: c0e72fcfcc9fb287a7f8947a845f1fa54ae13813
+npm notice total files: 86
+npm notice Staging to https://registry.npmjs.org/ with tag latest and public access (dry-run)
++ @mpd-dsh/silicon@0.7.1 (staged)
+npm notice stage package @mpd-dsh/silicon@0.7.1 has been staged with tag latest
+EXIT: 0 (measured: npm stage publish --help lists publish/approve/reject; npm 11.19.0)
+
+=== npm pack --pack-destination .tmp/packcheck (same tree) ===
+npm notice
+mpd-dsh-silicon-0.7.1.tgz
+c0e72fcfcc9fb287a7f8947a845f1fa54ae13813  .tmp/packcheck/mpd-dsh-silicon-0.7.1.tgz
+dry-run stage shasum: c0e72fcfcc9fb287a7f8947a845f1fa54ae13813
+shasum match: NO
+pack sha1: c0e72fcfcc9fb287a7f8947a845f1fa54ae13813
+stage dry-run sha1: c0e72fcfcc9fb287a7f8947a845f1fa54ae13813
+shasum match: YES
+
+################################################################
+# 7. REGISTRY + GITHUB RUN FACTS
+################################################################
+=== registry versions (npm view @mpd-dsh/silicon versions --json) ===
+[
+  "0.0.0-stage",
+  "0.7.0"
+]
+=== 0.7.1 on registry? ===
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: /home/haroldzhao/MyProj/DshProj/MPD-Silicon/.npm-cache/_logs/2026-10-30T07_41_17_863Z-debug-0.log
+=== GitHub run 41019623710 (api.github.com) ===
+{'id': 41019623710, 'name': 'Release', 'event': 'push', 'status': 'completed', 'conclusion': 'failure', 'head_branch': 'v0.7.1', 'created_at': '2026-10-30T07:21:49Z', 'html_url': 'https://github.com/HaroldZ32/MPD-Silicon/actions/runs/41019623710'}
+job Release artifacts and image failure
+  step 6 Assert the tag matches the package version -> success
+  step 12 Packer self-test -> success
+  step 14 Pack check -> success
+  step 15 Pack -> success
+  step 16 Package guards self-test -> success
+  step 17 Package verify -> success
+  step 18 Pack the npm tarball -> success
+  step 19 Archive the staged silicon package -> success
+  step 20 Publish to npm (Trusted Publishing / OIDC) -> failure
+
+################################################################
+# 8. BILINGUAL PARITY + DOC LANGUAGE
+################################################################
+PASS README.md/README.zh-CN.md heading count 20 == 20
+PASS README.md has switch link to README.zh-CN.md
+PASS README.zh-CN.md has switch link to README.md
+PASS README.md carries staged + 2FA language
+PASS README.zh-CN.md carries 暂存 + 2FA language
+PASS README.md no leftover direct npm publish command
+PASS README.zh-CN.md no leftover direct npm publish command
+PASS README.md names the exact staged command
+PASS README.zh-CN.md names the exact staged command
+PASS CONTRIBUTING.md/CONTRIBUTING.zh-CN.md heading count 13 == 13
+PASS CONTRIBUTING.md has switch link to CONTRIBUTING.zh-CN.md
+PASS CONTRIBUTING.zh-CN.md has switch link to CONTRIBUTING.md
+PASS CONTRIBUTING.md carries staged + 2FA language
+PASS CONTRIBUTING.zh-CN.md carries 暂存 + 2FA language
+PASS CONTRIBUTING.md no leftover direct npm publish command
+PASS CONTRIBUTING.zh-CN.md no leftover direct npm publish command
+PASS CONTRIBUTING.md names the exact staged command
+PASS CONTRIBUTING.zh-CN.md names the exact staged command
+PASS AGENTS.md carries staged language
+PASS AGENTS.md carries 2FA approval language
+PASS AGENT.md carries staged language
+PASS AGENT.md carries 2FA approval language
+PASS .github/PULL_REQUEST_TEMPLATE.md carries staged language
+PASS .github/PULL_REQUEST_TEMPLATE.md carries 2FA approval language
+PASS AGENTS.md §1 carries STAGED + 2FA
+PASS AGENTS.md §9 carries STAGED + 2FA
+PASS CHANGELOG Unreleased records the staged switch
+PASS CHANGELOG Unreleased records the v0.7.1 failure
+PASS CHANGELOG keeps 0.7.1 history section
+PASS no 0.7.2 publication claim in docs (mentions=[])
+DOC-PARITY-RESULT PASS
+
+################################################################
+# 9. SECRET SCAN
+################################################################
+--- secret-pattern scan (tracked tree, excluding node_modules/.git/dist/.tmp/.npm-cache) ---
+no matches
+--- tracked .npmrc ---
+none tracked
+--- npm token refs in workflows ---
+.github/workflows/release.yml:10:  # NPM_TOKEN secret and no .npmrc are involved.
+--- credential-shaped lines in the change set ---
+no matches
+
+################################################################
+# 10. FINDINGS / DECLINED / BOUNDS / VERDICT
+################################################################
+Findings: 1 Nit — AGENT.md §4 and .github/PULL_REQUEST_TEMPLATE.md both place the maintainer 2FA approval
+  before the GitHub Release/GHCR in their sentence/arrow order, while release.yml creates the GitHub
+  Release and pushes the GHCR image inside the same tag run, immediately after the stage step, with no
+  human gate. Docs-only; the package becoming live is still correctly gated on 2FA.
+Declined: see result.json declinedToJudge (absolute 'always allowed' wording; '--allow-publish' shorthand;
+  0.7.1 CHANGELOG history; stage re-run unique index; working-directory not in the gate contract).
+Bounds: real stage publish + OIDC exchange + provenance + 2FA approval NOT executed (needs a v* tag and
+  maintainer 2FA); exact E403 log text not retrieved (logs API needs auth; run metadata shows step 20
+  'Publish to npm (Trusted Publishing / OIDC)' failed); docker-verify/boot-e2e not run; registry install
+  path not measured.
+VERDICT: APPROVE (one non-blocking Nit).
