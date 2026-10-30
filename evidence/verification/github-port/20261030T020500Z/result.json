@@ -1,0 +1,46 @@
+{
+  "record": "github-port — GitHub-hosted CI/CD run and v0.7.0 release",
+  "recordedAtUtc": "2026-10-30T02:05:00Z",
+  "basis": {
+    "pullRequest": "https://github.com/HaroldZ32/MPD-Silicon/pull/1",
+    "mergeCommit": "dfad498ec4bf466a1f7a3b07b018566485215482",
+    "tag": "v0.7.0",
+    "licenseDetectedByGitHub": "MIT",
+    "defaultBranch": "main"
+  },
+  "workflowRuns": [
+    {"workflow": "CI — static gates", "event": "pull_request", "branch": "port/github-cicd", "runId": 40988939268, "conclusion": "success"},
+    {"workflow": "CI — docker real-machine verification", "event": "pull_request", "branch": "port/github-cicd", "runId": 40988939341, "conclusion": "success"},
+    {"workflow": "CI — static gates", "event": "push", "branch": "main", "runId": 40989236297, "conclusion": "success"},
+    {"workflow": "CI — docker real-machine verification", "event": "push", "branch": "main", "runId": 40989236273, "conclusion": "success"},
+    {"workflow": "CI — boot e2e (real harness mounts)", "event": "push", "branch": "main", "runId": 40989236356, "conclusion": "success"},
+    {"workflow": "Release", "event": "push", "ref": "v0.7.0", "runId": 40989247721, "conclusion": "success"}
+  ],
+  "release": {
+    "url": "https://github.com/HaroldZ32/MPD-Silicon/releases/tag/v0.7.0",
+    "assets": [
+      {"name": "mpd-dsh-silicon-0.7.0.tgz", "bytes": 332396},
+      {"name": "silicon-package.tar.gz", "bytes": 195063}
+    ]
+  },
+  "containerImage": {
+    "name": "ghcr.io/haroldz32/mpd-silicon",
+    "tags": ["v0.7.0", "latest", "edge", "sha-<short>"],
+    "verifiedBy": "docker manifest inspect ghcr.io/haroldz32/mpd-silicon:v0.7.0 and :latest (OCI image index, anonymous pull succeeds)"
+  },
+  "whatThisProves": [
+    "the static gate suite (all 11 AGENTS §4 steps) runs green on a GitHub-hosted ubuntu-24.04 runner with the pinned bun 1.4.3 / node 24",
+    "the shipped Dockerfile builds UNSUBSTITUTED on a GitHub-hosted runner and the container runs the full gate suite plus the real iverilog/verilator/yosys smoke (DOCKER-VERIFY: PASS)",
+    "the two real harness boots (coexist + no-mpd refusal) run green on main via ci-boot --require",
+    "a v* tag asserts tag == package.json version, runs the gates, creates the GitHub Release with both assets and pushes the GHCR image"
+  ],
+  "bounds": [
+    "the local host that produced evidence/verification/github-port/20261029T133557Z/ could not reach registry.npmjs.org, so its as-is docker build was INCONCLUSIVE there; this record closes that bound with the unsubstituted GitHub-hosted build",
+    "no source file differs between the reviewed tree and the merged commit except the port evidence added after the release",
+    "the release image tags are immutable in practice; the 'edge'/'sha-<short>' tags are refreshed by pushes to main"
+  ],
+  "relatedRecords": [
+    "evidence/verification/github-port/20261029T133557Z/result.json (independent local review)",
+    ".mpd/plans/github-port.md (frozen contract, workspace-local)"
+  ]
+}
