@@ -5,16 +5,19 @@ the version moves independently of `@mpd-dsh/mpd`.
 
 ## Unreleased
 
+## 0.7.2 — 2026-10-30
+
 ### Changed
 
-- **The release workflow now stages the npm publish; a direct `npm publish` is gone.**
-  The v0.7.1 Release run (`41019623710`) failed at the npm step with
-  `E403 "OIDC permission denied for this action"`: the trusted publisher allows staged publishing
-  but not a direct `npm publish` (which needs `--allow-publish`). `release.yml` now runs
-  `npm stage publish --access public --provenance`; staging is always allowed for the trusted
-  publisher, and a maintainer approves the staged version with 2FA before it becomes live. The
-  `v0.7.1` tag is a failed attempt kept as history; the next release still needs its tag run and
-  the manual approval before it is live.
+- **Infrastructure-only release: the release pipeline now stages the npm publish. No plugin or API
+  behaviour change.** `.github/workflows/release.yml` runs
+  `npm stage publish --access public --provenance` via **npm Trusted Publishing** (GitHub OIDC, no
+  `NPM_TOKEN` secret, provenance attestation): a `v*` tag run stages the npm version and, in that
+  same run, creates the GitHub Release and pushes the GHCR image. A maintainer **then** approves the
+  staged version with 2FA, and only after that approval does it become live. The `v0.7.1` tag's
+  direct `npm publish` was denied with `E403 "OIDC permission denied for this action"` because the
+  trusted publisher allows staged publishing only — **0.7.1 was never published**; its entry below
+  stays as history.
 
 ## 0.7.1 — 2026-10-30
 

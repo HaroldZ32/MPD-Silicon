@@ -1,7 +1,7 @@
 {
   "name": "@mpd-dsh/silicon",
   "type": "module",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "RTL verification and IP-flow capability bundle for my-power-dsh (DeepSeek Harness): 10 mpd_verif_* tools (iverilog/verilator/vcs, cocotb, VCS-UVM, LibreLane), 4 mpd_docgen_* tools (spec-stage register Excel workbook + bilingual Word user manual), the RTL skill corpus and the HDL LSP; requires @mpd-dsh/mpd@0.15.1 (mpdDsh) at runtime and refuses to boot without it",
   "license": "MIT",
   "repository": {
